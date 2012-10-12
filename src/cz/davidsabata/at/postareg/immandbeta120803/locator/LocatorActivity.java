@@ -1,8 +1,6 @@
 package cz.davidsabata.at.postareg.immandbeta120803.locator;
 
 import cz.davidsabata.at.postareg.immandbeta120803.R;
-import cz.davidsabata.at.postareg.immandbeta120803.R.layout;
-import cz.davidsabata.at.postareg.immandbeta120803.R.menu;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
