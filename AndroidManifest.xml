@@ -27,7 +27,7 @@
             android:name=".locator.LocatorActivity"
             android:label="@string/title_activity_locator" >            
         </activity>
-        <activity android:name=".AgentActivity" ></activity>
+        <activity android:name=".GuardActivity" ></activity>
     </application>
 
 </manifest>

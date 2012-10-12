@@ -31,8 +31,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.agent:
-			Intent agentIntent = new Intent(this, AgentActivity.class);
+		case R.id.guard:
+			Intent agentIntent = new Intent(this, GuardActivity.class);
 			startActivity(agentIntent);
 			break;
 
