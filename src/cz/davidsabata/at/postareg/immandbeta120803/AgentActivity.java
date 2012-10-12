@@ -1,4 +1,4 @@
-package com.example.secretagent;
+package cz.davidsabata.at.postareg.immandbeta120803;
 
 import android.app.Activity;
 import android.os.Bundle;
