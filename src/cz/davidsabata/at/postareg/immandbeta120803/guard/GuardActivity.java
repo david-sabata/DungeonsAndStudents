@@ -1,5 +1,9 @@
-package cz.davidsabata.at.postareg.immandbeta120803;
+package cz.davidsabata.at.postareg.immandbeta120803.guard;
 
+import cz.davidsabata.at.postareg.immandbeta120803.R;
+import cz.davidsabata.at.postareg.immandbeta120803.R.id;
+import cz.davidsabata.at.postareg.immandbeta120803.R.layout;
+import cz.davidsabata.at.postareg.immandbeta120803.R.menu;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;

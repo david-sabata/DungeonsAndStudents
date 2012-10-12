@@ -1,68 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
-    <LinearLayout
-        android:id="@+id/agentActivity"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical" >
-
-        <LinearLayout
-            android:id="@+id/floors"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="40"
-            android:orientation="vertical" >
-
-            <ImageView
-                android:id="@+id/floor_3rd"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:src="@drawable/floor_3nd" />
-
-            <ImageView
-                android:id="@+id/floor_2nd"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:src="@drawable/floor_2nd" />
-
-            <ImageView
-                android:id="@+id/floor_1st"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:src="@drawable/floor_1st" />
-
-            <ImageView
-                android:id="@+id/basement_1st"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:src="@drawable/basement_1st" />
-
-            <ImageView
-                android:id="@+id/basement_2nd"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:src="@drawable/basement_2nd" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/seekBar"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical" >
-
-            <SeekBar
-                android:id="@+id/seekSetFloor"
-                android:layout_width="243dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    android:layout_height="match_parent"
+    android:background="@color/main_background" >
 
 </RelativeLayout>
