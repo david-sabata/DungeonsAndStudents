@@ -1,6 +1,17 @@
 <resources>
 
-    <style name="AppTheme" parent="android:Theme.Light" />
-    <color name="main_background">#bbb</color>
+    <style name="AppTheme" parent="android:Theme.Light.NoTitleBar" />
+    <color name="main_background">#000</color>
+    <color name="text_foreground">#fff</color>
+    
+    <style name="ListView">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <!-- <item name="android:background">@color/off_white</item> -->
+        <!-- <item name="android:cacheColorHint">@color/off_white</item> -->
+        <item name="android:listSelector">@drawable/list_selector</item>
+    </style>
+    <color name="white">#fff</color>
+    <color name="black">#000</color>
 
 </resources>

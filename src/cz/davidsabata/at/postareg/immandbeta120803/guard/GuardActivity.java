@@ -84,11 +84,11 @@ public class GuardActivity extends Activity implements OnTouchListener {
 
 				mtrx.reset();
 				float diffWidth = (activeFloor.getWidth() * scaleFactor) - activeFloor.getWidth();
-				float diffHeight = (activeFloor.getWidth() * scaleFactor) - activeFloor.getWidth();
+				float diffHeight = (activeFloor.getHeight() * scaleFactor) - activeFloor.getHeight();
 				Log.i("diffWidth", Float.toString(diffWidth));
 				Log.i("diffHeight", Float.toString(diffHeight));
 
-				mtrx.postTranslate(diffWidth / scaleFactor, diffHeight / scaleFactor);
+				mtrx.postTranslate(diffWidth, diffHeight);
 				mtrx.postScale(scaleFactor, scaleFactor);
 
 				activeFloor.setImageMatrix(mtrx);

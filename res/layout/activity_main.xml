@@ -1,8 +1,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:background="@color/main_background" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_jamesbond" />
 
     <Button
         android:id="@+id/wifi"
@@ -12,21 +20,37 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="68dp"
         android:text="@string/wifi_test" />
-
+
     <Button
-        android:id="@+id/agent"
+        android:id="@+id/host_game"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/wifi"
         android:layout_centerHorizontal="true"
-        android:text="@string/agent" />
-
+        android:text="@string/host_game" />
+
     <Button
         android:id="@+id/guard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/agent"
+        android:layout_below="@+id/connect_game"
         android:layout_centerHorizontal="true"
         android:text="@string/guard" />
+
+    <Button
+        android:id="@+id/connect_game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/host_game"
+        android:layout_centerHorizontal="true"
+        android:text="@string/connect_game" />
+
+    <Button
+        android:id="@+id/agent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/guard"
+        android:layout_centerHorizontal="true"
+        android:text="@string/agent" />
 
 </RelativeLayout>
