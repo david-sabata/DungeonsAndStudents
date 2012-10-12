@@ -4,5 +4,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="wifi_test">WiFi test</string>
+    <string name="agent">Agent</string>
+    <string name="guard">Guard</string>
+    <string name="title_activity_locator">LocatorActivity</string>
 
 </resources>
