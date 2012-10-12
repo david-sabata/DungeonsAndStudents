@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import cz.davidsabata.at.postareg.immandbeta120803.agent.AgentActivity;
+import cz.davidsabata.at.postareg.immandbeta120803.guard.GuardActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.LocatorActivity;
 
 public class MainActivity extends Activity implements OnClickListener {
@@ -31,9 +33,14 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.guard:
-			Intent agentIntent = new Intent(this, GuardActivity.class);
+		case R.id.agent:
+			Intent agentIntent = new Intent(this, AgentActivity.class);
 			startActivity(agentIntent);
+			break;
+
+		case R.id.guard:
+			Intent guardIntent = new Intent(this, GuardActivity.class);
+			startActivity(guardIntent);
 			break;
 
 		case R.id.wifi:
