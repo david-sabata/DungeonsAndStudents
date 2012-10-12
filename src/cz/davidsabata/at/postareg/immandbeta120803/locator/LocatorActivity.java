@@ -69,7 +69,9 @@ public class LocatorActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				try {
-					wifiLogger.saveToSDcard("DungeonsAndStudentsWifi.txt");
+					wifiLogger.serializeToSDcardJson("DungeonsAndStudentsWifi.txt", true);
+
+					wifiLogger.deserializeFromSDcardJson("DungeonsAndStudentsWifi.txt");
 
 				} catch (Exception e) {
 					// tw.append(e.getMessage());
