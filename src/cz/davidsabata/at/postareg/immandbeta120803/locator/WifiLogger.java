@@ -52,7 +52,6 @@ public class WifiLogger {
 		} catch (IOException i) {
 			i.printStackTrace();
 		}
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -99,34 +98,19 @@ public class WifiLogger {
 		}
 	}
 
-
 	public void deserializeFromSDcardJson(String filename) {
 		String path = Environment.getExternalStorageDirectory() + "/" + filename;
-
-		Gson gson = new Gson();
-		Log.i("json", gson.toJson(mLocInfoList));
 
 		String content = null;
 		try {
 			content = new Scanner(new File(path)).useDelimiter("\\Z").next();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+		Gson gson = new Gson();
 		Type collectionType = new TypeToken<List<LocationInfo>>() {
 		}.getType();
 		mLocInfoList = gson.fromJson(content, collectionType);
-
-		/*
-		 * try { FileInputStream fileIn = new FileInputStream(path);
-		 * InputStreamReader in = new InputStreamReader(fileIn); Object obj =
-		 * in.re if (obj instanceof List<?>) mLocInfoList = (List<LocationInfo>)
-		 * obj; in.close(); fileIn.close(); } catch (IOException i) {
-		 * i.printStackTrace(); return; } catch (ClassNotFoundException c) {
-		 * Log.e("WifiLogger", "Employee class not found.");
-		 * c.printStackTrace(); }
-		 */
-
 	}
 }
