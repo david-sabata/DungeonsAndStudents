@@ -6,22 +6,20 @@ import java.net.Socket;
 
 import android.util.Log;
 
-import com.esotericsoftware.kryonet.Listener;
-import com.esotericsoftware.kryonet.Server;
 
 
 public class ServerManager {
 
 	public static final int SERVER_PORT = 25437;
 
-	Server server;
 
-	public void StartServer(Listener listener) {
+	public void StartServer() {
 
 		ServerSocket server;
 
 		try {
 			server = new ServerSocket(SERVER_PORT);
+			Log.d("server", "starting");
 
 			while (true) {
 				Socket client = server.accept();
@@ -35,52 +33,6 @@ public class ServerManager {
 		}
 
 
-
-		//		server = new Server();
-		//
-		//
-		//		Log.d("ServerManager", "Server bound?");
-		//		server.addListener(new Listener() {
-		//			public void received(Connection connection, Object object) {
-		//				Log.d("serverListener", "incoming!");
-		//			};
-		//
-		//			public void disconnected(Connection c) {
-		//				Log.d("serverListener", "disconnected");
-		//			};
-		//		});
-		//
-		//
-		//		try {
-		//			server.bind(SERVER_PORT);
-		//		} catch (IOException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		}
-		//		server.start();
-
-
-		/*{
-			@Override
-			public void received(Connection connection, Object object) {
-				if (object instanceof Player) {
-
-				} else if (object instanceof GameInfo) {
-
-				}
-			}
-		});*/
 	}
 
-	public void Broadcast(Object obj) {
-		server.sendToAllTCP(obj);
-	}
-
-	public void Unicast() {
-		//server.se
-	}
-
-	public void Close() {
-		server.close();
-	}
 }

@@ -53,7 +53,11 @@ public class ChievosListAdapter extends BaseAdapter {
 
 		Achievment a = data.get(position);
 
-		title.setText(a.titleResId);
+		if (a.titleResId == -1)
+			title.setText("??? ? ?? ???? ??");
+		else
+			title.setText(a.titleResId);
+
 		icon.setImageResource(a.imageResId);
 
 		if (a.isDone) {
