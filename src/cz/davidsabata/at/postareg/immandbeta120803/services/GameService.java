@@ -9,27 +9,21 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-<<<<<<< HEAD
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
-=======
 import cz.davidsabata.at.postareg.immandbeta120803.R;
->>>>>>> 56f5e56c30720fd677953c4e0fe6d267b912d6fb
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidGameStateException;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseHandler;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseTableItemPos;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.Wifi;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.WifiLogger;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
-<<<<<<< HEAD
-import cz.davidsabata.at.postareg.immandbeta120803.network.ServerManager;
-=======
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission667;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission668;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.ShockMission;
->>>>>>> 56f5e56c30720fd677953c4e0fe6d267b912d6fb
+import cz.davidsabata.at.postareg.immandbeta120803.network.ServerManager;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
 
