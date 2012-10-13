@@ -82,14 +82,14 @@ public class NetworkService extends Service {
 	// Bound Service
 	// ------------------------------------------------------------------
 
-	public class ModelServiceBinder extends Binder {
+	public class NetworkServiceBinder extends Binder {
 		public NetworkService getService() {
 			Log.d("NetworkServiceBinder", "getService");
 			return NetworkService.this;
 		}
 	};
 
-	private final IBinder mBinder = new ModelServiceBinder();
+	private final IBinder mBinder = new NetworkServiceBinder();
 
 
 	@Override

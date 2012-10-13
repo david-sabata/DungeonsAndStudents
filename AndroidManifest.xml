@@ -51,7 +51,12 @@
             android:theme="@style/AppTheme" >
         </activity>
         <activity
-            android:name=".agent.AgentActivity" android:theme="@style/AppTheme">
+            android:name=".agent.AgentActivity"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name=".agent.MapActivity"
+            android:label="@string/title_activity_map" android:theme="@style/AppTheme">
         </activity>
     </application>
 
