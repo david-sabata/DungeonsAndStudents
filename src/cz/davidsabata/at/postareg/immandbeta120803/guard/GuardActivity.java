@@ -125,6 +125,7 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		}
 
 		case MotionEvent.ACTION_MOVE: {
+
 			final float x = ev.getX();
 			final float y = ev.getY();
 
@@ -154,6 +155,7 @@ public class GuardActivity extends Activity implements OnTouchListener {
 			lastX = x;
 			lastY = y;
 			break;
+
 		}
 		case MotionEvent.ACTION_UP: {
 			lastX = ev.getX();

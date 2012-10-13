@@ -47,7 +47,11 @@
         </service>
 
         <activity
-            android:name=".PlayersSetupActivity" android:theme="@style/AppTheme">
+            android:name=".PlayersSetupActivity"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name=".agent.AgentActivity" android:theme="@style/AppTheme">
         </activity>
     </application>
 

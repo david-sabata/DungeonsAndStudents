@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player;
+import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
 
 public class PlayerListAdapter extends BaseAdapter {
 
@@ -44,10 +45,28 @@ public class PlayerListAdapter extends BaseAdapter {
 		ImageView icon = (ImageView) vi.findViewById(R.id.icon);
 		TextView nickname = (TextView) vi.findViewById(R.id.nickname);
 
-		Player p = data.get(position);
+		final Player p = data.get(position);
 
 		nickname.setText(p.nickname);
 		icon.setImageResource(p.getRoleIcon());
+		icon.setTag(p.getRoleIcon());
+
+
+		icon.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				ImageView img = (ImageView) v;
+				int resId = Integer.valueOf(v.getTag().toString());
+				if (resId == R.drawable.role_agent) {
+					img.setImageResource(R.drawable.role_guard);
+					img.setTag(R.drawable.role_guard);
+					p.role = Role.GUARD;
+				} else {
+					img.setImageResource(R.drawable.role_agent);
+					img.setTag(R.drawable.role_agent);
+					p.role = Role.AGENT;
+				}
+			}
+		});
 
 		return vi;
 	}
