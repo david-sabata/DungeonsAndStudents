@@ -4,6 +4,7 @@
 package cz.davidsabata.at.postareg.immandbeta120803.guard;
 
 import android.content.Context;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
@@ -45,8 +46,8 @@ public class MapCoordinatesWorker {
 
 		//Size of image that i paint on map
 		BitmapDrawable bd2 = (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_launcher);
-		heightCross = bd.getBitmap().getHeight();
-		widthCross = bd.getBitmap().getWidth();
+		heightCross = bd2.getBitmap().getHeight();
+		widthCross = bd2.getBitmap().getWidth();
 
 		wpi = widthMap / (float) originalWidth;
 		hpi = heightMap / (float) originalHeight;
@@ -62,17 +63,19 @@ public class MapCoordinatesWorker {
 	public ImageView addCrossToMap(int x, int y) {
 		int id = R.drawable.ic_launcher;
 		ImageView imageView = new ImageView(context);
-		RelativeLayout.LayoutParams vp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		RelativeLayout.LayoutParams vp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+		imageView.setLayoutParams(vp);
 
 		imageView.setScaleType(ScaleType.MATRIX);
 		imageView.setImageResource(id);
+		map.addView(imageView);
 
 		//center image
+		//vp.setMargins((int) (x * wpi - (widthCross / 2.0)), (int) (y * hpi - (heightCross / 2.0)), 0, 0);
 
-		vp.setMargins((int) (x * wpi - (45f)), (int) (y * hpi - (45f)), 0, 0);
-		imageView.setLayoutParams(vp);
-
-		map.addView(imageView);
+		Matrix mtrx = new Matrix();
+		mtrx.postTranslate((float) (x * wpi - (widthCross / 2.0)), (float) (y * hpi - (heightCross / 2.0)));
+		imageView.setImageMatrix(mtrx);
 
 		return imageView;
 

@@ -138,7 +138,7 @@ public class GuardActivity extends Activity implements OnTouchListener {
 				mtrx.preScale(scaleFactor, scaleFactor);
 				activeFloor.setImageMatrix(mtrx);
 
-				//panObjectsWithMap();
+				panObjectsWithMap();
 
 				//update scale factor in mapper
 				map.setScaleFactor(scaleFactor);
@@ -183,10 +183,13 @@ public class GuardActivity extends Activity implements OnTouchListener {
 	}
 
 	private void panObjectsWithMap() {
-		for (ImageView img : crossesInMap) {
+		/*for (ImageView img : crossesInMap) {
 
-			img.setImageMatrix(mtrx);
-		}
+			Matrix mtrxBegin = new Matrix();
+			mtrxBegin.set(mtrx);
+			mtrxBegin.postConcat(img.getImageMatrix());
+			img.setImageMatrix(mtrxBegin);
+		}*/
 	}
 
 
