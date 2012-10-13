@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -13,10 +12,11 @@ import cz.davidsabata.at.postareg.immandbeta120803.R;
 
 public class LocatorActivity extends Activity {
 
-	private Button btn, btn2;
+	private Button btn, btn2, btn3;
 	private TextView tw;
 	private Wifi wifi;
 	WifiLogger wifiLogger;
+	DatabaseHandler db;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -25,9 +25,13 @@ public class LocatorActivity extends Activity {
 
 		btn = (Button) this.findViewById(R.id.button1);
 		btn2 = (Button) this.findViewById(R.id.button2);
+		btn3 = (Button) this.findViewById(R.id.button3);
 		tw = (TextView) this.findViewById(R.id.textView1);
 		wifi = new Wifi(getSystemService(Context.WIFI_SERVICE));
 		wifiLogger = new WifiLogger(wifi);
+
+		db = new DatabaseHandler(this);
+		db.onUpgrade(db.getWritableDatabase(), 0, 0);
 
 
 		btn.setOnClickListener(new OnClickListener() {
@@ -36,27 +40,6 @@ public class LocatorActivity extends Activity {
 				try {
 					tw.setText("Logged: " + wifiLogger.Log(5, 10, 2) + "\n");
 
-
-
-
-					/*
-					 * wifi.startScan(); List<ScanResult> sr =
-					 * wifi.getScanResults(); Iterator<ScanResult> it =
-					 * sr.iterator();
-					 * 
-					 * tw.setText("");
-					 * 
-					 * while (it.hasNext()) { ScanResult current = it.next();
-					 * tw.append("\nSSID: " + current.SSID + "\n MAC: " +
-					 * current.BSSID + " Freq: " + current.frequency + " dBm:" +
-					 * current.level + "\n"); }
-					 * 
-					 * WifiInfo info = wifi.getConnectionInfo();
-					 * 
-					 * tw.append("\nConnected MAC: " + info.getBSSID());
-					 * 
-					 * // tw.append("\n\nWiFi Status: " + info.toString());
-					 */
 				} catch (Exception e) {
 					// tw.append(e.getMessage());
 					Log.e("moje", e.getMessage());
@@ -70,8 +53,9 @@ public class LocatorActivity extends Activity {
 				// TODO Auto-generated method stub
 				try {
 					wifiLogger.serializeToSDcardJson("DungeonsAndStudentsWifi.txt", true);
+					db.InsertLocations(wifiLogger.getLocationInfo());
 
-					wifiLogger.deserializeFromSDcardJson("DungeonsAndStudentsWifi.txt");
+					// wifiLogger.deserializeFromSDcardJson("DungeonsAndStudentsWifi.txt");
 
 				} catch (Exception e) {
 					// tw.append(e.getMessage());
@@ -81,11 +65,16 @@ public class LocatorActivity extends Activity {
 
 			}
 		});
+
+		btn3.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+
+				tw.setText(db.getBestMatchingPos(wifi.getDetectedNetworks()).toString());
+
+			}
+		});
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_locator, menu);
-		return true;
-	}
 }

@@ -2,7 +2,6 @@ package cz.davidsabata.at.postareg.immandbeta120803.locator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import android.net.wifi.ScanResult;
@@ -25,14 +24,11 @@ public class Wifi {
 
 	public List<WifiInfo> getDetectedNetworks() {
 		List<ScanResult> scanResultList = getScanResults();
-		Iterator<ScanResult> it = scanResultList.iterator();
-
 		List<WifiInfo> wifiList = new ArrayList<WifiInfo>();
 
-		while (it.hasNext()) {
-			ScanResult sr = it.next();
-			wifiList.add(new WifiInfo(sr.SSID, sr.BSSID, getChannelFromFrequency(sr.frequency), sr.level));
-		}
+		for (ScanResult sr : scanResultList)
+			if (sr.SSID.equals("eduroam") || sr.SSID.equals("VUTBRNO"))
+				wifiList.add(new WifiInfo(sr.SSID, sr.BSSID, getChannelFromFrequency(sr.frequency), sr.level));
 
 		return wifiList;
 	}

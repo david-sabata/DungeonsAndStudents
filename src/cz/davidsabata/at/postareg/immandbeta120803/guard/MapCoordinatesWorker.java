@@ -22,7 +22,7 @@ public class MapCoordinatesWorker {
 	private final int originalHeight;
 	private final float wpi;
 	private final float hpi;
-
+	private final float scaleFactor = 1.0f;
 	private int x;
 	private int y;
 
@@ -74,6 +74,15 @@ public class MapCoordinatesWorker {
 		realCoord.setX(relX / wpi);
 		realCoord.setY(relY / hpi);
 		return realCoord;
+	}
+
+	public float setScaleFactor() {
+		return scaleFactor;
+	}
+
+
+	public float getScaleFactor() {
+		return scaleFactor;
 	}
 
 

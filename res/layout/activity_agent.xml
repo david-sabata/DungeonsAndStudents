@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black" >
@@ -19,6 +20,8 @@
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
                 android:text="@string/target"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/white" />
@@ -39,7 +42,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" >
+        android:layout_alignParentLeft="true"
+        android:paddingBottom="5dp" >
 
         <Button
             android:id="@+id/btnMap"
@@ -48,14 +52,6 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:text="@string/map" />
-
-        <Button
-            android:id="@+id/btnSurrender"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:text="@string/surrender" />
 
         <Button
             android:id="@+id/btnCamera"
@@ -72,6 +68,18 @@
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/btnCamera"
             android:text="@string/briefing" />
+
+        <ImageButton
+            android:id="@+id/btnSurrender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/button_red"
+            android:scaleType="center"
+            android:src="@drawable/btn_flag" />
+
     </RelativeLayout>
 
 </RelativeLayout>
