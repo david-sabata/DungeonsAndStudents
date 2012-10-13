@@ -5,8 +5,8 @@ import java.util.List;
 public class LocationInfo implements java.io.Serializable {
 	private static final long serialVersionUID = -2080886851777838277L;
 
-	int x, y, floor;
-	List<WifiInfo> wifiInfo;
+	public int x, y, floor;
+	public List<WifiInfo> wifiInfo;
 
 	public LocationInfo(int x, int y, int floor, List<WifiInfo> wifiInfo) {
 		this.x = x;

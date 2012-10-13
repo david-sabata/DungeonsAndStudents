@@ -30,9 +30,17 @@ public class WifiLogger {
 		mLocInfoList = new ArrayList<LocationInfo>();
 	}
 
+	public List<LocationInfo> getLocationInfo() {
+		return mLocInfoList;
+	}
+
 	public String Log(int x, int y, int floor) {
 
-		LocationInfo li = new LocationInfo(x, y, floor, wifi.getDetectedNetworks());
+		List<WifiInfo> wi = wifi.getDetectedNetworks();
+		if (wi.isEmpty())
+			return "None";
+
+		LocationInfo li = new LocationInfo(x, y, floor, wi);
 		mLocInfoList.add(li);
 
 		return li.toString();
