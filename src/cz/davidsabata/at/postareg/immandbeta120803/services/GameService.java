@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.esotericsoftware.kryonet.Listener;
 
@@ -141,7 +142,8 @@ public class GameService extends Service {
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
 		mClientManager = new ClientManager();
-		mClientManager.StartServer(clientListener);
+		mClientManager.Connect(clientListener, "147.229.178.92");
+		mClientManager.Send(getLocalPlayer());
 	}
 
 	/**
@@ -283,6 +285,8 @@ public class GameService extends Service {
 	Listener serverListener = new Listener() {
 		public void received(Connection connection, Object object) {
 			if (object instanceof Player) {
+				Toast.makeText(getApplicationContext(), ((Player) object).toString(), Toast.LENGTH_LONG).show();
+
 
 			} else if (object instanceof GameInfo) {
 				//if (mListener != null) mListener.onGameChange()
@@ -292,7 +296,7 @@ public class GameService extends Service {
 
 	Listener clientListener = new Listener() {
 		public void received(Connection connection, Object object) {
-			if (object instanceof Player) {
+			if (object instanceof List<?>) {
 
 			} else if (object instanceof GameInfo) {
 				//if (mListener != null) mListener.onGameChange()

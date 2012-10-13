@@ -26,6 +26,7 @@ public class ServerManager {
 		server.addListener(listener);
 
 
+
 		/*{
 			@Override
 			public void received(Connection connection, Object object) {
@@ -40,5 +41,9 @@ public class ServerManager {
 
 	public void Broadcast(Object obj) {
 		server.sendToAllTCP(obj);
+	}
+
+	public void Unicast() {
+		//server.se
 	}
 }
