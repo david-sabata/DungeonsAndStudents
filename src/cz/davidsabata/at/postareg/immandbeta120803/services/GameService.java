@@ -246,6 +246,16 @@ public class GameService extends Service {
 		return l;
 	}
 
+	/**
+	 * Pridani hrace do hry, pripadne prepsani jeho informaci
+	 * pokud uz ve hre je
+	 */
+	public void addPlayer(Player p) {
+		mGameInfo.addPlayer(p);
+
+		mListener.onGameChange();
+	}
+
 
 	// ---------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------
