@@ -37,6 +37,10 @@ public class Wifi {
 		return mWifiManager.getConnectionInfo();
 	}
 
+	public String getSelfMacAddress() {
+		return mWifiManager.getConnectionInfo().getMacAddress();
+	}
+
 	public static Integer getFrequencyFromChannel(int channel) {
 		return channelsFrequency.get(channel);
 	}

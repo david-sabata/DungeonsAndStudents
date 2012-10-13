@@ -109,35 +109,14 @@ public class GameService extends Service {
 	}
 
 	/**
-	 * Zalozit novou hru
+	 * Zalozit novou hru a pridat sebe jako hrace
 	 */
 	public void hostNewGame() {
-		//if (isThereAGame())
-		//	throw new InvalidGameStateException("Cannot start new game. Other game already in progress");
+		if (isThereAGame())
+			throw new InvalidGameStateException("Cannot start new game. Other game already in progress");
 
 		mGameInfo = new GameInfo();
-
-		Player p = new Player();
-		p.nickname = "SerialKiller" + Math.round(Math.random() * 1000);
-		p.macAddr = "BABA666";
-		mGameInfo.addPlayer(p);
-
-		Player p2 = new Player();
-		p2.nickname = "Butcher" + Math.round(Math.random() * 1000);
-		p2.macAddr = "AAAA";
-		mGameInfo.addPlayer(p2);
-
-		Player p3 = new Player();
-		p3.nickname = "Sneaky" + Math.round(Math.random() * 1000);
-		p3.macAddr = "BBBB";
-		p3.role = Role.AGENT;
-		mGameInfo.addPlayer(p3);
-
-		Player p4 = new Player();
-		p4.nickname = "Jughead" + Math.round(Math.random() * 1000);
-		p4.macAddr = "CCCC";
-		p4.role = Role.GUARD;
-		mGameInfo.addPlayer(p4);
+		mGameInfo.addPlayer(createSelfPlayer(true));
 	}
 
 	/**
@@ -147,6 +126,31 @@ public class GameService extends Service {
 		return mGameInfo.getPlayers();
 	}
 
+	/**
+	 * Vytvori strukturu lokalniho hrace
+	 */
+	protected Player createSelfPlayer(boolean isHost) {
+		Player p = new Player();
+		p.role = Math.random() > 0.5 ? Role.AGENT : Role.GUARD;
+		p.macAddr = wifi.getSelfMacAddress();
+		p.nickname = Player.generateCoolNickname();
+		p.isHost = isHost;
+
+		return p;
+	}
+
+	/**
+	 * Ziska lokalniho hrace z pole vsech hracu anebo null pokud neni
+	 */
+	public Player getLocalPlayer() {
+		for (Player p : getPlayers()) {
+			if (p.macAddr.equals(wifi.getSelfMacAddress())) {
+				return p;
+			}
+		}
+
+		return null;
+	}
 
 	/**
 	 * Vraci resourceID chybove hlasky anebo -1 pokud je vse v poradku
@@ -170,7 +174,6 @@ public class GameService extends Service {
 	public BaseMission getCurrentMission() {
 		return mGameInfo.getCurrentMisssion();
 	}
-
 
 	/**
 	 * Vrati objekty vsech dostupnych misi
