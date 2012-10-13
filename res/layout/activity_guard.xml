@@ -2,13 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-
+
     <RelativeLayout
         android:id="@+id/floorMap"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:clipToPadding="true"
         android:orientation="vertical" >
-
+
         <ImageView
             android:id="@+id/activeFloor"
             android:layout_width="wrap_content"
@@ -17,16 +18,6 @@
             android:scaleType="matrix"
             android:src="@drawable/floor_3nd"
             android:visibility="visible" />
-
-        <ImageView
-            android:id="@+id/whereIAm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="105dp"
-            android:layout_marginTop="154dp"
-            android:src="@android:drawable/ic_delete" />
 
     </RelativeLayout>
 
