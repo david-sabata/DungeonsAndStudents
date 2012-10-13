@@ -77,19 +77,30 @@ public class GuardActivity extends Activity implements OnTouchListener {
 				scalePointX = scaleDetector.getFocusX();
 				scalePointY = scaleDetector.getFocusY();
 
-				Log.d("XY", "[" + scalePointX + " : " + scalePointY + "]");
+				//				Log.d("XY", "[" + scalePointX + " : " + scalePointY + "]");
 
+				float[] matrix = new float[9];
+				mtrx.getValues(matrix);
+
+				Log.d("TRANS", "[" + matrix[Matrix.MTRANS_X] + " | " + matrix[Matrix.MTRANS_Y] + "]");
+
+				int w = activeFloor.getDrawable().getIntrinsicWidth();
+				int h = activeFloor.getDrawable().getIntrinsicHeight();
+				Log.d("BOUNDS", "[" + w + " | " + h + "]");
 
 				float diffWidth = (activeFloor.getWidth() * scaleFactor) - activeFloor.getWidth();
 				float diffHeight = (activeFloor.getHeight() * scaleFactor) - activeFloor.getHeight();
 
-				float trX = (activeFloor.getWidth() / 2) - scalePointX;
-				float trY = (activeFloor.getHeight() / 2) - scalePointY;
+				//				float trX = (activeFloor.getWidth() / 2) - scalePointX;
+				//				float trY = (activeFloor.getHeight() / 2) - scalePointY;
+				float trX = scalePointX - matrix[Matrix.MTRANS_X];
+				float trY = scalePointY - matrix[Matrix.MTRANS_Y];
 
 
-				//				mtrx.reset();
+				mtrx.reset();
+				mtrx.postTranslate(trX, trY);
 				mtrx.postScale(scaleFactor, scaleFactor);
-				mtrx.postTranslate((-diffWidth / 2) - trX, (-diffHeight / 2) - trY);
+				//				mtrx.postTranslate((-diffWidth / 2) - trX, (-diffHeight / 2) - trY);				
 
 				activeFloor.setImageMatrix(mtrx);
 				return true;
@@ -123,7 +134,7 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		}
 
 		case MotionEvent.ACTION_MOVE: {
-			Log.i("Tahnu", Float.toString(scaleFactor));
+			//			Log.i("Tahnu", Float.toString(scaleFactor));
 		}
 		case MotionEvent.ACTION_UP: {
 

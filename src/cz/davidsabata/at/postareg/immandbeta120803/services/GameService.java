@@ -8,6 +8,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidGameStateException;
+import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
+import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
 
 public class GameService extends Service {
@@ -124,7 +126,7 @@ public class GameService extends Service {
 		Player p4 = new Player();
 		p4.nickname = "Jughead" + Math.round(Math.random() * 1000);
 		p4.macAddr = "CCCC";
-		p4.role = Role.AGENT;
+		p4.role = Role.GUARD;
 		mGameInfo.addPlayer(p4);
 	}
 
@@ -133,6 +135,30 @@ public class GameService extends Service {
 	 */
 	public List<Player> getPlayers() {
 		return mGameInfo.getPlayers();
+	}
+
+
+	/**
+	 * Vraci resourceID chybove hlasky anebo -1 pokud je vse v poradku
+	 */
+	public int checkPlayers() {
+		if (!isThereAGame())
+			throw new InvalidGameStateException("Cannot check players, no game in progress");
+
+		return mGameInfo.checkPlayers();
+	}
+
+
+	public void startGame() {
+		if (mGameInfo.getState() == State.WAITING_FOR_CONNECTION) {
+			mGameInfo.startGame();
+		} else {
+			throw new InvalidGameStateException("Cannot start the game in state " + mGameInfo.getState().toString());
+		}
+	}
+
+	public BaseMission getCurrentMission() {
+		return mGameInfo.getCurrentMisssion();
 	}
 
 

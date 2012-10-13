@@ -12,5 +12,15 @@
     <string name="host_game">Host a new game</string>
     <string name="connect_game">Connect to existing game</string>
     <string name="run_game">Run game!</string>
+    <string name="title_activity_agent">AgentActivity</string>
+    <string name="target">Mission target</string>
+    <string name="map">Map</string>
+    <string name="surrender">Surrender</string>
+    <string name="briefing">Briefing</string>
+    <string name="camera">Camera</string>
+    <string name="too_many_agents">Too many agents in game</string>
+    <string name="no_agent_in_game">At least one agent must play</string>
+    <string name="mission001_title">Challenge accepted</string>
+    <string name="mission001_briefing">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque quis vestibulum sem. Aliquam non enim velit, ac tempus risus. Pellentesque purus est, molestie eu ultrices vitae, congue non eros. Mauris sodales justo quis orci vehicula convallis. Nam ut nisl non risus laoreet elementum vel sit amet nibh. Nunc et porttitor risus. Suspendisse quis volutpat eros. Pellentesque vitae egestas arcu. Cras interdum dignissim enim, eu pharetra quam scelerisque a. Nulla interdum fringilla augue id aliquam. Quisque quis cursus nisl. Etiam mauris velit, iaculis sed facilisis eget, lobortis non massa. Nulla sit amet molestie velit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</string>
 
 </resources>
