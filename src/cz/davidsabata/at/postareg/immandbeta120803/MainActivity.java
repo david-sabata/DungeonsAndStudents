@@ -14,7 +14,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.widget.Toast;
+import cz.davidsabata.at.postareg.immandbeta120803.achievments.AchievmentsActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.agent.AgentActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidGameStateException;
 import cz.davidsabata.at.postareg.immandbeta120803.guard.GuardActivity;
@@ -34,6 +36,9 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	protected AlertDialog mQuitDialog;
 	protected AlertDialog mAbortGameDialog;
+	protected AlertDialog mConnectDialog;
+
+	protected EditText mIpInput;
 
 	protected enum start {
 		HOST, JOIN
@@ -45,6 +50,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		mIpInput = new EditText(this);
+
 		// hook buttons
 		findViewById(R.id.wifi).setOnClickListener(this);
 		findViewById(R.id.host_game).setOnClickListener(this);
@@ -53,6 +60,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		findViewById(R.id.clearDb).setOnClickListener(this);
 		findViewById(R.id.btnExit).setOnClickListener(this);
 		findViewById(R.id.btnContinue).setOnClickListener(this);
+		findViewById(R.id.btnAchievments).setOnClickListener(this);
 
 		Log.d(LOG_TAG, "service is " + (GameService.getInstance() == null ? "null" : "not null"));
 
@@ -118,20 +126,44 @@ public class MainActivity extends Activity implements OnClickListener {
 				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						if (s == start.HOST) {
-							mGameService.quitGame();
-							mGameService.hostNewGame();
+
+							new Thread(new Runnable() {
+								public void run() {
+									mGameService.quitGame();
+									mGameService.hostNewGame();
+								}
+							}).start();
+
 							Intent hostGameIntent = new Intent(self, PlayersSetupActivity.class);
 							startActivity(hostGameIntent);
 						} else {
-							mGameService.quitGame();
-							mGameService.connectToGame();
-							Intent connectGameIntent = new Intent(self, PlayersSetupActivity.class);
-							startActivity(connectGameIntent);
+							showConnectDialog();
 						}
 					}
 				}).setNegativeButton(R.string.no, null).show();
 	}
 
+
+	public void showConnectDialog() {
+		if (mConnectDialog != null) {
+			mConnectDialog.show();
+		} else {
+			mConnectDialog = new AlertDialog.Builder(self).setTitle(R.string.server_ip).setView(mIpInput).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					final String ip = mIpInput.getText().toString();
+
+					new Thread(new Runnable() {
+						public void run() {
+							GameService.getInstance().connectToGame(ip);
+						}
+					}).start();
+
+					Intent connectGameIntent = new Intent(self, PlayersSetupActivity.class);
+					startActivity(connectGameIntent);
+				}
+			}).setNegativeButton("Cancel", null).show();
+		}
+	}
 
 	@Override
 	protected void onStop() {
@@ -142,6 +174,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		if (mAbortGameDialog != null && mAbortGameDialog.isShowing()) {
 			mAbortGameDialog.dismiss();
 			mAbortGameDialog = null;
+		}
+		if (mConnectDialog != null && mConnectDialog.isShowing()) {
+			mConnectDialog.dismiss();
+			mConnectDialog = null;
 		}
 
 		super.onStop();
@@ -155,7 +191,12 @@ public class MainActivity extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.host_game:
 			try {
-				mGameService.hostNewGame();
+				new Thread(new Runnable() {
+					public void run() {
+						mGameService.hostNewGame();
+					}
+				}).start();
+
 				Intent hostGameIntent = new Intent(this, PlayersSetupActivity.class);
 				startActivity(hostGameIntent);
 			} catch (InvalidGameStateException e) {
@@ -167,9 +208,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		case R.id.connect_game:
 			try {
-				mGameService.connectToGame();
-				Intent hostGameIntent = new Intent(this, PlayersSetupActivity.class);
-				startActivity(hostGameIntent);
+				showConnectDialog();
 			} catch (InvalidGameStateException e) {
 				//Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 				showAbortGameDialog(start.JOIN);
@@ -195,14 +234,17 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 			break;
 
+		case R.id.btnAchievments:
+			Intent chievosIntent = new Intent(this, AchievmentsActivity.class);
+			startActivity(chievosIntent);
+			break;
+
 		case R.id.scanPositions:
 			Intent agentIntent = new Intent(this, MapScanActivity.class);
 			startActivity(agentIntent);
 			break;
 
 		case R.id.wifi:
-			//Intent wifiIntent = new Intent(this, LocatorActivity.class);
-			//startActivity(wifiIntent);
 			mGameService.exportDatabase("DaS_DB_backup.txt");
 			break;
 

@@ -68,7 +68,7 @@
                 android:text="IP:"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/white" />
-
+
             <TextView
                 android:id="@+id/ipValue"
                 android:layout_width="wrap_content"
@@ -77,19 +77,8 @@
                 android:layout_toRightOf="@+id/ipTitle"
                 android:text="..."
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/red" />
-
-            <Button
-                android:id="@+id/exit"
-                style="@style/ButtonText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="false"
-                android:layout_centerHorizontal="true"
-                android:layout_centerInParent="false"
-                android:layout_toLeftOf="@+id/run"
-                android:background="@drawable/button_red"
-                android:text="@string/exit" />
+                android:textColor="@color/red"
+                android:textSize="20dp" />
 
         </RelativeLayout>
 

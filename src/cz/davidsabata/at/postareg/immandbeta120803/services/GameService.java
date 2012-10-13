@@ -1,5 +1,6 @@
 package cz.davidsabata.at.postareg.immandbeta120803.services;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -14,10 +15,12 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.esotericsoftware.kryonet.Listener;
 
 import cz.davidsabata.at.postareg.immandbeta120803.R;
+import cz.davidsabata.at.postareg.immandbeta120803.achievments.Achievment;
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidGameStateException;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseHandler;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseTableItemPos;
@@ -70,6 +73,9 @@ public class GameService extends Service {
 	public void onDestroy() {
 		mInstance = null;
 
+		mClientManager.Close();
+		mServerManager.Close();
+
 		Log.d(LOG_TAG, "service destroyed");
 	}
 
@@ -99,8 +105,8 @@ public class GameService extends Service {
 
 
 	private GameInfo mGameInfo;
-	private ServerManager mServerManager;
-	private ClientManager mClientManager;
+	private final ServerManager mServerManager = new ServerManager();
+	private final ClientManager mClientManager = new ClientManager();
 
 
 	/**
@@ -130,22 +136,41 @@ public class GameService extends Service {
 		mGameInfo = new GameInfo();
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
-		//		mServerManager = new ServerManager();
-		//		mServerManager.StartServer(serverListener);
+		//		new Thread(new Runnable() {
+		//			public void run() {
+		mServerManager.StartServer(serverListener);
+		//			}
+		//		}).start();
 	}
 
 	/**
 	 * Connect to existing game
+	 * @param ip 
 	 */
-	public void connectToGame() {
+	public void connectToGame(final String ip) {
 		if (isThereAGame())
 			throw new InvalidGameStateException("Please leave your current game first");
 
 		mGameInfo = new GameInfo();
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
-		//		mClientManager = new ClientManager();
-		//		mClientManager.StartServer(clientListener);
+
+
+		Listener clientListener = new Listener() {
+			public void received(Connection connection, Object object) {
+				Log.d("clientListener", "incoming!");
+
+				if (object instanceof List<?>) {
+
+				} else if (object instanceof GameInfo) {
+					//if (mListener != null) mListener.onGameChange()
+				}
+			};
+		};
+
+		mClientManager.Connect(clientListener, ip);
+		mClientManager.Send(getLocalPlayer());
+
 	}
 
 	/**
@@ -230,7 +255,17 @@ public class GameService extends Service {
 	public static List<Integer> getAchievmentsResIds() {
 		List<Integer> l = new ArrayList<Integer>();
 
-		l.add(R.drawable.achiev_shock);
+		l.add(R.drawable.achiev_001_match);
+
+		return l;
+	}
+
+
+	public List<Achievment> getAllAchievments() {
+		List<Achievment> l = new ArrayList<Achievment>();
+
+		l.add(new Achievment(R.drawable.achiev_001, R.drawable.achiev_001_match, R.string.achievment001_title, false));
+		l.add(new Achievment(R.drawable.achiev_002, R.drawable.achiev_002_match, R.string.achievment002_title, false));
 
 		return l;
 	}
@@ -277,21 +312,38 @@ public class GameService extends Service {
 		wifiLogger.serializeToSDcardJson("DungeonsAndStudentsWifi.txt", true);
 	}
 
-	public String getSelfIP() {
+	//	public String getSelfIP() {
+	//		try {
+	//			for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+	//				NetworkInterface intf = en.nextElement();
+	//				for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+	//					InetAddress inetAddress = enumIpAddr.nextElement();
+	//					if (!inetAddress.isLoopbackAddress()) {
+	//						return inetAddress.getHostAddress().toString();
+	//					}
+	//				}
+	//			}
+	//		} catch (SocketException ex) {
+	//			Log.e(LOG_TAG, ex.toString());
+	//		}
+	//
+	//		return null;
+	//	}
+
+	public static String getSelfIP() {
 		try {
 			for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
 				NetworkInterface intf = en.nextElement();
 				for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
 					InetAddress inetAddress = enumIpAddr.nextElement();
-					if (!inetAddress.isLoopbackAddress()) {
-						return inetAddress.getHostAddress().toString();
+					if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+						return inetAddress.getHostAddress();
 					}
 				}
 			}
 		} catch (SocketException ex) {
-			Log.e(LOG_TAG, ex.toString());
+			ex.printStackTrace();
 		}
-
 		return null;
 	}
 
@@ -311,7 +363,11 @@ public class GameService extends Service {
 
 	Listener serverListener = new Listener() {
 		public void received(Connection connection, Object object) {
+			Log.d("serverListener", "incoming!");
+
 			if (object instanceof Player) {
+				Toast.makeText(getApplicationContext(), ((Player) object).toString(), Toast.LENGTH_LONG).show();
+
 
 			} else if (object instanceof GameInfo) {
 				//if (mListener != null) mListener.onGameChange()
@@ -319,15 +375,17 @@ public class GameService extends Service {
 		};
 	};
 
-	Listener clientListener = new Listener() {
-		public void received(Connection connection, Object object) {
-			if (object instanceof Player) {
-
-			} else if (object instanceof GameInfo) {
-				//if (mListener != null) mListener.onGameChange()
-			}
-		};
-	};
+	//	Listener clientListener = new Listener() {
+	//		public void received(Connection connection, Object object) {
+	//			Log.d("clientListener", "incoming!");
+	//
+	//			if (object instanceof List<?>) {
+	//
+	//			} else if (object instanceof GameInfo) {
+	//				//if (mListener != null) mListener.onGameChange()
+	//			}
+	//		};
+	//	};
 
 
 

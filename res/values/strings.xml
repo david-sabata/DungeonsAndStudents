@@ -26,24 +26,29 @@
     <string name="mission666_briefing">Evil is lurking around!\nKeep your eyes wide open, this may be your only chance to win the contest. Do NOT fall asleep!\n\nGo find some energy SHOCK ASAP.</string>
     <string name="close">Close</string>
     <string name="title_activity_map">MapActivity</string>
-
     <string name="mission667_title">H2O</string>
     <string name="mission667_briefing">Saguaro water</string>
     <string name="mission668_title">Tom and Jerry</string>
     <string name="mission668_briefing">Lenovo mouse</string>
-	
-	<item type="id" name="idWidth"/>
-	<item type="id" name="idHeight"/>
-	<item type="id" name="imgFloorIndex"/>
-	<string name="exit">EXIT</string>
-	<string name="you">you</string>
-	<string name="achievments">ACHIEVMENTS</string>
-	<string name="yes">YES</string>
-	<string name="no">NO</string>
-	<string name="quit_confirm">Do you really want to stop playing this awesome game?</string>
-	<string name="abort_game_title">Game in progress</string>
-	<string name="abort_game_text">Do you really want to abort the current game?</string>
-	<string name="continue_game">RESUME GAME</string>
-    
-</resources>
 
+    <item name="idWidth" type="id"/>
+    <item name="idHeight" type="id"/>
+    <item name="imgFloorIndex" type="id"/>
+
+    <string name="exit">EXIT</string>
+    <string name="you">you</string>
+    <string name="achievments">ACHIEVMENTS</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="quit_confirm">Do you really want to stop playing this awesome game?</string>
+    <string name="abort_game_title">Game in progress</string>
+    <string name="abort_game_text">Do you really want to abort the current game?</string>
+    <string name="continue_game">RESUME GAME</string>
+    <string name="server_ip">Server IP</string>
+    <string name="title_activity_achievments">AchievmentsActivity</string>
+    <string name="achievment_done">Completed</string>
+    <string name="achievment001_title">Shocked!</string>
+    <string name="achievment_not_done">Not completed</string>
+    <string name="achievment002_title">Yo dawg, I heard you like me</string>
+
+</resources>

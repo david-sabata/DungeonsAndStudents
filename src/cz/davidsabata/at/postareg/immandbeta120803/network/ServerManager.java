@@ -2,13 +2,15 @@ package cz.davidsabata.at.postareg.immandbeta120803.network;
 
 import java.io.IOException;
 
+import android.util.Log;
+
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 
 public class ServerManager {
 
-	public static final int SERVER_PORT = 25436;
+	public static final int SERVER_PORT = 25437;
 
 	Server server;
 
@@ -23,7 +25,9 @@ public class ServerManager {
 			e.printStackTrace();
 		}
 
+		Log.d("ServerManager", "Server bound?");
 		server.addListener(listener);
+
 
 
 		/*{
@@ -40,5 +44,13 @@ public class ServerManager {
 
 	public void Broadcast(Object obj) {
 		server.sendToAllTCP(obj);
+	}
+
+	public void Unicast() {
+		//server.se
+	}
+
+	public void Close() {
+		server.close();
 	}
 }
