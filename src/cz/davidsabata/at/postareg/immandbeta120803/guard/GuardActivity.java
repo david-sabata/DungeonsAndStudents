@@ -42,7 +42,8 @@ public class GuardActivity extends Activity implements OnTouchListener {
 	private float lastY;
 	private float mPosX = 0;
 	private float mPosY = 0;
-
+	private int mActivePointerId;
+	private static final int INVALID_POINTER_ID = -1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -84,6 +85,10 @@ public class GuardActivity extends Activity implements OnTouchListener {
 
 
 				mtrx.reset();
+				mtrxTran.set(mtrxTranBegin);
+				mtrxTran.postTranslate(mPosX * scaleFactor, mPosY * scaleFactor);
+
+				mtrx.set(mtrxTran);
 				mtrx.postTranslate((-diffWidth / 2), (-diffHeight / 2));
 				mtrx.preScale(scaleFactor, scaleFactor);
 				activeFloor.setImageMatrix(mtrx);
@@ -117,7 +122,7 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		case MotionEvent.ACTION_DOWN: {
 			final float x = ev.getX();
 			final float y = ev.getY();
-
+			mActivePointerId = ev.getPointerId(0);
 			lastX = x;
 			lastY = y;
 
@@ -125,7 +130,7 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		}
 
 		case MotionEvent.ACTION_MOVE: {
-
+			final int pointerIndex = ev.findPointerIndex(mActivePointerId);
 			final float x = ev.getX();
 			final float y = ev.getY();
 
@@ -142,11 +147,17 @@ public class GuardActivity extends Activity implements OnTouchListener {
 				mPosX += dx;
 				mPosY += dy;
 
+				float diffWidth = (activeFloor.getWidth() * scaleFactor) - activeFloor.getWidth();
+				float diffHeight = (activeFloor.getHeight() * scaleFactor) - activeFloor.getHeight();
 
-				//mtrxTran.reset();
+				mtrx.reset();
 				mtrxTran.set(mtrxTranBegin);
-				mtrxTran.postTranslate(mPosX, mPosY);
-				activeFloor.setImageMatrix(mtrxTran);
+				mtrxTran.postTranslate(mPosX * scaleFactor, mPosY * scaleFactor);
+
+				mtrx.set(mtrxTran);
+				mtrx.postTranslate((-diffWidth / 2), (-diffHeight / 2));
+				mtrx.preScale(scaleFactor, scaleFactor);
+				activeFloor.setImageMatrix(mtrx);
 				//activeFloor.invalidate();
 			}
 
@@ -158,8 +169,26 @@ public class GuardActivity extends Activity implements OnTouchListener {
 
 		}
 		case MotionEvent.ACTION_UP: {
-			lastX = ev.getX();
-			lastY = ev.getY();
+			mActivePointerId = INVALID_POINTER_ID;
+			break;
+		}
+
+		case MotionEvent.ACTION_CANCEL: {
+			mActivePointerId = INVALID_POINTER_ID;
+			break;
+		}
+
+		case MotionEvent.ACTION_POINTER_UP: {
+			final int pointerIndex = (ev.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+			final int pointerId = ev.getPointerId(pointerIndex);
+			if (pointerId == mActivePointerId) {
+				// This was our active pointer going up. Choose a new
+				// active pointer and adjust accordingly.
+				final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+				lastX = ev.getX(newPointerIndex);
+				lastY = ev.getY(newPointerIndex);
+				mActivePointerId = ev.getPointerId(newPointerIndex);
+			}
 			break;
 		}
 
