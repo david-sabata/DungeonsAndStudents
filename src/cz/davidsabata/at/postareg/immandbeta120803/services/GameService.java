@@ -1,5 +1,6 @@
 package cz.davidsabata.at.postareg.immandbeta120803.services;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,9 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.esotericsoftware.kryonet.Listener;
+
 import cz.davidsabata.at.postareg.immandbeta120803.R;
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidGameStateException;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseHandler;
@@ -19,6 +23,7 @@ import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission667;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission668;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.ShockMission;
+import cz.davidsabata.at.postareg.immandbeta120803.network.ServerManager;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
 
@@ -89,6 +94,7 @@ public class GameService extends Service {
 
 
 	private GameInfo mGameInfo;
+	private ServerManager mServerManager;
 
 
 	/**
@@ -117,6 +123,9 @@ public class GameService extends Service {
 
 		mGameInfo = new GameInfo();
 		mGameInfo.addPlayer(createSelfPlayer(true));
+
+		mServerManager = new ServerManager();
+		mServerManager.StartServer(serverListener);
 	}
 
 	/**
@@ -239,6 +248,27 @@ public class GameService extends Service {
 
 	// ---------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------
+
+
+	public interface GameStateListener {
+		public void onGameChange();
+	}
+
+	private GameStateListener mListener;
+
+	public void setGameStateListener(GameStateListener gsl) {
+		mListener = gsl;
+	}
+
+	Listener serverListener = new Listener() {
+		public void received(Connection connection, Object object) {
+			if (object instanceof Player) {
+
+			} else if (object instanceof GameInfo) {
+				//if (mListener != null) mListener.onGameChange()
+			}
+		};
+	};
 
 
 

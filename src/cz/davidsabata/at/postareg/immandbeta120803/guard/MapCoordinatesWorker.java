@@ -22,8 +22,8 @@ public class MapCoordinatesWorker {
 	private final RelativeLayout map;
 	private final int originalWidth;
 	private final int originalHeight;
-	private final float wpi;
-	private final float hpi;
+	private float wpi;
+	private float hpi;
 	private float scaleFactor = 1.0f;
 
 	private float posX = 0.0f;
@@ -31,6 +31,9 @@ public class MapCoordinatesWorker {
 
 	private final float heightCross;
 	private final float widthCross;
+
+	private final int heightMap;
+	private final int widthMap;
 
 	//	private final int crossResId;
 
@@ -44,26 +47,28 @@ public class MapCoordinatesWorker {
 
 		//Detect realsize of image floor
 		BitmapDrawable bd = (BitmapDrawable) context.getResources().getDrawable(R.drawable.basement_1st);
-		int heightMap = bd.getBitmap().getHeight();
-		int widthMap = bd.getBitmap().getWidth();
+		heightMap = bd.getBitmap().getHeight();
+		widthMap = bd.getBitmap().getWidth();
 
 		//Size of image that i paint on map
 		BitmapDrawable bd2 = (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_launcher);
 		heightCross = bd2.getBitmap().getHeight();
 		widthCross = bd2.getBitmap().getWidth();
-
-		wpi = widthMap / (float) originalWidth;
-		hpi = heightMap / (float) originalHeight;
+		calculatePI();
 
 
 	}
 
+	private void calculatePI() {
+		wpi = (widthMap * scaleFactor) / originalWidth;
+		hpi = (heightMap * scaleFactor) / originalHeight;
+	}
 
 	/*
 	 * Add Icon on place in map 
 	 * This place is specified by coordinates with real coordinates in real map
 	 */
-	public ImageView addCrossToMap(int x, int y, int resId) {
+	public ImageView addCrossToMap(int x, int y, int resId, int imgFloor) {
 		int id = resId;
 		ImageView imageView = new ImageView(context);
 		RelativeLayout.LayoutParams vp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
@@ -77,12 +82,14 @@ public class MapCoordinatesWorker {
 		//vp.setMargins((int) (x * wpi - (widthCross / 2.0)), (int) (y * hpi - (heightCross / 2.0)), 0, 0);
 
 		Matrix mtrx = new Matrix();
-		mtrx.postTranslate((float) (x * scaleFactor * wpi - (widthCross / 2.0)), (float) (y * scaleFactor * hpi - (heightCross / 2.0)));
+		mtrx.postTranslate((float) (x * wpi - (widthCross / 2.0)), (float) (y * hpi - (heightCross / 2.0)));
 		imageView.setImageMatrix(mtrx);
 
 		//remember width
-		imageView.setTag(R.id.idWidth, (float) (x * scaleFactor * wpi - (widthCross / 2.0)));
-		imageView.setTag(R.id.idHeight, (float) (y * scaleFactor * hpi - (heightCross / 2.0)));
+		imageView.setTag(R.id.idWidth, (float) (x * wpi - (widthCross / 2.0)));
+		imageView.setTag(R.id.idHeight, (float) (y * hpi - (heightCross / 2.0)));
+		imageView.setTag(R.id.imgFloorIndex, imgFloor);
+
 		return imageView;
 
 	}
@@ -92,8 +99,9 @@ public class MapCoordinatesWorker {
 	 */
 	public RealCoordinates getRealFromRelativeCoord(float relX, float relY) {
 		RealCoordinates realCoord = new RealCoordinates();
-		realCoord.setX(relX / scaleFactor / wpi);
-		realCoord.setY(relY / scaleFactor / hpi);
+		calculatePI();
+		realCoord.setX((relX - posX) / wpi);
+		realCoord.setY((relY - posY) / hpi);
 		return realCoord;
 	}
 

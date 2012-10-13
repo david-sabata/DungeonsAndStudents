@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.Activity;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
@@ -25,6 +26,7 @@ public class GuardActivity extends Activity implements OnTouchListener {
 	private final List<Integer> floorsId = new ArrayList<Integer>();
 	private final List<ImageView> crossesInMap = new ArrayList<ImageView>();
 	private ImageView activeFloor;
+	private int imgActiveFloor;
 
 	private MapCoordinatesWorker map;
 
@@ -45,6 +47,7 @@ public class GuardActivity extends Activity implements OnTouchListener {
 
 	private float dx = 0;
 	private float dy = 0;
+
 
 
 	@Override
@@ -185,12 +188,25 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		return true;
 	}
 
+
+	/**
+	 * Actualize objects on map
+	 */
 	private void panObjectsWithMap() {
 		for (ImageView img : crossesInMap) {
-			Matrix tmpMatrix = new Matrix();
-			tmpMatrix.set(mtrx);
-			tmpMatrix.postTranslate((Float) (img.getTag(R.id.idWidth)) * scaleFactor, (Float) (img.getTag(R.id.idHeight)) * scaleFactor);
-			img.setImageMatrix(tmpMatrix);
+			Log.i("Aktini patro:", Integer.toString(imgActiveFloor));
+			Log.i("Aktualni objekt na mape je v patre:", Integer.toString((Integer) img.getTag(R.id.imgFloorIndex)));
+
+			if (((Integer) img.getTag(R.id.imgFloorIndex)) == imgActiveFloor) {
+				Matrix tmpMatrix = new Matrix();
+				tmpMatrix.set(mtrx);
+				tmpMatrix.postTranslate((Float) (img.getTag(R.id.idWidth)) * scaleFactor, (Float) (img.getTag(R.id.idHeight)) * scaleFactor);
+				img.setImageMatrix(tmpMatrix);
+				img.setVisibility(View.VISIBLE);
+			} else {
+				img.setVisibility(View.INVISIBLE);
+			}
+
 		}
 	}
 
@@ -225,12 +241,12 @@ public class GuardActivity extends Activity implements OnTouchListener {
 
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				// TODO Auto-generated method stub
-				int imgIndex = progress / 25;
-				activeFloor.setImageResource(floorsId.get(imgIndex));
+				imgActiveFloor = progress / 25;
+				activeFloor.setImageResource(floorsId.get(imgActiveFloor));
+				panObjectsWithMap();
 			}
 		});
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -250,11 +266,12 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		//crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY()));
 		//panObjectsWithMap();
 
-		crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY(), R.drawable.ic_launcher));
+		crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY(), R.drawable.ic_launcher, imgActiveFloor));
 
+		//actualize object on map
+		panObjectsWithMap();
 		return false;
 	}
-
 
 	public void deleteObjectsOnMap() {
 		for (ImageView img : crossesInMap) {

@@ -11,8 +11,9 @@ import android.widget.Toast;
 import cz.davidsabata.at.postareg.immandbeta120803.agent.AgentActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
+import cz.davidsabata.at.postareg.immandbeta120803.services.GameService.GameStateListener;
 
-public class PlayersSetupActivity extends Activity implements OnClickListener {
+public class PlayersSetupActivity extends Activity implements OnClickListener, GameStateListener {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -20,6 +21,7 @@ public class PlayersSetupActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_players_setup);
 
 		GameService gameService = GameService.getInstance();
+		gameService.setGameStateListener(this);
 
 		ListAdapter adapter = new PlayerListAdapter(getLayoutInflater(), gameService.getPlayers());
 		ListView list = (ListView) findViewById(R.id.playerList);
@@ -63,6 +65,14 @@ public class PlayersSetupActivity extends Activity implements OnClickListener {
 
 			startActivity(new Intent(this, AgentActivity.class));
 		}
+	}
+
+
+
+
+
+	public void onGameChange() {
+
 	}
 
 
