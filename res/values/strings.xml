@@ -13,7 +13,7 @@
     <string name="connect_game">Connect to existing game</string>
     <string name="run_game">Run game!</string>
     <string name="title_activity_agent">AgentActivity</string>
-    <string name="target">Mission target</string>
+    <string name="target">Your next target</string>
     <string name="map">Map</string>
     <string name="surrender">Surrender</string>
     <string name="briefing">Briefing</string>
