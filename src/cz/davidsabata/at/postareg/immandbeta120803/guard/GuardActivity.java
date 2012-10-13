@@ -18,7 +18,7 @@ import android.widget.SeekBar;
 import cz.davidsabata.at.postareg.immandbeta120803.R;
 
 public class GuardActivity extends Activity implements OnTouchListener {
-	protected static final double MIN_ZOOM = 0.5f;
+	protected static final double MIN_ZOOM = 1f;
 	protected static final float MAX_ZOOM = 10f;
 
 	// map of floors
@@ -42,6 +42,9 @@ public class GuardActivity extends Activity implements OnTouchListener {
 	private float mPosY = 0;
 	private int mActivePointerId;
 	private static final int INVALID_POINTER_ID = -1;
+
+	private float dx = 0;
+	private float dy = 0;
 
 
 	@Override
@@ -79,7 +82,7 @@ public class GuardActivity extends Activity implements OnTouchListener {
 				activeFloor.setImageMatrix(mtrx);
 				//update scale factor in mapper
 				map.setScaleFactor(scaleFactor);
-
+				panObjectsWithMap();
 				return true;
 			}
 
@@ -120,8 +123,8 @@ public class GuardActivity extends Activity implements OnTouchListener {
 
 			// Only move if the ScaleGestureDetector isn't processing a gesture.
 			if (!scaleDetector.isInProgress()) {
-				final float dx = x - lastX;
-				final float dy = y - lastY;
+				dx = x - lastX;
+				dy = y - lastY;
 
 				mPosX += dx;
 				mPosY += dy;
@@ -183,15 +186,13 @@ public class GuardActivity extends Activity implements OnTouchListener {
 	}
 
 	private void panObjectsWithMap() {
-		/*for (ImageView img : crossesInMap) {
-
-			Matrix mtrxBegin = new Matrix();
-			mtrxBegin.set(mtrx);
-			mtrxBegin.postConcat(img.getImageMatrix());
-			img.setImageMatrix(mtrxBegin);
-		}*/
+		for (ImageView img : crossesInMap) {
+			Matrix tmpMatrix = new Matrix();
+			tmpMatrix.set(mtrx);
+			tmpMatrix.postTranslate((Float) (img.getTag(R.id.idWidth)) * scaleFactor, (Float) (img.getTag(R.id.idHeight)) * scaleFactor);
+			img.setImageMatrix(tmpMatrix);
+		}
 	}
-
 
 	/**
 	 * 
@@ -246,7 +247,7 @@ public class GuardActivity extends Activity implements OnTouchListener {
 
 		// example of adding image to RelativeFramework
 		crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY()));
-
+		//panObjectsWithMap();
 
 		return false;
 	}

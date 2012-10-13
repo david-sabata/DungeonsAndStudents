@@ -26,5 +26,9 @@
     <string name="mission666_briefing">Evil is lurking around!\nKeep your eyes wide open, this may be your only chance to win the contest. Do NOT fall asleep!\n\nGo find some energy SHOCK ASAP.</string>
     <string name="close">Close</string>
     <string name="title_activity_map">MapActivity</string>
-
+	
+	<item type="id" name="idWidth"/>
+	<item type="id" name="idHeight"/>
+    
 </resources>
+
