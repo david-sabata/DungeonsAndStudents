@@ -7,7 +7,6 @@ import java.util.List;
 import android.app.Activity;
 import android.graphics.Matrix;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
@@ -19,15 +18,15 @@ import android.widget.SeekBar;
 import cz.davidsabata.at.postareg.immandbeta120803.R;
 
 public class GuardActivity extends Activity implements OnTouchListener {
-	protected static final double MIN_ZOOM = 1f;
-	protected static final float MAX_ZOOM = 5f;
+	protected static final double MIN_ZOOM = 0.5f;
+	protected static final float MAX_ZOOM = 10f;
 
 	// map of floors
 	private final List<Integer> floorsId = new ArrayList<Integer>();
+	private final List<ImageView> crossesInMap = new ArrayList<ImageView>();
 	private ImageView activeFloor;
 
-	// where i am
-	private ImageView whereIAm;
+	private MapCoordinatesWorker map;
 
 	// scaling image
 	private final Matrix mtrx = new Matrix();
@@ -44,10 +43,9 @@ public class GuardActivity extends Activity implements OnTouchListener {
 	private int mActivePointerId;
 	private static final int INVALID_POINTER_ID = -1;
 
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
-
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_guard);
 
@@ -57,31 +55,19 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		activeFloor.setImageResource(floorsId.get(0));
 		mtrxTranBegin.set(activeFloor.getImageMatrix());
 
-		if (mtrxTranBegin == null) {
-			Log.d("null", "null");
-		} else {
-			Log.d("not", "null");
-		}
+		//set seek bar to control floor
 		setSeekFloor();
 
-		// set where i am (red point on map)
-		whereIAm = (ImageView) findViewById(R.id.whereIAm);
-
-		// set on touch
+		map = new MapCoordinatesWorker(this, (RelativeLayout) findViewById(R.id.floorMap), R.drawable.ic_launcher, 720, 1000);
+		// set on touch listener on ScaleDetector
 		activeFloor.setOnTouchListener(this);
-
-
-
 		scaleDetector = new ScaleGestureDetector(this, new OnScaleGestureListener() {
 			public boolean onScale(ScaleGestureDetector detector) {
-
 				scaleFactor *= (scaleDetector.getScaleFactor());
 				scaleFactor = (float) Math.max(MIN_ZOOM, Math.min(scaleFactor, MAX_ZOOM));
 
-
 				float diffWidth = (activeFloor.getWidth() * scaleFactor) - activeFloor.getWidth();
 				float diffHeight = (activeFloor.getHeight() * scaleFactor) - activeFloor.getHeight();
-
 
 				mtrx.reset();
 				mtrxTran.set(mtrxTranBegin);
@@ -92,18 +78,14 @@ public class GuardActivity extends Activity implements OnTouchListener {
 				mtrx.preScale(scaleFactor, scaleFactor);
 				activeFloor.setImageMatrix(mtrx);
 
-
 				return true;
 			}
 
 			public boolean onScaleBegin(ScaleGestureDetector detector) {
-
 				return true;
 			}
 
 			public void onScaleEnd(ScaleGestureDetector detector) { // TODO
-
-
 			}
 		});
 
@@ -134,14 +116,10 @@ public class GuardActivity extends Activity implements OnTouchListener {
 			final float y = ev.getY();
 
 
-
 			// Only move if the ScaleGestureDetector isn't processing a gesture.
 			if (!scaleDetector.isInProgress()) {
 				final float dx = x - lastX;
 				final float dy = y - lastY;
-
-				Log.i("dx", Float.toString(dx));
-				Log.i("dy", Float.toString(dy));
 
 				mPosX += dx;
 				mPosY += dy;
@@ -190,7 +168,6 @@ public class GuardActivity extends Activity implements OnTouchListener {
 			}
 			break;
 		}
-
 		}
 
 		return true;
@@ -230,12 +207,9 @@ public class GuardActivity extends Activity implements OnTouchListener {
 				// TODO Auto-generated method stub
 				int imgIndex = progress / 25;
 				activeFloor.setImageResource(floorsId.get(imgIndex));
-
-
 			}
 		});
 	}
-
 
 
 	/*
@@ -247,27 +221,14 @@ public class GuardActivity extends Activity implements OnTouchListener {
 
 	public boolean onTouch(View v, MotionEvent event) {
 
-		final int historySize = event.getHistorySize();
-		final int pointerCount = event.getPointerCount();
+		//add cross to map on position 250px* 250px -> in original image
 
-		// for (int i = 0; i < pointerCount; ++i) {
-		// Log.i("Klik Cislo:", Integer.toString(event.getPointerId(i)));
-		// Log.i("X:", Float.toString(event.getX(i))); // Log.i("Y:",
-		// Float.toString(event.getY(i))); // }
+		RealCoordinates coordReal = map.getRealFromRelativeCoord(Math.round(event.getX(0)), Math.round(event.getY(0)));
 
-		// only touch one finger
-		if (pointerCount == 1) {
-			RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
-			lp.setMargins(Math.round(event.getX(0)), Math.round(event.getY(0)), 0, 0);
-			whereIAm.setLayoutParams(lp);
-		}
+		// example of adding image to RelativeFramework
+		crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY()));
 
 
 		return false;
 	}
-
-
-
-
-
 }
