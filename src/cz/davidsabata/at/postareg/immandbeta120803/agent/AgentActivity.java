@@ -1,6 +1,8 @@
 package cz.davidsabata.at.postareg.immandbeta120803.agent;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,6 +32,7 @@ public class AgentActivity extends Activity {
 		ImageView targetImg = (ImageView) findViewById(R.id.targetImage);
 		targetImg.setImageResource(mission.getImageResId());
 
+		final Context context = this;
 
 
 		final Button btnOpenPopup = (Button) findViewById(R.id.btnBriefing);
@@ -61,6 +64,13 @@ public class AgentActivity extends Activity {
 
 
 				briefPopup.showAtLocation(findViewById(R.id.main), Gravity.CENTER, 0, 0);
+			}
+		});
+
+
+		findViewById(R.id.btnMap).setOnClickListener(new View.OnClickListener() {
+			public void onClick(View arg0) {
+				startActivity(new Intent(context, MapActivity.class));
 			}
 		});
 	}

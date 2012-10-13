@@ -16,14 +16,18 @@ import cz.davidsabata.at.postareg.immandbeta120803.agent.CameraActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidGameStateException;
 import cz.davidsabata.at.postareg.immandbeta120803.guard.GuardActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.LocatorActivity;
+import cz.davidsabata.at.postareg.immandbeta120803.locator.Wifi;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService.GameServiceBinder;
+import cz.davidsabata.at.postareg.immandbeta120803.services.NetworkService;
 
 public class MainActivity extends Activity implements OnClickListener {
 
 	private final static String LOG_TAG = "MainActivity";
 
 	protected GameService mGameService;
+
+	protected NetworkService mNetworkService;
 
 
 	@Override
@@ -39,6 +43,17 @@ public class MainActivity extends Activity implements OnClickListener {
 		findViewById(R.id.guard).setOnClickListener(this);
 
 		Log.d(LOG_TAG, "service is " + (GameService.getInstance() == null ? "null" : "not null"));
+
+		//		// start service
+		//		if (NetworkService.getInstance() == null) {
+		//			startService(new Intent(this, NetworkService.class));
+		//		}
+		//
+		//		// grab service
+		//		if (mNetworkService == null) {
+		//			Intent intent = new Intent(this, NetworkService.class);
+		//			getApplicationContext().bindService(intent, networkServiceConnection, Context.BIND_AUTO_CREATE);
+		//		}
 
 		// start service
 		if (GameService.getInstance() == null) {
@@ -99,19 +114,37 @@ public class MainActivity extends Activity implements OnClickListener {
 				GameServiceBinder binder = (GameServiceBinder) service;
 				mGameService = binder.getService();
 				Log.d(LOG_TAG, "Game service connected");
-			}
-			if (service instanceof GameServiceBinder) {
-				GameServiceBinder binder = (GameServiceBinder) service;
-				mGameService = binder.getService();
-				Log.d(LOG_TAG, "Game service connected");
+
+				mGameService.init(new Wifi(getSystemService(Context.WIFI_SERVICE)));
 			}
 		}
-
 
 		public void onServiceDisconnected(ComponentName arg0) {
 			mGameService = null;
-			Log.d(LOG_TAG, "Service disconnected");
+			Log.d(LOG_TAG, "Game service disconnected");
 		}
 	};
+
+
+
+	//	private final ServiceConnection networkServiceConnection = new ServiceConnection() {
+	//
+	//		public void onServiceConnected(ComponentName className, IBinder service) {
+	//			if (service instanceof NetworkService) {
+	//				NetworkServiceBinder binder = (NetworkServiceBinder) service;
+	//				mNetworkService = binder.getService();
+	//				Log.d(LOG_TAG, "Network service connected");
+	//
+	//				mNetworkService.init(new Wifi(getSystemService(Context.WIFI_SERVICE)));
+	//			}
+	//		}
+	//
+	//		public void onServiceDisconnected(ComponentName arg0) {
+	//			mNetworkService = null;
+	//			Log.d(LOG_TAG, "Network service disconnected");
+	//		}
+	//	};
+
+
 
 }

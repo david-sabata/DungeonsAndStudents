@@ -8,6 +8,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidGameStateException;
+import cz.davidsabata.at.postareg.immandbeta120803.locator.Wifi;
+import cz.davidsabata.at.postareg.immandbeta120803.locator.WifiLogger;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
@@ -162,6 +164,26 @@ public class GameService extends Service {
 	}
 
 
+	// ---------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------------
+
+
+	protected Wifi wifi;
+	protected WifiLogger wifiLogger;
+
+	public void init(Wifi wifi) {
+		this.wifi = wifi;
+		wifiLogger = new WifiLogger(wifi);
+	}
+
+
+	public String logPosition(int x, int y, int floor) {
+		return wifiLogger.Log(x, y, floor);
+	}
+
+
+
+	// ---------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------
 
 
