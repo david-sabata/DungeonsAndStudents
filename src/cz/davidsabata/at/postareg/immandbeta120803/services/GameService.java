@@ -72,6 +72,9 @@ public class GameService extends Service {
 	public void onDestroy() {
 		mInstance = null;
 
+		mClientManager.Close();
+		mServerManager.Close();
+
 		Log.d(LOG_TAG, "service destroyed");
 	}
 

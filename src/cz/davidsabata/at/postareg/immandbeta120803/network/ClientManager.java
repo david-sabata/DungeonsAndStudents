@@ -7,7 +7,7 @@ import com.esotericsoftware.kryonet.Listener;
 
 public class ClientManager {
 
-	public static final int SERVER_PORT = 25436;
+	public static final int SERVER_PORT = 25437;
 	public static final int TIMEOUT = 5000;
 	Client client = null;
 
