@@ -77,6 +77,8 @@ public class GuardActivity extends Activity implements OnTouchListener {
 				mtrx.postTranslate((-diffWidth / 2), (-diffHeight / 2));
 				mtrx.preScale(scaleFactor, scaleFactor);
 				activeFloor.setImageMatrix(mtrx);
+				//update scale factor in mapper
+				map.setScaleFactor(scaleFactor);
 
 				return true;
 			}
@@ -135,6 +137,13 @@ public class GuardActivity extends Activity implements OnTouchListener {
 				mtrx.postTranslate((-diffWidth / 2), (-diffHeight / 2));
 				mtrx.preScale(scaleFactor, scaleFactor);
 				activeFloor.setImageMatrix(mtrx);
+
+				//panObjectsWithMap();
+
+				//update scale factor in mapper
+				map.setScaleFactor(scaleFactor);
+				map.setPosX(mPosX);
+				map.setPosY(mPosY);
 				//activeFloor.invalidate();
 			}
 
@@ -171,6 +180,13 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		}
 
 		return true;
+	}
+
+	private void panObjectsWithMap() {
+		for (ImageView img : crossesInMap) {
+
+			img.setImageMatrix(mtrx);
+		}
 	}
 
 
@@ -231,4 +247,6 @@ public class GuardActivity extends Activity implements OnTouchListener {
 
 		return false;
 	}
+
+
 }
