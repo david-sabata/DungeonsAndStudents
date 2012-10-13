@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
 import cz.davidsabata.at.postareg.immandbeta120803.guard.MapCoordinatesWorker;
+import cz.davidsabata.at.postareg.immandbeta120803.guard.RealCoordinates;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseTableItemPos;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
 
@@ -48,8 +49,6 @@ public class MapScanActivity extends Activity implements OnTouchListener {
 
 	private int mActiveFloorI = 0;
 
-	private ImageView selfIcon;
-
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +64,7 @@ public class MapScanActivity extends Activity implements OnTouchListener {
 		//set seek bar to control floor
 		setSeekFloor();
 
-		map = new MapCoordinatesWorker(this, (RelativeLayout) findViewById(R.id.floorMap), R.drawable.ic_launcher_red, 720, 1000);
+		map = new MapCoordinatesWorker(this, (RelativeLayout) findViewById(R.id.floorMap), R.drawable.ic_launcher, 720, 1000);
 		// set on touch listener on ScaleDetector
 		activeFloor.setOnTouchListener(this);
 		scaleDetector = new ScaleGestureDetector(this, new OnScaleGestureListener() {
@@ -226,6 +225,8 @@ public class MapScanActivity extends Activity implements OnTouchListener {
 	}
 
 
+
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -233,23 +234,26 @@ public class MapScanActivity extends Activity implements OnTouchListener {
 	 * android.view.MotionEvent) Getting coordinates on the screen
 	 */
 
+	@Override
+	protected void onStop() {
+		GameService.getInstance().savePositionsToSd();
+
+		super.onStop();
+	}
+
 	public boolean onTouch(View v, MotionEvent event) {
-		DatabaseTableItemPos pos;
 
-		try {
-			pos = GameService.getInstance().getBestMatchingPos();
-		} catch (RuntimeException e) {
-			Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-			return true;
+		//add cross to map on position 250px* 250px -> in original image
+
+		RealCoordinates coordReal = map.getRealFromRelativeCoord(Math.round(event.getX(0)), Math.round(event.getY(0)));
+
+		String res = GameService.getInstance().logPosition(coordReal.getX(), coordReal.getY(), mActiveFloorI);
+		if (res != "None") {
+			Toast.makeText(getApplicationContext(), res, Toast.LENGTH_SHORT).show();
+
+			// example of adding image to RelativeFramework
+			crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY(), R.drawable.ic_launcher_red));
 		}
-
-		if (selfIcon != null) {
-			RelativeLayout rel = (RelativeLayout) findViewById(R.id.mapParent);
-			rel.removeView(selfIcon);
-		}
-
-		selfIcon = map.addCrossToMap(pos.posx, pos.posy, R.drawable.ic_launcher_red);
-
 
 
 		return false;

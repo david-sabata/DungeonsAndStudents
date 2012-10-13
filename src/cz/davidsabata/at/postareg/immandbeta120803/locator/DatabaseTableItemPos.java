@@ -6,6 +6,9 @@ public class DatabaseTableItemPos {
 	public int posy;
 	public int floor;
 
+	public int matchQuality = -1;
+
+
 	public DatabaseTableItemPos() {
 	}
 

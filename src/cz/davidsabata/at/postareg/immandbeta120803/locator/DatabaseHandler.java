@@ -133,6 +133,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		if (bestId == -1) {
 			bestId = data.keyAt(0);
+			bestMatch = 99999;
 			//			throw new RuntimeException("no best id");
 		}
 
@@ -140,6 +141,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		Log.d("BEST ID", "" + bestId);
 
 		DatabaseTableItemPos ret = new DatabaseTableItemPos();
+		ret.matchQuality = bestMatch;
 
 
 		String selectQuery = "SELECT * FROM PosRecords WHERE id = \"" + bestId + "\" LIMIT 1";
@@ -174,6 +176,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 			// jestli neni tak ignorujeme
 			if (refItem == null)
+				continue;
+
+			// jestli je nektery ze signalu pod -90 ignorujeme
+			if (refItem.dbm < -90 || me.dbm < -90)
 				continue;
 
 			int subRate = (int) Math.round(Math.pow((me.dbm - refItem.dbm), 2));

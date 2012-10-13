@@ -200,6 +200,10 @@ public class GameService extends Service {
 		return db.getBestMatchingPos(wifi.getDetectedNetworks());
 	}
 
+	public void savePositionsToSd() {
+		wifiLogger.serializeToSDcardJson("DungeonsAndStudentsWifi.txt", true);
+	}
+
 	// ---------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------
 
