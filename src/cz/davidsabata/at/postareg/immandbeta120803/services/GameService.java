@@ -234,6 +234,10 @@ public class GameService extends Service {
 		db.clearDatabase();
 	}
 
+	public void exportDatabase(String filename) {
+		WifiLogger.serializeToSDcardJsonStatic(filename, db.databaseToList(), true);
+	}
+
 	public List<DatabaseTableItemPos> getBestMatchingPos() {
 		return db.getBestMatchingPos(wifi.getDetectedNetworks());
 	}

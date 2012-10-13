@@ -73,6 +73,42 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	}
 
+	public List<LocationInfo> databaseToList() {
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		List<LocationInfo> liList = new ArrayList<LocationInfo>();
+
+		String selectQuery = "SELECT * FROM PosRecords";
+		Cursor cur = db.rawQuery(selectQuery, null);
+		if (cur.moveToFirst()) {
+			do {
+				//String query = "SELECT * FROM APRecords JOIN PosRecords ON PosRecords.id = APRecords.posId";
+				LocationInfo li = new LocationInfo();
+				li.x = cur.getInt(1);
+				li.y = cur.getInt(2);
+				li.floor = cur.getInt(3);
+
+				li.wifiInfo = new ArrayList<WifiInfo>();
+
+
+				String query = "SELECT * FROM APRecords WHERE posId = " + cur.getInt(0);
+				Cursor cur2 = db.rawQuery(query, null);
+				if (cur2.moveToFirst()) {
+					do {
+						li.wifiInfo.add(new WifiInfo(cur2.getString(3), cur2.getString(2), 0, cur2.getInt(4)));
+					} while (cur2.moveToNext());
+				}
+				cur2.close();
+
+				liList.add(li);
+
+			} while (cur.moveToNext());
+		}
+		cur.close();
+
+		return liList;
+	}
+
 	public List<DatabaseTableItemPos> getBestMatchingPos(List<WifiInfo> wifiInfoList) {
 		SQLiteDatabase db = this.getWritableDatabase();
 

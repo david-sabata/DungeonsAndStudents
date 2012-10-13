@@ -51,12 +51,16 @@ public class WifiLogger {
 	}
 
 	public void serializeToSDcard(String filename) {
+		serializeToSDcardStatic(filename, mLocInfoList);
+	}
+
+	public static void serializeToSDcardStatic(String filename, List<LocationInfo> liList) {
 		String path = Environment.getExternalStorageDirectory() + "/" + filename;
 
 		try {
 			FileOutputStream fileOut = new FileOutputStream(path);
 			ObjectOutputStream outStream = new ObjectOutputStream(fileOut);
-			outStream.writeObject(mLocInfoList);
+			outStream.writeObject(liList);
 			outStream.flush();
 			outStream.close();
 			fileOut.close();
@@ -87,6 +91,10 @@ public class WifiLogger {
 	}
 
 	public void serializeToSDcardJson(String filename, boolean nice) {
+		serializeToSDcardJsonStatic(filename, mLocInfoList, nice);
+	}
+
+	public static void serializeToSDcardJsonStatic(String filename, List<LocationInfo> liList, boolean nice) {
 		String path = Environment.getExternalStorageDirectory() + "/" + filename;
 
 		try {
@@ -99,7 +107,7 @@ public class WifiLogger {
 			else
 				gson = new Gson();
 
-			outStream.write(gson.toJson(mLocInfoList));
+			outStream.write(gson.toJson(liList));
 
 			outStream.flush();
 			outStream.close();
@@ -111,6 +119,10 @@ public class WifiLogger {
 	}
 
 	public void deserializeFromSDcardJson(String filename) {
+		mLocInfoList = deserializeFromSDcardJsonStatic(filename);
+	}
+
+	public static List<LocationInfo> deserializeFromSDcardJsonStatic(String filename) {
 		String path = Environment.getExternalStorageDirectory() + "/" + filename;
 
 		String content = null;
@@ -123,6 +135,6 @@ public class WifiLogger {
 		Gson gson = new Gson();
 		Type collectionType = new TypeToken<List<LocationInfo>>() {
 		}.getType();
-		mLocInfoList = gson.fromJson(content, collectionType);
+		return gson.fromJson(content, collectionType);
 	}
 }
