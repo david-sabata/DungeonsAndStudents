@@ -137,6 +137,7 @@ public class MainActivity extends Activity implements OnClickListener {
 							Intent hostGameIntent = new Intent(self, PlayersSetupActivity.class);
 							startActivity(hostGameIntent);
 						} else {
+							mGameService.quitGame();
 							showConnectDialog();
 						}
 					}
@@ -191,24 +192,32 @@ public class MainActivity extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.host_game:
 			try {
-				new Thread(new Runnable() {
-					public void run() {
-						mGameService.hostNewGame();
-					}
-				}).start();
+
+				if (mGameService.isThereAGame()) {
+					showAbortGameDialog(start.HOST);
+				} else {
+					new Thread(new Runnable() {
+						public void run() {
+							mGameService.hostNewGame();
+						}
+					}).start();
+				}
 
 				Intent hostGameIntent = new Intent(this, PlayersSetupActivity.class);
 				startActivity(hostGameIntent);
 			} catch (InvalidGameStateException e) {
-				//Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-				showAbortGameDialog(start.HOST);
+				Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+				//				showAbortGameDialog(start.HOST);
 				return;
 			}
 			break;
 
 		case R.id.connect_game:
 			try {
-				showConnectDialog();
+				if (mGameService.isThereAGame())
+					showAbortGameDialog(start.JOIN);
+				else
+					showConnectDialog();
 			} catch (InvalidGameStateException e) {
 				//Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 				showAbortGameDialog(start.JOIN);

@@ -135,7 +135,8 @@ public class GameService extends Service {
 
 		//		new Thread(new Runnable() {
 		//			public void run() {
-		mServerManager.StartServer(serverListener);
+		//		mServerManager.StartServer(serverListener);
+		mServerManager.StartServer(null);
 		//			}
 		//		}).start();
 	}
@@ -369,6 +370,10 @@ public class GameService extends Service {
 			} else if (object instanceof GameInfo) {
 				//if (mListener != null) mListener.onGameChange()
 			}
+		};
+
+		public void disconnected(Connection c) {
+			Log.d("serverListener", "disconnected");
 		};
 	};
 

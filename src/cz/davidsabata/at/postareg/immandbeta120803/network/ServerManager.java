@@ -1,6 +1,8 @@
 package cz.davidsabata.at.postareg.immandbeta120803.network;
 
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 import android.util.Log;
 
@@ -16,18 +18,46 @@ public class ServerManager {
 
 	public void StartServer(Listener listener) {
 
-		server = new Server();
-		server.start();
+		ServerSocket server;
+
 		try {
-			server.bind(SERVER_PORT);
+			server = new ServerSocket(SERVER_PORT);
+
+			while (true) {
+				Socket client = server.accept();
+				Log.d("client connected", client.toString());
+
+				ClientThread th = new ClientThread(client);
+				th.start();
+			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		Log.d("ServerManager", "Server bound?");
-		server.addListener(listener);
 
+
+		//		server = new Server();
+		//
+		//
+		//		Log.d("ServerManager", "Server bound?");
+		//		server.addListener(new Listener() {
+		//			public void received(Connection connection, Object object) {
+		//				Log.d("serverListener", "incoming!");
+		//			};
+		//
+		//			public void disconnected(Connection c) {
+		//				Log.d("serverListener", "disconnected");
+		//			};
+		//		});
+		//
+		//
+		//		try {
+		//			server.bind(SERVER_PORT);
+		//		} catch (IOException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
+		//		server.start();
 
 
 		/*{
