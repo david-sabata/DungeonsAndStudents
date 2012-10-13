@@ -40,7 +40,7 @@ public class Client {
 		Message msg = new Message();
 		msg.lastX = 4;
 		msg.playerMac = "ggg";
-		msg.playerIp = ip;
+		//msg.playerIp = ip;
 
 		Gson gson = new Gson();
 
