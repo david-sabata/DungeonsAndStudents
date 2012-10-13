@@ -14,7 +14,6 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidGameStateException;
 import cz.davidsabata.at.postareg.immandbeta120803.guard.GuardActivity;
-import cz.davidsabata.at.postareg.immandbeta120803.locator.LocatorActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.Wifi;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService.GameServiceBinder;
@@ -109,8 +108,9 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 
 		case R.id.wifi:
-			Intent wifiIntent = new Intent(this, LocatorActivity.class);
-			startActivity(wifiIntent);
+			//Intent wifiIntent = new Intent(this, LocatorActivity.class);
+			//startActivity(wifiIntent);
+			mGameService.exportDatabase("DaS_DB_backup.txt");
 			break;
 
 		case R.id.clearDb:

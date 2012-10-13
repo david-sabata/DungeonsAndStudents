@@ -15,6 +15,10 @@ public class LocationInfo implements java.io.Serializable {
 		this.wifiInfo = wifiInfo;
 	}
 
+	public LocationInfo() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public String toString() {
 		return "x=" + x + ", y=" + y + ", floor=" + floor + ", wifiInfo" + wifiInfo;
