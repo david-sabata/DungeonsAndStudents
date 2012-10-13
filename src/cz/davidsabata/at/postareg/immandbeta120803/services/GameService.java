@@ -136,8 +136,9 @@ public class GameService extends Service {
 
 	/**
 	 * Connect to existing game
+	 * @param ip 
 	 */
-	public void connectToGame() {
+	public void connectToGame(String ip) {
 		if (isThereAGame())
 			throw new InvalidGameStateException("Please leave your current game first");
 

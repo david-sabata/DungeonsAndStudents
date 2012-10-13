@@ -44,6 +44,7 @@
 	<string name="abort_game_title">Game in progress</string>
 	<string name="abort_game_text">Do you really want to abort the current game?</string>
 	<string name="continue_game">RESUME GAME</string>
+	<string name="server_ip">Server IP</string>
     
 </resources>
 
