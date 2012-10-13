@@ -4,12 +4,14 @@
     android:layout_height="match_parent"
     android:background="@color/black" >
 
-    <TextView
-        android:layout_width="wrap_content"
+    <ListView
+        android:id="@+id/list"
+        style="@style/ListView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/hello_world"
-        tools:context=".AchievmentsActivity" />
+        android:layout_centerVertical="true" >
+
+    </ListView>
 
 </RelativeLayout>
