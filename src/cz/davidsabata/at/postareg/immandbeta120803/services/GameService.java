@@ -4,7 +4,6 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -15,10 +14,6 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.esotericsoftware.kryonet.Listener;
-
 import cz.davidsabata.at.postareg.immandbeta120803.R;
 import cz.davidsabata.at.postareg.immandbeta120803.achievments.Achievment;
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidGameStateException;
@@ -30,7 +25,6 @@ import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission667;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission668;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.ShockMission;
-import cz.davidsabata.at.postareg.immandbeta120803.network.ClientManager;
 import cz.davidsabata.at.postareg.immandbeta120803.network.ServerManager;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
@@ -73,9 +67,6 @@ public class GameService extends Service {
 	public void onDestroy() {
 		mInstance = null;
 
-		mClientManager.Close();
-		mServerManager.Close();
-
 		Log.d(LOG_TAG, "service destroyed");
 	}
 
@@ -105,8 +96,8 @@ public class GameService extends Service {
 
 
 	private GameInfo mGameInfo;
+
 	private final ServerManager mServerManager = new ServerManager();
-	private final ClientManager mClientManager = new ClientManager();
 
 
 	/**
@@ -136,12 +127,7 @@ public class GameService extends Service {
 		mGameInfo = new GameInfo();
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
-		//		new Thread(new Runnable() {
-		//			public void run() {
-		//		mServerManager.StartServer(serverListener);
-		mServerManager.StartServer(null);
-		//			}
-		//		}).start();
+		mServerManager.StartServer();
 	}
 
 	/**
@@ -156,21 +142,6 @@ public class GameService extends Service {
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
 
-
-		Listener clientListener = new Listener() {
-			public void received(Connection connection, Object object) {
-				Log.d("clientListener", "incoming!");
-
-				if (object instanceof List<?>) {
-
-				} else if (object instanceof GameInfo) {
-					//if (mListener != null) mListener.onGameChange()
-				}
-			};
-		};
-
-		mClientManager.Connect(clientListener, ip);
-		mClientManager.Send(getLocalPlayer());
 
 	}
 
@@ -268,6 +239,10 @@ public class GameService extends Service {
 		l.add(new Achievment(R.drawable.achiev_001, R.drawable.achiev_001_match, R.string.achievment001_title, false));
 		l.add(new Achievment(R.drawable.achiev_002, R.drawable.achiev_002_match, R.string.achievment002_title, false));
 
+		for (int i = 0; i < 10; i++) {
+			l.add(new Achievment(R.drawable.unknown, R.drawable.unknown, -1, false));
+		}
+
 		return l;
 	}
 
@@ -313,23 +288,6 @@ public class GameService extends Service {
 		wifiLogger.serializeToSDcardJson("DungeonsAndStudentsWifi.txt", true);
 	}
 
-	//	public String getSelfIP() {
-	//		try {
-	//			for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
-	//				NetworkInterface intf = en.nextElement();
-	//				for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
-	//					InetAddress inetAddress = enumIpAddr.nextElement();
-	//					if (!inetAddress.isLoopbackAddress()) {
-	//						return inetAddress.getHostAddress().toString();
-	//					}
-	//				}
-	//			}
-	//		} catch (SocketException ex) {
-	//			Log.e(LOG_TAG, ex.toString());
-	//		}
-	//
-	//		return null;
-	//	}
 
 	public static String getSelfIP() {
 		try {
@@ -361,36 +319,6 @@ public class GameService extends Service {
 	public void setGameStateListener(GameStateListener gsl) {
 		mListener = gsl;
 	}
-
-	Listener serverListener = new Listener() {
-		public void received(Connection connection, Object object) {
-			Log.d("serverListener", "incoming!");
-
-			if (object instanceof Player) {
-				Toast.makeText(getApplicationContext(), ((Player) object).toString(), Toast.LENGTH_LONG).show();
-
-
-			} else if (object instanceof GameInfo) {
-				//if (mListener != null) mListener.onGameChange()
-			}
-		};
-
-		public void disconnected(Connection c) {
-			Log.d("serverListener", "disconnected");
-		};
-	};
-
-	//	Listener clientListener = new Listener() {
-	//		public void received(Connection connection, Object object) {
-	//			Log.d("clientListener", "incoming!");
-	//
-	//			if (object instanceof List<?>) {
-	//
-	//			} else if (object instanceof GameInfo) {
-	//				//if (mListener != null) mListener.onGameChange()
-	//			}
-	//		};
-	//	};
 
 
 
