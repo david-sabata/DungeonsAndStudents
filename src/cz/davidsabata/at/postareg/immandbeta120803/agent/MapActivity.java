@@ -18,6 +18,7 @@ import android.widget.Toast;
 import cz.davidsabata.at.postareg.immandbeta120803.R;
 import cz.davidsabata.at.postareg.immandbeta120803.guard.MapCoordinatesWorker;
 import cz.davidsabata.at.postareg.immandbeta120803.guard.RealCoordinates;
+import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseTableItemPos;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
 
 public class MapActivity extends Activity implements OnTouchListener {
@@ -94,6 +95,13 @@ public class MapActivity extends Activity implements OnTouchListener {
 			public void onScaleEnd(ScaleGestureDetector detector) { // TODO
 			}
 		});
+
+
+		// vytvorit ikony pro existujici mista
+		List<DatabaseTableItemPos> positions = GameService.getInstance().getSavedPositions();
+		for (DatabaseTableItemPos pos : positions) {
+			crossesInMap.add(map.addCrossToMap(pos.posx, pos.posy));
+		}
 
 
 	}

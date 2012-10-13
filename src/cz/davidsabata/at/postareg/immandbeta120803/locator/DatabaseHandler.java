@@ -39,32 +39,37 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		onCreate(db);
 	}
 
-	public void InsertLocations(List<LocationInfo> locs) {
+
+	public void InsertLocations(List<LocationInfo> li) {
+		for (LocationInfo l : li) {
+			InsertLocation(l);
+		}
+	}
+
+	public void InsertLocation(LocationInfo loc) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
-		for (LocationInfo li : locs) {
+		if (loc.wifiInfo.isEmpty())
+			return;
 
-			if (li.wifiInfo.isEmpty())
-				continue;
+		ContentValues posVals = new ContentValues();
+		posVals.put("posx", loc.x);
+		posVals.put("posy", loc.y);
+		posVals.put("floor", loc.floor);
 
-			ContentValues posVals = new ContentValues();
-			posVals.put("posx", li.x);
-			posVals.put("posy", li.y);
-			posVals.put("floor", li.floor);
+		long fk = db.insert("PosRecords", null, posVals);
 
-			long fk = db.insert("PosRecords", null, posVals);
+		for (WifiInfo wi : loc.wifiInfo) {
 
-			for (WifiInfo wi : li.wifiInfo) {
+			ContentValues apVals = new ContentValues();
+			apVals.put("posId", fk);
+			apVals.put("mac", wi.bssid);
+			apVals.put("ssid", wi.ssid);
+			apVals.put("dbm", wi.dbm);
 
-				ContentValues apVals = new ContentValues();
-				apVals.put("posId", fk);
-				apVals.put("mac", wi.bssid);
-				apVals.put("ssid", wi.ssid);
-				apVals.put("dbm", wi.dbm);
-
-				db.insert("APRecords", null, apVals);
-			}
+			db.insert("APRecords", null, apVals);
 		}
+
 	}
 
 	public DatabaseTableItemPos getBestMatchingPos(List<WifiInfo> wifiInfoList) {
@@ -193,6 +198,33 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	}
 
+
+
+
+	public List<DatabaseTableItemPos> getSavedPositions() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		List<DatabaseTableItemPos> items = new ArrayList<DatabaseTableItemPos>();
+
+		String selectQuery = "SELECT * FROM PosRecords";
+		Cursor cur = db.rawQuery(selectQuery, null);
+		if (cur.moveToFirst()) {
+			do {
+				DatabaseTableItemPos item = new DatabaseTableItemPos();
+				item.id = Integer.parseInt(cur.getString(0));
+				item.posx = Integer.parseInt(cur.getString(1));
+				item.posy = Integer.parseInt(cur.getString(2));
+				item.floor = Integer.parseInt(cur.getString(3));
+				items.add(item);
+			} while (cur.moveToNext());
+		}
+
+		return items;
+	}
+
+
+	public void clearDatabase() {
+		onUpgrade(this.getWritableDatabase(), 0, 0);
+	}
 
 
 

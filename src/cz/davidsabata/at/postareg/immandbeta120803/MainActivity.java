@@ -29,6 +29,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	protected NetworkService mNetworkService;
 
+	protected final MainActivity self = this;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		findViewById(R.id.connect_game).setOnClickListener(this);
 		findViewById(R.id.agent).setOnClickListener(this);
 		findViewById(R.id.guard).setOnClickListener(this);
+		findViewById(R.id.clearDb).setOnClickListener(this);
 
 		Log.d(LOG_TAG, "service is " + (GameService.getInstance() == null ? "null" : "not null"));
 
@@ -101,6 +104,11 @@ public class MainActivity extends Activity implements OnClickListener {
 			Intent wifiIntent = new Intent(this, LocatorActivity.class);
 			startActivity(wifiIntent);
 			break;
+
+		case R.id.clearDb:
+			mGameService.clearDatabase();
+			Toast.makeText(getApplicationContext(), "We are clear now", Toast.LENGTH_SHORT).show();
+			break;
 		}
 	}
 
@@ -115,7 +123,8 @@ public class MainActivity extends Activity implements OnClickListener {
 				mGameService = binder.getService();
 				Log.d(LOG_TAG, "Game service connected");
 
-				mGameService.init(new Wifi(getSystemService(Context.WIFI_SERVICE)));
+				Wifi w = new Wifi(getSystemService(Context.WIFI_SERVICE));
+				mGameService.init(w, self);
 			}
 		}
 

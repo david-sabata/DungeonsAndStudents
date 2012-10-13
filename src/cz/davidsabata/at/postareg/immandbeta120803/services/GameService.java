@@ -3,11 +3,14 @@ package cz.davidsabata.at.postareg.immandbeta120803.services;
 import java.util.List;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidGameStateException;
+import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseHandler;
+import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseTableItemPos;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.Wifi;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.WifiLogger;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
@@ -104,8 +107,8 @@ public class GameService extends Service {
 	 * Zalozit novou hru
 	 */
 	public void hostNewGame() {
-		if (isThereAGame())
-			throw new InvalidGameStateException("Cannot start new game. Other game already in progress");
+		//if (isThereAGame())
+		//	throw new InvalidGameStateException("Cannot start new game. Other game already in progress");
 
 		mGameInfo = new GameInfo();
 
@@ -170,10 +173,14 @@ public class GameService extends Service {
 
 	protected Wifi wifi;
 	protected WifiLogger wifiLogger;
+	protected DatabaseHandler db;
 
-	public void init(Wifi wifi) {
+
+	public void init(Wifi wifi, Context context) {
+		db = new DatabaseHandler(context);
+
 		this.wifi = wifi;
-		wifiLogger = new WifiLogger(wifi);
+		wifiLogger = new WifiLogger(wifi, db);
 	}
 
 
@@ -181,7 +188,13 @@ public class GameService extends Service {
 		return wifiLogger.Log(x, y, floor);
 	}
 
+	public List<DatabaseTableItemPos> getSavedPositions() {
+		return db.getSavedPositions();
+	}
 
+	public void clearDatabase() {
+		db.clearDatabase();
+	}
 
 	// ---------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------

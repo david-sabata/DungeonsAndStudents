@@ -52,5 +52,13 @@
         android:layout_below="@+id/guard"
         android:layout_centerHorizontal="true"
         android:text="@string/agent" />
+
+    <Button
+        android:id="@+id/clearDb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/agent"
+        android:layout_centerHorizontal="true"
+        android:text="Clear db" />
 
 </RelativeLayout>

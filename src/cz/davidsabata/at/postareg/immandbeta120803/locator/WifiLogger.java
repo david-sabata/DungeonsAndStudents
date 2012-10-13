@@ -24,9 +24,11 @@ public class WifiLogger {
 
 	List<LocationInfo> mLocInfoList;
 	Wifi wifi;
+	DatabaseHandler db;
 
-	public WifiLogger(Wifi wifi) {
+	public WifiLogger(Wifi wifi, DatabaseHandler db) {
 		this.wifi = wifi;
+		this.db = db;
 		mLocInfoList = new ArrayList<LocationInfo>();
 	}
 
@@ -42,6 +44,8 @@ public class WifiLogger {
 
 		LocationInfo li = new LocationInfo(x, y, floor, wi);
 		mLocInfoList.add(li);
+
+		db.InsertLocation(li);
 
 		return li.toString();
 	}
