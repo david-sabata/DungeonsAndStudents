@@ -2,8 +2,6 @@ package cz.davidsabata.at.postareg.immandbeta120803.missions;
 
 import cz.davidsabata.at.postareg.immandbeta120803.R;
 
-
-
 public class Mission001 extends BaseMission {
 
 	public Mission001() {

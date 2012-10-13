@@ -22,5 +22,8 @@
     <string name="no_agent_in_game">At least one agent must play</string>
     <string name="mission001_title">Challenge accepted</string>
     <string name="mission001_briefing">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque quis vestibulum sem. Aliquam non enim velit, ac tempus risus. Pellentesque purus est, molestie eu ultrices vitae, congue non eros. Mauris sodales justo quis orci vehicula convallis. Nam ut nisl non risus laoreet elementum vel sit amet nibh. Nunc et porttitor risus. Suspendisse quis volutpat eros. Pellentesque vitae egestas arcu. Cras interdum dignissim enim, eu pharetra quam scelerisque a. Nulla interdum fringilla augue id aliquam. Quisque quis cursus nisl. Etiam mauris velit, iaculis sed facilisis eget, lobortis non massa. Nulla sit amet molestie velit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</string>
+    <string name="mission666_title">Stay awake!</string>
+    <string name="mission666_briefing">Evil is lurking around!\nKeep your eyes wide open, this may be your only chance to win the contest. Do NOT fall asleep!\n\nGo find some energy SHOCK ASAP.</string>
+    <string name="close">Close</string>
 
 </resources>

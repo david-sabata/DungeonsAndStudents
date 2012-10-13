@@ -7,7 +7,7 @@ import android.util.Log;
 import cz.davidsabata.at.postareg.immandbeta120803.R;
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidPlayersException;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
-import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission001;
+import cz.davidsabata.at.postareg.immandbeta120803.missions.ShockMission;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
 
 public class GameInfo {
@@ -98,7 +98,8 @@ public class GameInfo {
 	 * TODO: random
 	 */
 	public BaseMission pickMission() {
-		return new Mission001();
+		return new ShockMission();
+		//		return new Mission001();
 	}
 
 
