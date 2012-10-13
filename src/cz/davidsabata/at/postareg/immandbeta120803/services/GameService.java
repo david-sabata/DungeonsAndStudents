@@ -1,7 +1,11 @@
 package cz.davidsabata.at.postareg.immandbeta120803.services;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import android.app.Service;
@@ -271,6 +275,24 @@ public class GameService extends Service {
 
 	public void savePositionsToSd() {
 		wifiLogger.serializeToSDcardJson("DungeonsAndStudentsWifi.txt", true);
+	}
+
+	public String getSelfIP() {
+		try {
+			for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+				NetworkInterface intf = en.nextElement();
+				for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+					InetAddress inetAddress = enumIpAddr.nextElement();
+					if (!inetAddress.isLoopbackAddress()) {
+						return inetAddress.getHostAddress().toString();
+					}
+				}
+			}
+		} catch (SocketException ex) {
+			Log.e(LOG_TAG, ex.toString());
+		}
+
+		return null;
 	}
 
 	// ---------------------------------------------------------------------------------
