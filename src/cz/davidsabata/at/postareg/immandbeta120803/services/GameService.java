@@ -101,7 +101,7 @@ public class GameService extends Service {
 
 
 	private GameInfo mGameInfo;
-	private ServerManager mServerManager;
+	private final ServerManager mServerManager = new ServerManager();
 	private final ClientManager mClientManager = new ClientManager();
 
 
@@ -132,8 +132,11 @@ public class GameService extends Service {
 		mGameInfo = new GameInfo();
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
-		//		mServerManager = new ServerManager();
-		//		mServerManager.StartServer(serverListener);
+		new Thread(new Runnable() {
+			public void run() {
+				mServerManager.StartServer(serverListener);
+			}
+		}).start();
 	}
 
 	/**
