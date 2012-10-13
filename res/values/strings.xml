@@ -27,4 +27,14 @@
     <string name="close">Close</string>
     <string name="title_activity_map">MapActivity</string>
 
+    <string name="mission667_title">H2O</string>
+    <string name="mission667_briefing">Saguaro water</string>
+    <string name="mission668_title">Tom and Jerry</string>
+    <string name="mission668_briefing">Lenovo mouse</string>
+	
+	<item type="id" name="idWidth"/>
+	<item type="id" name="idHeight"/>
+	<item type="id" name="imgFloorIndex"/>
+    
 </resources>
+

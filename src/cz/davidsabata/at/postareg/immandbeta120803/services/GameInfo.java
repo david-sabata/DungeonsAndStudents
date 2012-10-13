@@ -2,12 +2,12 @@ package cz.davidsabata.at.postareg.immandbeta120803.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import android.util.Log;
 import cz.davidsabata.at.postareg.immandbeta120803.R;
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidPlayersException;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
-import cz.davidsabata.at.postareg.immandbeta120803.missions.ShockMission;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
 
 public class GameInfo {
@@ -94,12 +94,11 @@ public class GameInfo {
 	}
 
 
-	/**
-	 * TODO: random
-	 */
+
 	public BaseMission pickMission() {
-		return new ShockMission();
-		//		return new Mission001();
+		List<BaseMission> missions = GameService.getAllMissions();
+		Random r = new Random();
+		return missions.get(r.nextInt(missions.size()));
 	}
 
 

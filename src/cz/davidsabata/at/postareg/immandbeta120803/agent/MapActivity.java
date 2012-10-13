@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
@@ -17,7 +18,6 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 import cz.davidsabata.at.postareg.immandbeta120803.R;
 import cz.davidsabata.at.postareg.immandbeta120803.guard.MapCoordinatesWorker;
-import cz.davidsabata.at.postareg.immandbeta120803.guard.RealCoordinates;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseTableItemPos;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
 
@@ -50,6 +50,11 @@ public class MapActivity extends Activity implements OnTouchListener {
 
 	private int mActiveFloorI = 0;
 
+	private List<ImageView> selfIcons;
+
+	private final Handler handler = new Handler();
+	private boolean stopService = false;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +70,7 @@ public class MapActivity extends Activity implements OnTouchListener {
 		//set seek bar to control floor
 		setSeekFloor();
 
-		map = new MapCoordinatesWorker(this, (RelativeLayout) findViewById(R.id.floorMap), R.drawable.ic_launcher, 720, 1000);
+		map = new MapCoordinatesWorker(this, (RelativeLayout) findViewById(R.id.floorMap), R.drawable.ic_launcher_red, 720, 1000);
 		// set on touch listener on ScaleDetector
 		activeFloor.setOnTouchListener(this);
 		scaleDetector = new ScaleGestureDetector(this, new OnScaleGestureListener() {
@@ -100,11 +105,32 @@ public class MapActivity extends Activity implements OnTouchListener {
 		// vytvorit ikony pro existujici mista
 		List<DatabaseTableItemPos> positions = GameService.getInstance().getSavedPositions();
 		for (DatabaseTableItemPos pos : positions) {
-			crossesInMap.add(map.addCrossToMap(pos.posx, pos.posy, R.drawable.ic_launcher));
+			crossesInMap.add(map.addCrossToMap(pos.posx, pos.posy, R.drawable.ic_launcher, mActiveFloorI));
 		}
 
 
+		stopService = false;
+		handler.post(timedTask);
 	}
+
+
+	@Override
+	protected void onStop() {
+		stopService = true;
+		super.onStop();
+	}
+
+
+	private final Runnable timedTask = new Runnable() {
+		public void run() {
+			updateIcons();
+
+			if (!stopService)
+				handler.postDelayed(timedTask, 500);
+		}
+	};
+
+
 
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) { // Let the
@@ -234,20 +260,39 @@ public class MapActivity extends Activity implements OnTouchListener {
 	 */
 
 	public boolean onTouch(View v, MotionEvent event) {
-
-		//add cross to map on position 250px* 250px -> in original image
-
-		RealCoordinates coordReal = map.getRealFromRelativeCoord(Math.round(event.getX(0)), Math.round(event.getY(0)));
-
-		String res = GameService.getInstance().logPosition(coordReal.getX(), coordReal.getY(), mActiveFloorI);
-		if (res != "None") {
-			Toast.makeText(getApplicationContext(), res, Toast.LENGTH_SHORT).show();
-
-			// example of adding image to RelativeFramework
-			crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY(), R.drawable.ic_launcher_red));
-		}
-
+		updateIcons();
 
 		return false;
+	}
+
+
+	private void updateIcons() {
+		List<DatabaseTableItemPos> positions;
+
+		try {
+			positions = GameService.getInstance().getBestMatchingPos();
+		} catch (RuntimeException e) {
+			Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+			return;
+		}
+
+		//		Toast.makeText(getApplicationContext(), "Match quality: " + pos.matchQuality, Toast.LENGTH_SHORT).show();
+
+		if (selfIcons == null)
+			selfIcons = new ArrayList<ImageView>();
+
+		if (selfIcons.size() > 0) {
+			for (int i = 0; i < selfIcons.size(); i++) {
+				RelativeLayout rel = (RelativeLayout) selfIcons.get(i).getParent();
+				rel.removeView(selfIcons.get(i));
+			}
+			selfIcons.clear();
+		}
+
+		for (DatabaseTableItemPos pos : positions) {
+			ImageView im = map.addCrossToMap(pos.posx, pos.posy, R.drawable.ic_launcher_red, mActiveFloorI);
+			selfIcons.add(im);
+		}
 	}
 }

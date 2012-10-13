@@ -1,6 +1,7 @@
 package cz.davidsabata.at.postareg.immandbeta120803.locator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -72,7 +73,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	}
 
-	public DatabaseTableItemPos getBestMatchingPos(List<WifiInfo> wifiInfoList) {
+	public List<DatabaseTableItemPos> getBestMatchingPos(List<WifiInfo> wifiInfoList) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		SparseArray<List<DbItem>> data = new SparseArray<List<DbItem>>();
@@ -84,11 +85,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			DbItem myItem = new DbItem(-1, wi.dbm, wi.bssid);
 			myData.add(myItem);
 
-			// String selectQuery = "SELECT * FROM APRecords WHERE mac = \"" +
-			// wi.bssid + "\" AND dbm BETWEEN " + (wi.dbm - 10) + " AND " +
-			// (wi.dbm + 10) + "";
-
-			String selectQuery = "SELECT * FROM APRecords WHERE mac = \"" + wi.bssid + "\" ORDER BY ABS(" + wi.dbm + "-dbm) ASC LIMIT 5";
+			String selectQuery = "SELECT * FROM APRecords WHERE mac = \"" + wi.bssid + "\" ORDER BY ABS(" + wi.dbm + "-dbm) ASC LIMIT 10";
 
 			Cursor cur = db.rawQuery(selectQuery, null);
 
@@ -109,56 +106,47 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 					}
 				} while (cur.moveToNext());
 			}
+
+			cur.close();
 		}
 
 
-		for (int i = 0; i < data.size(); i++) {
-			Log.d("ID", "" + data.keyAt(i));
-		}
 
-		int bestMatch = 99999;
-		int bestId = -1;
+
+		List<DatabaseTableItemPos> ret = new ArrayList<DatabaseTableItemPos>();
 
 		for (int i = 0; i < data.size(); i++) {
 			int key = data.keyAt(i);
 			List<DbItem> items = data.get(key);
 
 			int rating = ratePositions(myData, items);
-			if (rating < bestMatch) {
-				bestMatch = rating;
-				bestId = key;
+			if (rating < 99999) {
+				DatabaseTableItemPos posItem = getPosItem(key);
+				posItem.matchQuality = rating;
+				ret.add(posItem);
+
+				Log.d("RATING", key + " : " + rating);
 			}
 		}
 
+		// sort
+		Collections.sort(ret);
 
-		if (bestId == -1) {
-			bestId = data.keyAt(0);
-			//			throw new RuntimeException("no best id");
+		for (int i = 0; i < ret.size(); i++) {
+			Log.d("POSTSORT", i + " : " + ret.get(i).matchQuality);
 		}
 
+		// slice ret
+		List<DatabaseTableItemPos> retCut = new ArrayList<DatabaseTableItemPos>();
+		for (int i = 0; i < Math.min(2, ret.size()); i++)
+			retCut.add(ret.get(i));
 
-		Log.d("BEST ID", "" + bestId);
-
-		DatabaseTableItemPos ret = new DatabaseTableItemPos();
-
-
-		String selectQuery = "SELECT * FROM PosRecords WHERE id = \"" + bestId + "\" LIMIT 1";
-		Cursor cur = db.rawQuery(selectQuery, null);
-		if (cur.moveToFirst()) {
-			do {
-				ret.id = bestId;
-				ret.posx = Integer.parseInt(cur.getString(1));
-				ret.posy = Integer.parseInt(cur.getString(2));
-				ret.floor = Integer.parseInt(cur.getString(3));
-			} while (cur.moveToNext());
-		}
-
-
-		return ret;
+		return retCut;
 	}
 
 	protected int ratePositions(List<DbItem> my, List<DbItem> ref) {
 
+		boolean any = false;
 		int rate = 0;
 
 		for (DbItem me : my) {
@@ -174,13 +162,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 			// jestli neni tak ignorujeme
 			if (refItem == null)
-				continue;
+				//				continue;
+				return 99999;
+
+			// jestli je nektery ze signalu pod -90 ignorujeme
+			//if (refItem.dbm < -80 || me.dbm < -80)
+			//	continue;
 
 			int subRate = (int) Math.round(Math.pow((me.dbm - refItem.dbm), 2));
 			rate += subRate;
+			any = true;
 		}
 
-		return rate;
+		return any ? rate : 99999;
 	}
 
 
@@ -202,6 +196,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
 
+	private DatabaseTableItemPos getPosItem(int id) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		DatabaseTableItemPos item = new DatabaseTableItemPos();
+
+		String selectQuery = "SELECT * FROM PosRecords WHERE id = \"" + id + "\" LIMIT 1";
+		Cursor cur = db.rawQuery(selectQuery, null);
+		if (cur.moveToFirst()) {
+			do {
+				item.id = id;
+				item.posx = Integer.parseInt(cur.getString(1));
+				item.posy = Integer.parseInt(cur.getString(2));
+				item.floor = Integer.parseInt(cur.getString(3));
+			} while (cur.moveToNext());
+		}
+		cur.close();
+
+		return item;
+	}
+
+
+
 	public List<DatabaseTableItemPos> getSavedPositions() {
 		SQLiteDatabase db = this.getWritableDatabase();
 		List<DatabaseTableItemPos> items = new ArrayList<DatabaseTableItemPos>();
@@ -218,6 +233,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				items.add(item);
 			} while (cur.moveToNext());
 		}
+		cur.close();
 
 		return items;
 	}

@@ -18,7 +18,6 @@ import cz.davidsabata.at.postareg.immandbeta120803.locator.LocatorActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.Wifi;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService.GameServiceBinder;
-import cz.davidsabata.at.postareg.immandbeta120803.services.NetworkService;
 
 public class MainActivity extends Activity implements OnClickListener {
 
@@ -26,7 +25,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	protected GameService mGameService;
 
-	protected NetworkService mNetworkService;
 
 	protected final MainActivity self = this;
 

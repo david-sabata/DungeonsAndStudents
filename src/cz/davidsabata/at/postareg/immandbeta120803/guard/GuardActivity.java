@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.Activity;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
@@ -18,13 +19,14 @@ import android.widget.SeekBar;
 import cz.davidsabata.at.postareg.immandbeta120803.R;
 
 public class GuardActivity extends Activity implements OnTouchListener {
-	protected static final double MIN_ZOOM = 0.5f;
+	protected static final double MIN_ZOOM = 1f;
 	protected static final float MAX_ZOOM = 10f;
 
 	// map of floors
 	private final List<Integer> floorsId = new ArrayList<Integer>();
 	private final List<ImageView> crossesInMap = new ArrayList<ImageView>();
 	private ImageView activeFloor;
+	private int imgActiveFloor;
 
 	private MapCoordinatesWorker map;
 
@@ -42,6 +44,10 @@ public class GuardActivity extends Activity implements OnTouchListener {
 	private float mPosY = 0;
 	private int mActivePointerId;
 	private static final int INVALID_POINTER_ID = -1;
+
+	private float dx = 0;
+	private float dy = 0;
+
 
 
 	@Override
@@ -79,7 +85,7 @@ public class GuardActivity extends Activity implements OnTouchListener {
 				activeFloor.setImageMatrix(mtrx);
 				//update scale factor in mapper
 				map.setScaleFactor(scaleFactor);
-
+				panObjectsWithMap();
 				return true;
 			}
 
@@ -120,8 +126,8 @@ public class GuardActivity extends Activity implements OnTouchListener {
 
 			// Only move if the ScaleGestureDetector isn't processing a gesture.
 			if (!scaleDetector.isInProgress()) {
-				final float dx = x - lastX;
-				final float dy = y - lastY;
+				dx = x - lastX;
+				dy = y - lastY;
 
 				mPosX += dx;
 				mPosY += dy;
@@ -182,16 +188,27 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		return true;
 	}
 
+
+	/**
+	 * Actualize objects on map
+	 */
 	private void panObjectsWithMap() {
-		/*for (ImageView img : crossesInMap) {
+		for (ImageView img : crossesInMap) {
+			Log.i("Aktini patro:", Integer.toString(imgActiveFloor));
+			Log.i("Aktualni objekt na mape je v patre:", Integer.toString((Integer) img.getTag(R.id.imgFloorIndex)));
 
-			Matrix mtrxBegin = new Matrix();
-			mtrxBegin.set(mtrx);
-			mtrxBegin.postConcat(img.getImageMatrix());
-			img.setImageMatrix(mtrxBegin);
-		}*/
+			if (((Integer) img.getTag(R.id.imgFloorIndex)) == imgActiveFloor) {
+				Matrix tmpMatrix = new Matrix();
+				tmpMatrix.set(mtrx);
+				tmpMatrix.postTranslate((Float) (img.getTag(R.id.idWidth)) * scaleFactor, (Float) (img.getTag(R.id.idHeight)) * scaleFactor);
+				img.setImageMatrix(tmpMatrix);
+				img.setVisibility(View.VISIBLE);
+			} else {
+				img.setVisibility(View.INVISIBLE);
+			}
+
+		}
 	}
-
 
 	/**
 	 * 
@@ -224,12 +241,12 @@ public class GuardActivity extends Activity implements OnTouchListener {
 
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				// TODO Auto-generated method stub
-				int imgIndex = progress / 25;
-				activeFloor.setImageResource(floorsId.get(imgIndex));
+				imgActiveFloor = progress / 25;
+				activeFloor.setImageResource(floorsId.get(imgActiveFloor));
+				panObjectsWithMap();
 			}
 		});
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -245,10 +262,23 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		RealCoordinates coordReal = map.getRealFromRelativeCoord(Math.round(event.getX(0)), Math.round(event.getY(0)));
 
 		// example of adding image to RelativeFramework
-		crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY(), R.drawable.ic_launcher));
 
+		//crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY()));
+		//panObjectsWithMap();
 
+		crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY(), R.drawable.ic_launcher, imgActiveFloor));
+
+		//actualize object on map
+		panObjectsWithMap();
 		return false;
+	}
+
+	public void deleteObjectsOnMap() {
+		for (ImageView img : crossesInMap) {
+			RelativeLayout rel = (RelativeLayout) img.getParent();
+			rel.removeView(img);
+			crossesInMap.remove(img);
+		}
 	}
 
 

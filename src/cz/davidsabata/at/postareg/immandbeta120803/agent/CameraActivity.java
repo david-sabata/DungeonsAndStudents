@@ -1,6 +1,7 @@
 package cz.davidsabata.at.postareg.immandbeta120803.agent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -8,14 +9,19 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.SparseIntArray;
 import android.widget.Toast;
 
 import com.arlab.callbacks.ARmatcherImageCallBack;
 import com.arlab.imagerecognition.ARmatcher;
 
 import cz.davidsabata.at.postareg.immandbeta120803.R;
+import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
+import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
 
 public class CameraActivity extends Activity implements ARmatcherImageCallBack {
+
+	private static final String LOG_TAG = "AgentCameraActivity";
 
 	/** The matcher instance */
 	ARmatcher aRmatcher;
@@ -23,9 +29,12 @@ public class CameraActivity extends Activity implements ARmatcherImageCallBack {
 	int screenheight;
 	int screenwidth;
 
-	/** Array that holds added images id in the matching pool */
-	private final ArrayList<Integer> imageIdHolder = new ArrayList<Integer>();
-	private static final String TAG = "HELLO";
+
+	/**
+	 * Map of pool ids to res ids
+	 */
+	private final SparseIntArray imageIds = new SparseIntArray();
+
 
 
 	@Override
@@ -48,7 +57,6 @@ public class CameraActivity extends Activity implements ARmatcherImageCallBack {
 		/** Set image and QR matching callbacks */
 		aRmatcher.setImageRecognitionCallback(this);
 
-
 		/** Set the type of the matching. */
 		aRmatcher.setMatchingType(ARmatcher.IMAGE_MATCHER);
 
@@ -65,14 +73,30 @@ public class CameraActivity extends Activity implements ARmatcherImageCallBack {
 		aRmatcher.setImageQuality(0);
 
 
-		Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.achiev_shock);
-		int imagePool_Id = aRmatcher.addImage(bmp);
-		if (imagePool_Id != -1) {
-			imageIdHolder.add(imagePool_Id);
-			Log.i(TAG, "image added to the pool with id: " + imagePool_Id);
-		} else {
-			Log.i(TAG, "image not added to the pool");
-		}
+
+		/**
+		 * Load images on another thread
+		 */
+		new Thread(new Runnable() {
+			public void run() {
+				BaseMission mission = GameService.getInstance().getCurrentMission();
+				List<Integer> ress = new ArrayList<Integer>();
+				ress.add(mission.getImageResId());
+				ress.addAll(GameService.getAchievmentsResIds());
+
+				for (int resId : ress) {
+					Bitmap bmp = BitmapFactory.decodeResource(getResources(), resId);
+					int imagePool_Id = aRmatcher.addImage(bmp);
+					if (imagePool_Id != -1) {
+						imageIds.put(imagePool_Id, mission.getImageResId());
+					} else {
+						Log.w(LOG_TAG, getResources().getResourceName(resId) + " image not added to the pool");
+					}
+				}
+			}
+		}).start();
+
+
 	}
 
 
@@ -107,12 +131,14 @@ public class CameraActivity extends Activity implements ARmatcherImageCallBack {
 
 
 
-	public void onImageRecognitionResult(int res) {
-		if (res != -1) {
-			// Found images with certain id
-			Log.i("HELLO", "Image Recognized:" + res);
+	public void onImageRecognitionResult(int poolId) {
+		if (poolId != -1) {
+			int resId = imageIds.get(poolId);
 
-			String resourceName = getResources().getResourceName(res);
+			// Found images with certain id
+			String resourceName = getResources().getResourceName(resId);
+			Log.i("MATCH-" + poolId, "Image Recognized:" + resourceName);
+
 			Toast.makeText(getApplicationContext(), "Hit on " + resourceName, Toast.LENGTH_LONG).show();
 		} else {
 			// Nothing was found
