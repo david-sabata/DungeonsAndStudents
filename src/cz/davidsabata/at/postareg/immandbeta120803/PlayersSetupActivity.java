@@ -1,14 +1,8 @@
 package cz.davidsabata.at.postareg.immandbeta120803;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListAdapter;
@@ -59,25 +53,15 @@ public class PlayersSetupActivity extends Activity implements OnClickListener, G
 		// nacteni IP do textview
 		Thread t = new Thread(new Runnable() {
 			public void run() {
-				try {
-					for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
-						NetworkInterface intf = en.nextElement();
-						for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
-							InetAddress inetAddress = enumIpAddr.nextElement();
-							if (!inetAddress.isLoopbackAddress()) {
-								final String ip = inetAddress.getHostAddress().toString();
-								Runnable rnbl = new Runnable() {
-									public void run() {
-										TextView text = (TextView) activity.findViewById(R.id.ipValue);
-										text.setText(ip);
-									}
-								};
-								activity.runOnUiThread(rnbl);
-							}
+				final String ip = GameService.getInstance().getSelfIP();
+				if (ip != null) {
+					Runnable rnbl = new Runnable() {
+						public void run() {
+							TextView text = (TextView) activity.findViewById(R.id.ipValue);
+							text.setText(ip);
 						}
-					}
-				} catch (SocketException ex) {
-					Log.e(LOG_TAG, ex.toString());
+					};
+					activity.runOnUiThread(rnbl);
 				}
 			}
 		});

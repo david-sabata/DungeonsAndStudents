@@ -9,9 +9,9 @@
     <string name="guard">Guard test</string>
     <string name="title_activity_locator">LocatorActivity</string>
     <string name="title_activity_players_setup">Set up teams</string>
-    <string name="host_game">Host a new game</string>
-    <string name="connect_game">Connect to existing game</string>
-    <string name="run_game">Play!</string>
+    <string name="host_game">CREATE GAME</string>
+    <string name="connect_game">JOIN GAME</string>
+    <string name="run_game">PLAY!</string>
     <string name="title_activity_agent">AgentActivity</string>
     <string name="target">Your next target</string>
     <string name="map">Map</string>
@@ -35,8 +35,16 @@
 	<item type="id" name="idWidth"/>
 	<item type="id" name="idHeight"/>
 	<item type="id" name="imgFloorIndex"/>
-	<string name="exit">Exit</string>
+	<string name="exit">EXIT</string>
 	<string name="you">you</string>
+	<string name="achievments">ACHIEVMENTS</string>
+	<string name="yes">YES</string>
+	<string name="no">NO</string>
+	<string name="quit_confirm">Do you really want to stop playing this awesome game?</string>
+	<string name="abort_game_title">Game in progress</string>
+	<string name="abort_game_text">Do you really want to abort the current game?</string>
+	<string name="continue_game">RESUME GAME</string>
+	<string name="server_ip">Server IP</string>
     
 </resources>
 

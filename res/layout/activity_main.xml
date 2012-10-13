@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/main_background" >
-
+
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="fill_parent"
@@ -11,54 +11,84 @@
         android:layout_alignParentTop="true"
         android:scaleType="centerCrop"
         android:src="@drawable/bg_jamesbond" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingTop="60dp" >
 
-    <Button
-        android:id="@+id/wifi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="68dp"
-        android:text="@string/wifi_test" />
-
-    <Button
-        android:id="@+id/host_game"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/wifi"
-        android:layout_centerHorizontal="true"
-        android:text="@string/host_game" />
-
-    <Button
-        android:id="@+id/guard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/connect_game"
-        android:layout_centerHorizontal="true"
-        android:text="@string/guard" />
-
-    <Button
-        android:id="@+id/connect_game"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/host_game"
-        android:layout_centerHorizontal="true"
-        android:text="@string/connect_game" />
-
-    <Button
-        android:id="@+id/scanPositions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/guard"
-        android:layout_centerHorizontal="true"
-        android:text="Ukladani bodu" />
-
-    <Button
-        android:id="@+id/clearDb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/scanPositions"
-        android:layout_centerHorizontal="true"
-        android:text="Clear db" />
+        <Button
+            android:id="@+id/clearDb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="Clear db" />
+
+        <Button
+            android:id="@+id/scanPositions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/clearDb"
+            android:text="Ukladani bodu" />
+
+        <Button
+            android:id="@+id/btnContinue"
+            style="@style/ButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/button_black"
+            android:text="@string/continue_game" />
+
+        <Button
+            android:id="@+id/host_game"
+            style="@style/ButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnContinue"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/button_green"
+            android:text="@string/host_game" />
+
+        <Button
+            android:id="@+id/connect_game"
+            style="@style/ButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/host_game"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/button_green"
+            android:text="@string/connect_game" />
+
+        <Button
+            android:id="@+id/btnAchievments"
+            style="@style/ButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/connect_game"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/button_yellow"
+            android:text="@string/achievments" />
+
+        <Button
+            android:id="@+id/btnExit"
+            style="@style/ButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnAchievments"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/button_red"
+            android:text="@string/exit" />
+
+        <Button
+            android:id="@+id/wifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/scanPositions"
+            android:text="@string/wifi_test" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

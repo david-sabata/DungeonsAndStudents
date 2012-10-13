@@ -1,7 +1,11 @@
 package cz.davidsabata.at.postareg.immandbeta120803.services;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import android.app.Service;
@@ -127,14 +131,15 @@ public class GameService extends Service {
 		mGameInfo = new GameInfo();
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
-		mServerManager = new ServerManager();
-		mServerManager.StartServer(serverListener);
+		//		mServerManager = new ServerManager();
+		//		mServerManager.StartServer(serverListener);
 	}
 
 	/**
 	 * Connect to existing game
+	 * @param ip 
 	 */
-	public void connectToGame() {
+	public void connectToGame(String ip) {
 		if (isThereAGame())
 			throw new InvalidGameStateException("Please leave your current game first");
 
@@ -142,7 +147,7 @@ public class GameService extends Service {
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
 		mClientManager = new ClientManager();
-		mClientManager.Connect(clientListener, "147.229.178.92");
+		mClientManager.Connect(clientListener, ip);
 		mClientManager.Send(getLocalPlayer());
 	}
 
@@ -196,6 +201,13 @@ public class GameService extends Service {
 		} else {
 			throw new InvalidGameStateException("Cannot start the game in state " + mGameInfo.getState().toString());
 		}
+	}
+
+	/**
+	 * Zahodi aktualni hru
+	 */
+	public void quitGame() {
+		mGameInfo = null;
 	}
 
 	public BaseMission getCurrentMission() {
@@ -268,6 +280,24 @@ public class GameService extends Service {
 		wifiLogger.serializeToSDcardJson("DungeonsAndStudentsWifi.txt", true);
 	}
 
+	public String getSelfIP() {
+		try {
+			for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+				NetworkInterface intf = en.nextElement();
+				for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+					InetAddress inetAddress = enumIpAddr.nextElement();
+					if (!inetAddress.isLoopbackAddress()) {
+						return inetAddress.getHostAddress().toString();
+					}
+				}
+			}
+		} catch (SocketException ex) {
+			Log.e(LOG_TAG, ex.toString());
+		}
+
+		return null;
+	}
+
 	// ---------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------
 
@@ -332,6 +362,8 @@ public class GameService extends Service {
 
 		return mBinder;
 	}
+
+
 
 
 
