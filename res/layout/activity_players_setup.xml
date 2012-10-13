@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" >
         </ListView>
-
+
         <RelativeLayout
             android:id="@+id/RelativeLayout1"
             android:layout_width="match_parent"
@@ -47,22 +47,52 @@
 
             <Button
                 android:id="@+id/run"
+                style="@style/ButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="false"
                 android:layout_centerHorizontal="true"
+                android:background="@drawable/button_green"
                 android:text="@string/run_game" />
-
-            <Button
-                android:id="@+id/button1"
+
+            <TextView
+                android:id="@+id/ipTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentBottom="false"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:text="Button" />
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:text="IP:"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/ipValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_toRightOf="@+id/ipTitle"
+                android:text="..."
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/red" />
+
+            <Button
+                android:id="@+id/exit"
+                style="@style/ButtonText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="false"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="false"
+                android:layout_toLeftOf="@+id/run"
+                android:background="@drawable/button_red"
+                android:text="@string/exit" />
 
         </RelativeLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

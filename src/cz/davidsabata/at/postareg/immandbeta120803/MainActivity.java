@@ -43,17 +43,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		Log.d(LOG_TAG, "service is " + (GameService.getInstance() == null ? "null" : "not null"));
 
-		//		// start service
-		//		if (NetworkService.getInstance() == null) {
-		//			startService(new Intent(this, NetworkService.class));
-		//		}
-		//
-		//		// grab service
-		//		if (mNetworkService == null) {
-		//			Intent intent = new Intent(this, NetworkService.class);
-		//			getApplicationContext().bindService(intent, networkServiceConnection, Context.BIND_AUTO_CREATE);
-		//		}
-
 		// start service
 		if (GameService.getInstance() == null) {
 			startService(new Intent(this, GameService.class));
@@ -75,14 +64,23 @@ public class MainActivity extends Activity implements OnClickListener {
 		case R.id.host_game:
 			try {
 				mGameService.hostNewGame();
+				Intent hostGameIntent = new Intent(this, PlayersSetupActivity.class);
+				startActivity(hostGameIntent);
 			} catch (InvalidGameStateException e) {
 				Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 				return;
 			}
+			break;
 
 		case R.id.connect_game:
-			Intent hostGameIntent = new Intent(this, PlayersSetupActivity.class);
-			startActivity(hostGameIntent);
+			try {
+				mGameService.connectToGame();
+				Intent hostGameIntent = new Intent(this, PlayersSetupActivity.class);
+				startActivity(hostGameIntent);
+			} catch (InvalidGameStateException e) {
+				Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+				return;
+			}
 			break;
 
 
@@ -131,25 +129,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	};
 
-
-
-	//	private final ServiceConnection networkServiceConnection = new ServiceConnection() {
-	//
-	//		public void onServiceConnected(ComponentName className, IBinder service) {
-	//			if (service instanceof NetworkService) {
-	//				NetworkServiceBinder binder = (NetworkServiceBinder) service;
-	//				mNetworkService = binder.getService();
-	//				Log.d(LOG_TAG, "Network service connected");
-	//
-	//				mNetworkService.init(new Wifi(getSystemService(Context.WIFI_SERVICE)));
-	//			}
-	//		}
-	//
-	//		public void onServiceDisconnected(ComponentName arg0) {
-	//			mNetworkService = null;
-	//			Log.d(LOG_TAG, "Network service disconnected");
-	//		}
-	//	};
 
 
 

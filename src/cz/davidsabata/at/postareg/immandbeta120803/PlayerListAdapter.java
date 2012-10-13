@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
 
@@ -47,7 +48,14 @@ public class PlayerListAdapter extends BaseAdapter {
 
 		final Player p = data.get(position);
 
-		nickname.setText(p.nickname);
+		if (GameService.getInstance().getLocalPlayer().equals(p)) {
+			nickname.setText(R.string.you);
+			nickname.setText(p.nickname + " (" + nickname.getText() + ")");
+		} else {
+			nickname.setText(p.nickname);
+		}
+
+
 		icon.setImageResource(p.getRoleIcon());
 		icon.setTag(p.getRoleIcon());
 

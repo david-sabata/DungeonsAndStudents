@@ -51,6 +51,9 @@ public class GameInfo {
 	}
 
 
+	/**
+	 * Players getter
+	 */
 	public List<Player> getPlayers() {
 		return mPlayers;
 	}
@@ -94,7 +97,9 @@ public class GameInfo {
 	}
 
 
-
+	/**
+	 * Vyber mise, vola si jej vzdy sam agent pri zacatku hry
+	 */
 	public BaseMission pickMission() {
 		List<BaseMission> missions = GameService.getAllMissions();
 		Random r = new Random();
@@ -102,6 +107,9 @@ public class GameInfo {
 	}
 
 
+	/**
+	 * Getter pro aktualni misi
+	 */
 	public BaseMission getCurrentMisssion() {
 		return mCurrentMission;
 	}

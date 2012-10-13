@@ -1,5 +1,6 @@
 package cz.davidsabata.at.postareg.immandbeta120803.services;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
 import cz.davidsabata.at.postareg.immandbeta120803.R;
@@ -23,6 +23,7 @@ import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission667;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission668;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.ShockMission;
+import cz.davidsabata.at.postareg.immandbeta120803.network.ClientManager;
 import cz.davidsabata.at.postareg.immandbeta120803.network.ServerManager;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
@@ -95,6 +96,7 @@ public class GameService extends Service {
 
 	private GameInfo mGameInfo;
 	private ServerManager mServerManager;
+	private ClientManager mClientManager;
 
 
 	/**
@@ -115,37 +117,31 @@ public class GameService extends Service {
 	}
 
 	/**
-	 * Zalozit novou hru
+	 * Zalozit novou hru a pridat sebe jako hrace
 	 */
 	public void hostNewGame() {
-		//if (isThereAGame())
-		//	throw new InvalidGameStateException("Cannot start new game. Other game already in progress");
+		if (isThereAGame())
+			throw new InvalidGameStateException("Cannot start new game. Other game already in progress");
 
 		mGameInfo = new GameInfo();
+		mGameInfo.addPlayer(createSelfPlayer(true));
+
 		mServerManager = new ServerManager();
 		mServerManager.StartServer(serverListener);
+	}
 
-		Player p = new Player();
-		p.nickname = "SerialKiller" + Math.round(Math.random() * 1000);
-		p.macAddr = "BABA666";
-		mGameInfo.addPlayer(p);
+	/**
+	 * Connect to existing game
+	 */
+	public void connectToGame() {
+		if (isThereAGame())
+			throw new InvalidGameStateException("Please leave your current game first");
 
-		Player p2 = new Player();
-		p2.nickname = "Butcher" + Math.round(Math.random() * 1000);
-		p2.macAddr = "AAAA";
-		mGameInfo.addPlayer(p2);
+		mGameInfo = new GameInfo();
+		mGameInfo.addPlayer(createSelfPlayer(true));
 
-		Player p3 = new Player();
-		p3.nickname = "Sneaky" + Math.round(Math.random() * 1000);
-		p3.macAddr = "BBBB";
-		p3.role = Role.AGENT;
-		mGameInfo.addPlayer(p3);
-
-		Player p4 = new Player();
-		p4.nickname = "Jughead" + Math.round(Math.random() * 1000);
-		p4.macAddr = "CCCC";
-		p4.role = Role.GUARD;
-		mGameInfo.addPlayer(p4);
+		mClientManager = new ClientManager();
+		mClientManager.StartServer(clientListener);
 	}
 
 	/**
@@ -155,6 +151,31 @@ public class GameService extends Service {
 		return mGameInfo.getPlayers();
 	}
 
+	/**
+	 * Vytvori strukturu lokalniho hrace
+	 */
+	protected Player createSelfPlayer(boolean isHost) {
+		Player p = new Player();
+		p.role = Math.random() > 0.5 ? Role.AGENT : Role.GUARD;
+		p.macAddr = wifi.getSelfMacAddress();
+		p.nickname = Player.generateCoolNickname();
+		p.isHost = isHost;
+
+		return p;
+	}
+
+	/**
+	 * Ziska lokalniho hrace z pole vsech hracu anebo null pokud neni
+	 */
+	public Player getLocalPlayer() {
+		for (Player p : getPlayers()) {
+			if (p.macAddr.equals(wifi.getSelfMacAddress())) {
+				return p;
+			}
+		}
+
+		return null;
+	}
 
 	/**
 	 * Vraci resourceID chybove hlasky anebo -1 pokud je vse v poradku
@@ -178,7 +199,6 @@ public class GameService extends Service {
 	public BaseMission getCurrentMission() {
 		return mGameInfo.getCurrentMisssion();
 	}
-
 
 	/**
 	 * Vrati objekty vsech dostupnych misi
@@ -261,7 +281,16 @@ public class GameService extends Service {
 	}
 
 	Listener serverListener = new Listener() {
-		@Override
+		public void received(Connection connection, Object object) {
+			if (object instanceof Player) {
+
+			} else if (object instanceof GameInfo) {
+				//if (mListener != null) mListener.onGameChange()
+			}
+		};
+	};
+
+	Listener clientListener = new Listener() {
 		public void received(Connection connection, Object object) {
 			if (object instanceof Player) {
 
