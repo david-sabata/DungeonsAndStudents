@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
-import cz.davidsabata.at.postareg.immandbeta120803.agent.CameraActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidGameStateException;
 import cz.davidsabata.at.postareg.immandbeta120803.guard.GuardActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.LocatorActivity;
@@ -41,7 +40,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		findViewById(R.id.wifi).setOnClickListener(this);
 		findViewById(R.id.host_game).setOnClickListener(this);
 		findViewById(R.id.connect_game).setOnClickListener(this);
-		findViewById(R.id.agent).setOnClickListener(this);
+		findViewById(R.id.scanPositions).setOnClickListener(this);
 		findViewById(R.id.guard).setOnClickListener(this);
 		findViewById(R.id.clearDb).setOnClickListener(this);
 
@@ -90,8 +89,8 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 
 
-		case R.id.agent:
-			Intent agentIntent = new Intent(this, CameraActivity.class);
+		case R.id.scanPositions:
+			Intent agentIntent = new Intent(this, MapScanActivity.class);
 			startActivity(agentIntent);
 			break;
 

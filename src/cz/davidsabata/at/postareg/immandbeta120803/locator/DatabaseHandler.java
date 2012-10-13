@@ -132,7 +132,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
 		if (bestId == -1) {
-			throw new RuntimeException("no best id");
+			bestId = data.keyAt(0);
+			//			throw new RuntimeException("no best id");
 		}
 
 

@@ -1,5 +1,4 @@
-package cz.davidsabata.at.postareg.immandbeta120803.guard;
-
+package cz.davidsabata.at.postareg.immandbeta120803;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +14,13 @@ import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import cz.davidsabata.at.postareg.immandbeta120803.R;
+import android.widget.Toast;
+import cz.davidsabata.at.postareg.immandbeta120803.guard.MapCoordinatesWorker;
+import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseTableItemPos;
+import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
 
-public class GuardActivity extends Activity implements OnTouchListener {
+public class MapScanActivity extends Activity implements OnTouchListener {
+
 	protected static final double MIN_ZOOM = 0.5f;
 	protected static final float MAX_ZOOM = 10f;
 
@@ -43,6 +46,10 @@ public class GuardActivity extends Activity implements OnTouchListener {
 	private int mActivePointerId;
 	private static final int INVALID_POINTER_ID = -1;
 
+	private int mActiveFloorI = 0;
+
+	private ImageView selfIcon;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +65,7 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		//set seek bar to control floor
 		setSeekFloor();
 
-		map = new MapCoordinatesWorker(this, (RelativeLayout) findViewById(R.id.floorMap), R.drawable.ic_launcher, 720, 1000);
+		map = new MapCoordinatesWorker(this, (RelativeLayout) findViewById(R.id.floorMap), R.drawable.ic_launcher_red, 720, 1000);
 		// set on touch listener on ScaleDetector
 		activeFloor.setOnTouchListener(this);
 		scaleDetector = new ScaleGestureDetector(this, new OnScaleGestureListener() {
@@ -77,8 +84,6 @@ public class GuardActivity extends Activity implements OnTouchListener {
 				mtrx.postTranslate((-diffWidth / 2), (-diffHeight / 2));
 				mtrx.preScale(scaleFactor, scaleFactor);
 				activeFloor.setImageMatrix(mtrx);
-				//update scale factor in mapper
-				map.setScaleFactor(scaleFactor);
 
 				return true;
 			}
@@ -90,6 +95,13 @@ public class GuardActivity extends Activity implements OnTouchListener {
 			public void onScaleEnd(ScaleGestureDetector detector) { // TODO
 			}
 		});
+
+
+		// vytvorit ikony pro existujici mista
+		List<DatabaseTableItemPos> positions = GameService.getInstance().getSavedPositions();
+		for (DatabaseTableItemPos pos : positions) {
+			crossesInMap.add(map.addCrossToMap(pos.posx, pos.posy, R.drawable.ic_launcher));
+		}
 
 
 	}
@@ -137,13 +149,6 @@ public class GuardActivity extends Activity implements OnTouchListener {
 				mtrx.postTranslate((-diffWidth / 2), (-diffHeight / 2));
 				mtrx.preScale(scaleFactor, scaleFactor);
 				activeFloor.setImageMatrix(mtrx);
-
-				panObjectsWithMap();
-
-				//update scale factor in mapper
-				map.setScaleFactor(scaleFactor);
-				map.setPosX(mPosX);
-				map.setPosY(mPosY);
 				//activeFloor.invalidate();
 			}
 
@@ -182,16 +187,6 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		return true;
 	}
 
-	private void panObjectsWithMap() {
-		/*for (ImageView img : crossesInMap) {
-
-			Matrix mtrxBegin = new Matrix();
-			mtrxBegin.set(mtrx);
-			mtrxBegin.postConcat(img.getImageMatrix());
-			img.setImageMatrix(mtrxBegin);
-		}*/
-	}
-
 
 	/**
 	 * 
@@ -224,8 +219,8 @@ public class GuardActivity extends Activity implements OnTouchListener {
 
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				// TODO Auto-generated method stub
-				int imgIndex = progress / 25;
-				activeFloor.setImageResource(floorsId.get(imgIndex));
+				mActiveFloorI = progress / 25;
+				activeFloor.setImageResource(floorsId.get(mActiveFloorI));
 			}
 		});
 	}
@@ -239,17 +234,24 @@ public class GuardActivity extends Activity implements OnTouchListener {
 	 */
 
 	public boolean onTouch(View v, MotionEvent event) {
+		DatabaseTableItemPos pos;
 
-		//add cross to map on position 250px* 250px -> in original image
+		try {
+			pos = GameService.getInstance().getBestMatchingPos();
+		} catch (RuntimeException e) {
+			Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+			return true;
+		}
 
-		RealCoordinates coordReal = map.getRealFromRelativeCoord(Math.round(event.getX(0)), Math.round(event.getY(0)));
+		if (selfIcon != null) {
+			RelativeLayout rel = (RelativeLayout) findViewById(R.id.mapParent);
+			rel.removeView(selfIcon);
+		}
 
-		// example of adding image to RelativeFramework
-		crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY(), R.drawable.ic_launcher));
+		selfIcon = map.addCrossToMap(pos.posx, pos.posy, R.drawable.ic_launcher_red);
+
 
 
 		return false;
 	}
-
-
 }
