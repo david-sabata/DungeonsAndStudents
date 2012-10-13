@@ -8,12 +8,17 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidGameStateException;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseHandler;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseTableItemPos;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.Wifi;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.WifiLogger;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
+import cz.davidsabata.at.postareg.immandbeta120803.network.ServerManager;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
 
@@ -84,6 +89,7 @@ public class GameService extends Service {
 
 
 	private GameInfo mGameInfo;
+	private ServerManager mServerManager;
 
 
 	/**
@@ -111,6 +117,8 @@ public class GameService extends Service {
 		//	throw new InvalidGameStateException("Cannot start new game. Other game already in progress");
 
 		mGameInfo = new GameInfo();
+		mServerManager = new ServerManager();
+		mServerManager.StartServer(serverListener);
 
 		Player p = new Player();
 		p.nickname = "SerialKiller" + Math.round(Math.random() * 1000);
@@ -202,6 +210,28 @@ public class GameService extends Service {
 
 	// ---------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------
+
+
+	public interface GameStateListener {
+		public void onGameChange();
+	}
+
+	private GameStateListener mListener;
+
+	public void setGameStateListener(GameStateListener gsl) {
+		mListener = gsl;
+	}
+
+	Listener serverListener = new Listener() {
+		@Override
+		public void received(Connection connection, Object object) {
+			if (object instanceof Player) {
+
+			} else if (object instanceof GameInfo) {
+				//if (mListener != null) mListener.onGameChange()
+			}
+		};
+	};
 
 
 
