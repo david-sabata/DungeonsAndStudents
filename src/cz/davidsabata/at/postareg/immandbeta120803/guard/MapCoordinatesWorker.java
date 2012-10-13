@@ -77,9 +77,12 @@ public class MapCoordinatesWorker {
 		//vp.setMargins((int) (x * wpi - (widthCross / 2.0)), (int) (y * hpi - (heightCross / 2.0)), 0, 0);
 
 		Matrix mtrx = new Matrix();
-		mtrx.postTranslate((float) (x * wpi - (widthCross / 2.0)), (float) (y * hpi - (heightCross / 2.0)));
+		mtrx.postTranslate((float) (x * scaleFactor * wpi - (widthCross / 2.0)), (float) (y * scaleFactor * hpi - (heightCross / 2.0)));
 		imageView.setImageMatrix(mtrx);
 
+		//remember width
+		imageView.setTag(R.id.idWidth, (float) (x * scaleFactor * wpi - (widthCross / 2.0)));
+		imageView.setTag(R.id.idHeight, (float) (y * scaleFactor * hpi - (heightCross / 2.0)));
 		return imageView;
 
 	}
@@ -89,10 +92,11 @@ public class MapCoordinatesWorker {
 	 */
 	public RealCoordinates getRealFromRelativeCoord(float relX, float relY) {
 		RealCoordinates realCoord = new RealCoordinates();
-		realCoord.setX(relX / wpi);
-		realCoord.setY(relY / hpi);
+		realCoord.setX(relX / scaleFactor / wpi);
+		realCoord.setY(relY / scaleFactor / hpi);
 		return realCoord;
 	}
+
 
 	public void setScaleFactor(float scaleFactor2) {
 		scaleFactor = scaleFactor2;
