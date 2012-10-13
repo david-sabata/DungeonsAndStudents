@@ -46,5 +46,9 @@
     <string name="continue_game">RESUME GAME</string>
     <string name="server_ip">Server IP</string>
     <string name="title_activity_achievments">AchievmentsActivity</string>
+    <string name="achievment_done">Completed</string>
+    <string name="achievment001_title">Shocked!</string>
+    <string name="achievment_not_done">Not completed</string>
+    <string name="achievment002_title">Yo dawg, I heard you like me</string>
 
 </resources>

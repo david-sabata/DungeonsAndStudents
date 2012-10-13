@@ -2,6 +2,8 @@ package cz.davidsabata.at.postareg.immandbeta120803.network;
 
 import java.io.IOException;
 
+import android.util.Log;
+
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Listener;
 
@@ -18,6 +20,7 @@ public class ClientManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		Log.d("ClientManager", "Client connected?");
 		client.addListener(clientListener);
 	}
 

@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.esotericsoftware.kryonet.Listener;
 
 import cz.davidsabata.at.postareg.immandbeta120803.R;
+import cz.davidsabata.at.postareg.immandbeta120803.achievments.Achievment;
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidGameStateException;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseHandler;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseTableItemPos;
@@ -135,11 +136,11 @@ public class GameService extends Service {
 		mGameInfo = new GameInfo();
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
-		new Thread(new Runnable() {
-			public void run() {
-				mServerManager.StartServer(serverListener);
-			}
-		}).start();
+		//		new Thread(new Runnable() {
+		//			public void run() {
+		mServerManager.StartServer(serverListener);
+		//			}
+		//		}).start();
 	}
 
 	/**
@@ -153,12 +154,23 @@ public class GameService extends Service {
 		mGameInfo = new GameInfo();
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
-		new Thread(new Runnable() {
-			public void run() {
-				mClientManager.Connect(clientListener, ip);
-				mClientManager.Send(getLocalPlayer());
-			}
-		}).start();
+
+
+		Listener clientListener = new Listener() {
+			public void received(Connection connection, Object object) {
+				Log.d("clientListener", "incoming!");
+
+				if (object instanceof List<?>) {
+
+				} else if (object instanceof GameInfo) {
+					//if (mListener != null) mListener.onGameChange()
+				}
+			};
+		};
+
+		mClientManager.Connect(clientListener, ip);
+		mClientManager.Send(getLocalPlayer());
+
 	}
 
 	/**
@@ -243,7 +255,17 @@ public class GameService extends Service {
 	public static List<Integer> getAchievmentsResIds() {
 		List<Integer> l = new ArrayList<Integer>();
 
-		l.add(R.drawable.achiev_shock);
+		l.add(R.drawable.achiev_001_match);
+
+		return l;
+	}
+
+
+	public List<Achievment> getAllAchievments() {
+		List<Achievment> l = new ArrayList<Achievment>();
+
+		l.add(new Achievment(R.drawable.achiev_001, R.drawable.achiev_001_match, R.string.achievment001_title, false));
+		l.add(new Achievment(R.drawable.achiev_002, R.drawable.achiev_002_match, R.string.achievment002_title, false));
 
 		return l;
 	}
@@ -341,6 +363,8 @@ public class GameService extends Service {
 
 	Listener serverListener = new Listener() {
 		public void received(Connection connection, Object object) {
+			Log.d("serverListener", "incoming!");
+
 			if (object instanceof Player) {
 				Toast.makeText(getApplicationContext(), ((Player) object).toString(), Toast.LENGTH_LONG).show();
 
@@ -351,15 +375,17 @@ public class GameService extends Service {
 		};
 	};
 
-	Listener clientListener = new Listener() {
-		public void received(Connection connection, Object object) {
-			if (object instanceof List<?>) {
-
-			} else if (object instanceof GameInfo) {
-				//if (mListener != null) mListener.onGameChange()
-			}
-		};
-	};
+	//	Listener clientListener = new Listener() {
+	//		public void received(Connection connection, Object object) {
+	//			Log.d("clientListener", "incoming!");
+	//
+	//			if (object instanceof List<?>) {
+	//
+	//			} else if (object instanceof GameInfo) {
+	//				//if (mListener != null) mListener.onGameChange()
+	//			}
+	//		};
+	//	};
 
 
 
