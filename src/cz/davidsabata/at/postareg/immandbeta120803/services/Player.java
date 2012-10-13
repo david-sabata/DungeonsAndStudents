@@ -37,7 +37,7 @@ public class Player {
 	 */
 	public static String generateCoolNickname() {
 		Random r = new Random();
-		String[] preps = { "Weighty", "Sleepy", "Pink", "Mighty", "Mrs", "Saint", "Frightened" };
+		String[] preps = { "Wealthy", "Sleepy", "Pink", "Mighty", "Mrs", "Saint", "Frightened" };
 		String[] nicks = { "Jughead", "Bulldozer", "Sentinel", "SlimShady", "Bear", "Rocker", "Rimmer", "ChuckNorris", "BigBoy", "Wolowizard", "Sneaky", "Ironman", "Batguy" };
 		return preps[r.nextInt(preps.length)] + "_" + nicks[r.nextInt(nicks.length)] + "_" + Math.round(Math.random() * 1000);
 	}

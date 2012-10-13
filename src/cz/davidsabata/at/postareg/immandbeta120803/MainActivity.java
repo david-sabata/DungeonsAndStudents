@@ -65,14 +65,23 @@ public class MainActivity extends Activity implements OnClickListener {
 		case R.id.host_game:
 			try {
 				mGameService.hostNewGame();
+				Intent hostGameIntent = new Intent(this, PlayersSetupActivity.class);
+				startActivity(hostGameIntent);
 			} catch (InvalidGameStateException e) {
 				Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 				return;
 			}
+			break;
 
 		case R.id.connect_game:
-			Intent hostGameIntent = new Intent(this, PlayersSetupActivity.class);
-			startActivity(hostGameIntent);
+			try {
+				mGameService.connectToGame();
+				Intent hostGameIntent = new Intent(this, PlayersSetupActivity.class);
+				startActivity(hostGameIntent);
+			} catch (InvalidGameStateException e) {
+				Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+				return;
+			}
 			break;
 
 
@@ -119,6 +128,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			Log.d(LOG_TAG, "Game service disconnected");
 		}
 	};
+
 
 
 

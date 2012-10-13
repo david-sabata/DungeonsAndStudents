@@ -23,6 +23,7 @@ import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission667;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission668;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.ShockMission;
+import cz.davidsabata.at.postareg.immandbeta120803.network.ClientManager;
 import cz.davidsabata.at.postareg.immandbeta120803.network.ServerManager;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
@@ -95,6 +96,7 @@ public class GameService extends Service {
 
 	private GameInfo mGameInfo;
 	private ServerManager mServerManager;
+	private ClientManager mClientManager;
 
 
 	/**
@@ -126,6 +128,20 @@ public class GameService extends Service {
 
 		mServerManager = new ServerManager();
 		mServerManager.StartServer(serverListener);
+	}
+
+	/**
+	 * Connect to existing game
+	 */
+	public void connectToGame() {
+		if (isThereAGame())
+			throw new InvalidGameStateException("Please leave your current game first");
+
+		mGameInfo = new GameInfo();
+		mGameInfo.addPlayer(createSelfPlayer(true));
+
+		mClientManager = new ClientManager();
+		mClientManager.StartServer(clientListener);
 	}
 
 	/**
@@ -261,6 +277,16 @@ public class GameService extends Service {
 	}
 
 	Listener serverListener = new Listener() {
+		public void received(Connection connection, Object object) {
+			if (object instanceof Player) {
+
+			} else if (object instanceof GameInfo) {
+				//if (mListener != null) mListener.onGameChange()
+			}
+		};
+	};
+
+	Listener clientListener = new Listener() {
 		public void received(Connection connection, Object object) {
 			if (object instanceof Player) {
 
