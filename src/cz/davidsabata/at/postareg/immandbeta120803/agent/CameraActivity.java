@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Menu;
 import android.widget.Toast;
 
 import com.arlab.callbacks.ARmatcherImageCallBack;
@@ -106,13 +105,6 @@ public class CameraActivity extends Activity implements ARmatcherImageCallBack {
 
 
 
-
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_main, menu);
-		return true;
-	}
 
 
 	public void onImageRecognitionResult(int res) {
