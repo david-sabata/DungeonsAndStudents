@@ -42,7 +42,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" >
+        android:layout_alignParentLeft="true"
+        android:paddingBottom="5dp" >
 
         <Button
             android:id="@+id/btnMap"
@@ -51,14 +52,6 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:text="@string/map" />
-
-        <Button
-            android:id="@+id/btnSurrender"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:text="@string/surrender" />
 
         <Button
             android:id="@+id/btnCamera"
@@ -75,6 +68,18 @@
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/btnCamera"
             android:text="@string/briefing" />
+
+        <ImageButton
+            android:id="@+id/btnSurrender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/button_red"
+            android:scaleType="center"
+            android:src="@drawable/btn_flag" />
+
     </RelativeLayout>
 
 </RelativeLayout>

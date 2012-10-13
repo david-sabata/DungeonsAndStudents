@@ -36,6 +36,12 @@ public class AgentActivity extends Activity {
 		btnOpenPopup.setOnClickListener(new Button.OnClickListener() {
 
 			public void onClick(View arg0) {
+				if (briefPopup != null && briefPopup.isShowing()) {
+					briefPopup.dismiss();
+					briefPopup = null;
+					return;
+				}
+
 				LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
 				View popupView = layoutInflater.inflate(R.layout.popup_briefing, null);
 				briefPopup = new PopupWindow(popupView, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
