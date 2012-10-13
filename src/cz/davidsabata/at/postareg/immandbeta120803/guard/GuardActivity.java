@@ -45,10 +45,10 @@ public class GuardActivity extends Activity implements OnTouchListener {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_guard);
-
-
 
 		// set floors control (seek bar)
 		getHandlersToImages();
@@ -66,34 +66,32 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		// set on touch
 		activeFloor.setOnTouchListener(this);
 
-		/*
-		 * SCALING DETECTOR
-		 */
+
 
 		scaleDetector = new ScaleGestureDetector(this, new OnScaleGestureListener() {
 			public boolean onScale(ScaleGestureDetector detector) {
-				// Auto-generated method stub
+
 				scaleFactor *= (scaleDetector.getScaleFactor());
 				scaleFactor = (float) Math.max(MIN_ZOOM, Math.min(scaleFactor, MAX_ZOOM));
 
-				// getScalePoints scalePointX = scaleDetector.getFocusX();
+				scalePointX = scaleDetector.getFocusX();
 				scalePointY = scaleDetector.getFocusY();
 
-				// Log.i("ScalePointX", Float.toString(scalePointX)); //
-				Log.i("lastFloorWidth", Float.toString(lastFloorWidth));
+				Log.d("XY", "[" + scalePointX + " : " + scalePointY + "]");
 
-				mtrx.reset();
+
 				float diffWidth = (activeFloor.getWidth() * scaleFactor) - activeFloor.getWidth();
 				float diffHeight = (activeFloor.getHeight() * scaleFactor) - activeFloor.getHeight();
-				Log.i("diffWidth", Float.toString(diffWidth));
-				Log.i("diffHeight", Float.toString(diffHeight));
 
-				mtrx.postTranslate(diffWidth, diffHeight);
+				float trX = (activeFloor.getWidth() / 2) - scalePointX;
+				float trY = (activeFloor.getHeight() / 2) - scalePointY;
+
+
+				//				mtrx.reset();
 				mtrx.postScale(scaleFactor, scaleFactor);
+				mtrx.postTranslate((-diffWidth / 2) - trX, (-diffHeight / 2) - trY);
 
 				activeFloor.setImageMatrix(mtrx);
-				// sactiveFloor.invalidate(); //
-				Log.i("ScaleFactor", Float.toString(scaleFactor));
 				return true;
 			}
 
@@ -106,6 +104,8 @@ public class GuardActivity extends Activity implements OnTouchListener {
 
 			}
 		});
+
+
 	}
 
 
