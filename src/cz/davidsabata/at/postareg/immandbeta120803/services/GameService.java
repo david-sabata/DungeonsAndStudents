@@ -196,7 +196,7 @@ public class GameService extends Service {
 		db.clearDatabase();
 	}
 
-	public DatabaseTableItemPos getBestMatchingPos() {
+	public List<DatabaseTableItemPos> getBestMatchingPos() {
 		return db.getBestMatchingPos(wifi.getDetectedNetworks());
 	}
 

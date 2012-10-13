@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
@@ -49,7 +50,10 @@ public class MapActivity extends Activity implements OnTouchListener {
 
 	private int mActiveFloorI = 0;
 
-	private ImageView selfIcon;
+	private List<ImageView> selfIcons;
+
+	private final Handler handler = new Handler();
+	private boolean stopService = false;
 
 
 	@Override
@@ -105,7 +109,28 @@ public class MapActivity extends Activity implements OnTouchListener {
 		}
 
 
+		stopService = false;
+		handler.post(timedTask);
 	}
+
+
+	@Override
+	protected void onStop() {
+		stopService = true;
+		super.onStop();
+	}
+
+
+	private final Runnable timedTask = new Runnable() {
+		public void run() {
+			updateIcons();
+
+			if (!stopService)
+				handler.postDelayed(timedTask, 500);
+		}
+	};
+
+
 
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) { // Let the
@@ -235,26 +260,39 @@ public class MapActivity extends Activity implements OnTouchListener {
 	 */
 
 	public boolean onTouch(View v, MotionEvent event) {
-		DatabaseTableItemPos pos;
-
-		try {
-			pos = GameService.getInstance().getBestMatchingPos();
-		} catch (RuntimeException e) {
-			Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-			return true;
-		}
-
-		Toast.makeText(getApplicationContext(), "Match quality: " + pos.matchQuality, Toast.LENGTH_SHORT).show();
-
-		if (selfIcon != null) {
-			RelativeLayout rel = (RelativeLayout) selfIcon.getParent();
-			rel.removeView(selfIcon);
-		}
-
-		selfIcon = map.addCrossToMap(pos.posx, pos.posy, R.drawable.ic_launcher_red);
-
-
+		updateIcons();
 
 		return false;
+	}
+
+
+	private void updateIcons() {
+		List<DatabaseTableItemPos> positions;
+
+		try {
+			positions = GameService.getInstance().getBestMatchingPos();
+		} catch (RuntimeException e) {
+			Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+			return;
+		}
+
+		//		Toast.makeText(getApplicationContext(), "Match quality: " + pos.matchQuality, Toast.LENGTH_SHORT).show();
+
+		if (selfIcons == null)
+			selfIcons = new ArrayList<ImageView>();
+
+		if (selfIcons.size() > 0) {
+			for (int i = 0; i < selfIcons.size(); i++) {
+				RelativeLayout rel = (RelativeLayout) selfIcons.get(i).getParent();
+				rel.removeView(selfIcons.get(i));
+			}
+			selfIcons.clear();
+		}
+
+		for (DatabaseTableItemPos pos : positions) {
+			ImageView im = map.addCrossToMap(pos.posx, pos.posy, R.drawable.ic_launcher_red);
+			selfIcons.add(im);
+		}
 	}
 }
