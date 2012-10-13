@@ -79,18 +79,6 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/red"
                 android:textSize="20dp" />
-
-            <Button
-                android:id="@+id/exit"
-                style="@style/ButtonText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="false"
-                android:layout_centerHorizontal="true"
-                android:layout_centerInParent="false"
-                android:layout_toLeftOf="@+id/run"
-                android:background="@drawable/button_red"
-                android:text="@string/exit" />
 
         </RelativeLayout>
 

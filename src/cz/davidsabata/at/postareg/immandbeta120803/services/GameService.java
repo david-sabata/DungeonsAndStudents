@@ -1,5 +1,6 @@
 package cz.davidsabata.at.postareg.immandbeta120803.services;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -101,7 +102,7 @@ public class GameService extends Service {
 
 	private GameInfo mGameInfo;
 	private ServerManager mServerManager;
-	private ClientManager mClientManager;
+	private final ClientManager mClientManager = new ClientManager();
 
 
 	/**
@@ -139,16 +140,19 @@ public class GameService extends Service {
 	 * Connect to existing game
 	 * @param ip 
 	 */
-	public void connectToGame(String ip) {
+	public void connectToGame(final String ip) {
 		if (isThereAGame())
 			throw new InvalidGameStateException("Please leave your current game first");
 
 		mGameInfo = new GameInfo();
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
-		mClientManager = new ClientManager();
-		mClientManager.Connect(clientListener, ip);
-		mClientManager.Send(getLocalPlayer());
+		new Thread(new Runnable() {
+			public void run() {
+				mClientManager.Connect(clientListener, ip);
+				mClientManager.Send(getLocalPlayer());
+			}
+		}).start();
 	}
 
 	/**
@@ -280,21 +284,38 @@ public class GameService extends Service {
 		wifiLogger.serializeToSDcardJson("DungeonsAndStudentsWifi.txt", true);
 	}
 
-	public String getSelfIP() {
+	//	public String getSelfIP() {
+	//		try {
+	//			for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+	//				NetworkInterface intf = en.nextElement();
+	//				for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+	//					InetAddress inetAddress = enumIpAddr.nextElement();
+	//					if (!inetAddress.isLoopbackAddress()) {
+	//						return inetAddress.getHostAddress().toString();
+	//					}
+	//				}
+	//			}
+	//		} catch (SocketException ex) {
+	//			Log.e(LOG_TAG, ex.toString());
+	//		}
+	//
+	//		return null;
+	//	}
+
+	public static String getSelfIP() {
 		try {
 			for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
 				NetworkInterface intf = en.nextElement();
 				for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
 					InetAddress inetAddress = enumIpAddr.nextElement();
-					if (!inetAddress.isLoopbackAddress()) {
-						return inetAddress.getHostAddress().toString();
+					if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+						return inetAddress.getHostAddress();
 					}
 				}
 			}
 		} catch (SocketException ex) {
-			Log.e(LOG_TAG, ex.toString());
+			ex.printStackTrace();
 		}
-
 		return null;
 	}
 

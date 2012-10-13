@@ -11,15 +11,13 @@ public class ClientManager {
 	public static final int TIMEOUT = 5000;
 	Client client = null;
 
-	public void Connect(Listener clientListener, String serverIP) {
+	public void Connect(final Listener clientListener, final String serverIP) {
 		client = new Client();
 		try {
 			client.connect(TIMEOUT, serverIP, SERVER_PORT);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		client.addListener(clientListener);
 	}
 
