@@ -26,7 +26,8 @@
         <activity
             android:name="MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="sensorPortait">
+            android:screenOrientation="sensorPortait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,30 +37,44 @@
         <activity
             android:name=".locator.LocatorActivity"
             android:label="@string/title_activity_locator"
-            android:theme="@android:style/Theme.Light.NoTitleBar" android:screenOrientation="sensorPortait">
+            android:screenOrientation="sensorPortait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
-        <activity android:name=".guard.GuardActivity" android:screenOrientation="sensorPortait">
+        <activity
+            android:name=".guard.GuardActivity"
+            android:screenOrientation="sensorPortait" >
         </activity>
-        <activity android:name=".agent.CameraActivity" android:screenOrientation="sensorPortait"></activity>
+        <activity
+            android:name=".agent.CameraActivity"
+            android:screenOrientation="sensorPortait" >
+        </activity>
 
         <service android:name=".services.GameService" >
         </service>
 
         <activity
             android:name=".PlayersSetupActivity"
-            android:theme="@style/AppTheme" android:screenOrientation="sensorPortait">
+            android:screenOrientation="sensorPortait"
+            android:theme="@style/AppTheme" >
         </activity>
         <activity
             android:name=".MapScanActivity"
-            android:theme="@style/AppTheme" android:screenOrientation="sensorPortait">
+            android:screenOrientation="sensorPortait"
+            android:theme="@style/AppTheme" >
         </activity>
         <activity
             android:name=".agent.AgentActivity"
-            android:theme="@style/AppTheme" android:screenOrientation="sensorPortait">
+            android:screenOrientation="sensorPortait"
+            android:theme="@style/AppTheme" >
         </activity>
         <activity
             android:name=".agent.MapActivity"
-            android:label="@string/title_activity_map" android:theme="@style/AppTheme" android:screenOrientation="sensorPortait">
+            android:label="@string/title_activity_map"
+            android:screenOrientation="sensorPortait"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name=".achievments.AchievmentsActivity" android:screenOrientation="sensorPortait" android:theme="@style/AppTheme">
         </activity>
     </application>
 
