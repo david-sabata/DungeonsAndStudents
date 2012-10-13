@@ -38,6 +38,12 @@
 	<string name="exit">EXIT</string>
 	<string name="you">you</string>
 	<string name="achievments">ACHIEVMENTS</string>
+	<string name="yes">YES</string>
+	<string name="no">NO</string>
+	<string name="quit_confirm">Do you really want to stop playing this awesome game?</string>
+	<string name="abort_game_title">Game in progress</string>
+	<string name="abort_game_text">Do you really want to abort the current game?</string>
+	<string name="continue_game">RESUME GAME</string>
     
 </resources>
 

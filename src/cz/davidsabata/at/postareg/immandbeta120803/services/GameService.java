@@ -126,8 +126,8 @@ public class GameService extends Service {
 		mGameInfo = new GameInfo();
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
-		mServerManager = new ServerManager();
-		mServerManager.StartServer(serverListener);
+		//		mServerManager = new ServerManager();
+		//		mServerManager.StartServer(serverListener);
 	}
 
 	/**
@@ -140,8 +140,8 @@ public class GameService extends Service {
 		mGameInfo = new GameInfo();
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
-		mClientManager = new ClientManager();
-		mClientManager.StartServer(clientListener);
+		//		mClientManager = new ClientManager();
+		//		mClientManager.StartServer(clientListener);
 	}
 
 	/**
@@ -194,6 +194,13 @@ public class GameService extends Service {
 		} else {
 			throw new InvalidGameStateException("Cannot start the game in state " + mGameInfo.getState().toString());
 		}
+	}
+
+	/**
+	 * Zahodi aktualni hru
+	 */
+	public void quitGame() {
+		mGameInfo = null;
 	}
 
 	public BaseMission getCurrentMission() {
@@ -328,6 +335,8 @@ public class GameService extends Service {
 
 		return mBinder;
 	}
+
+
 
 
 

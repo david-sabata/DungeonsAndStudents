@@ -2,21 +2,27 @@ package cz.davidsabata.at.postareg.immandbeta120803;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
+import cz.davidsabata.at.postareg.immandbeta120803.agent.AgentActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidGameStateException;
 import cz.davidsabata.at.postareg.immandbeta120803.guard.GuardActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.Wifi;
+import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService.GameServiceBinder;
+import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
 
 public class MainActivity extends Activity implements OnClickListener {
 
@@ -24,8 +30,14 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	protected GameService mGameService;
 
-
 	protected final MainActivity self = this;
+
+	protected AlertDialog mQuitDialog;
+	protected AlertDialog mAbortGameDialog;
+
+	protected enum start {
+		HOST, JOIN
+	};
 
 
 	@Override
@@ -38,8 +50,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		findViewById(R.id.host_game).setOnClickListener(this);
 		findViewById(R.id.connect_game).setOnClickListener(this);
 		findViewById(R.id.scanPositions).setOnClickListener(this);
-		findViewById(R.id.guard).setOnClickListener(this);
 		findViewById(R.id.clearDb).setOnClickListener(this);
+		findViewById(R.id.btnExit).setOnClickListener(this);
+		findViewById(R.id.btnContinue).setOnClickListener(this);
 
 		Log.d(LOG_TAG, "service is " + (GameService.getInstance() == null ? "null" : "not null"));
 
@@ -60,12 +73,78 @@ public class MainActivity extends Activity implements OnClickListener {
 
 
 
-
 	@Override
 	protected void onResume() {
 		super.onResume();
 
 		// zobrazit/skryt tlacitka podle toho jestli je aktivni nejaka hra
+		if (mGameService != null) {
+			if (mGameService.isThereAGame()) {
+				findViewById(R.id.btnContinue).setBackgroundResource(R.drawable.button_green);
+				findViewById(R.id.connect_game).setBackgroundResource(R.drawable.button_black);
+				findViewById(R.id.host_game).setBackgroundResource(R.drawable.button_black);
+			} else
+				findViewById(R.id.btnContinue).setBackgroundResource(R.drawable.button_black);
+		}
+	}
+
+
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		//Handle the back button
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			showQuitDialog();
+			return true;
+		} else {
+			return super.onKeyDown(keyCode, event);
+		}
+	}
+
+
+	public void showQuitDialog() {
+		mQuitDialog = new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle(R.string.exit).setMessage(R.string.quit_confirm)
+				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						stopService(new Intent(self, GameService.class));
+						self.finish();
+					}
+				}).setNegativeButton(R.string.no, null).show();
+	}
+
+
+	public void showAbortGameDialog(final start s) {
+		mAbortGameDialog = new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle(R.string.abort_game_title).setMessage(R.string.abort_game_text)
+				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						if (s == start.HOST) {
+							mGameService.quitGame();
+							mGameService.hostNewGame();
+							Intent hostGameIntent = new Intent(self, PlayersSetupActivity.class);
+							startActivity(hostGameIntent);
+						} else {
+							mGameService.quitGame();
+							mGameService.connectToGame();
+							Intent connectGameIntent = new Intent(self, PlayersSetupActivity.class);
+							startActivity(connectGameIntent);
+						}
+					}
+				}).setNegativeButton(R.string.no, null).show();
+	}
+
+
+	@Override
+	protected void onStop() {
+		if (mQuitDialog != null && mQuitDialog.isShowing()) {
+			mQuitDialog.dismiss();
+			mQuitDialog = null;
+		}
+		if (mAbortGameDialog != null && mAbortGameDialog.isShowing()) {
+			mAbortGameDialog.dismiss();
+			mAbortGameDialog = null;
+		}
+
+		super.onStop();
 	}
 
 
@@ -80,7 +159,8 @@ public class MainActivity extends Activity implements OnClickListener {
 				Intent hostGameIntent = new Intent(this, PlayersSetupActivity.class);
 				startActivity(hostGameIntent);
 			} catch (InvalidGameStateException e) {
-				Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+				//Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+				showAbortGameDialog(start.HOST);
 				return;
 			}
 			break;
@@ -91,20 +171,33 @@ public class MainActivity extends Activity implements OnClickListener {
 				Intent hostGameIntent = new Intent(this, PlayersSetupActivity.class);
 				startActivity(hostGameIntent);
 			} catch (InvalidGameStateException e) {
-				Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+				//Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+				showAbortGameDialog(start.JOIN);
 				return;
 			}
 			break;
 
+		case R.id.btnExit:
+			showQuitDialog();
+			break;
+
+		case R.id.btnContinue:
+			if (mGameService.isThereAGame()) {
+				if (mGameService.getGameState() == State.WAITING_FOR_CONNECTION) {
+					startActivity(new Intent(this, PlayersSetupActivity.class));
+				} else if (mGameService.getGameState() == State.CHASING) {
+					if (mGameService.getLocalPlayer() != null && mGameService.getLocalPlayer().role == Role.AGENT) {
+						startActivity(new Intent(this, AgentActivity.class));
+					} else {
+						startActivity(new Intent(this, GuardActivity.class));
+					}
+				}
+			}
+			break;
 
 		case R.id.scanPositions:
 			Intent agentIntent = new Intent(this, MapScanActivity.class);
 			startActivity(agentIntent);
-			break;
-
-		case R.id.guard:
-			Intent guardIntent = new Intent(this, GuardActivity.class);
-			startActivity(guardIntent);
 			break;
 
 		case R.id.wifi:
@@ -119,8 +212,6 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 		}
 	}
-
-
 
 	// pripojovadlo do service
 	private final ServiceConnection modelServiceConnection = new ServiceConnection() {
