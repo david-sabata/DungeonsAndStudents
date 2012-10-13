@@ -12,7 +12,7 @@ import com.esotericsoftware.kryonet.Server;
 
 public class ServerManager {
 
-	public static final int SERVER_PORT = 25436;
+	public static final int SERVER_PORT = 25437;
 
 	Server server;
 
@@ -78,5 +78,9 @@ public class ServerManager {
 
 	public void Unicast() {
 		//server.se
+	}
+
+	public void Close() {
+		server.close();
 	}
 }

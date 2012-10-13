@@ -266,7 +266,7 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		//crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY()));
 		//panObjectsWithMap();
 
-		crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY(), R.drawable.ic_launcher, imgActiveFloor));
+		crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY(), R.drawable.point, imgActiveFloor));
 
 		//actualize object on map
 		panObjectsWithMap();
