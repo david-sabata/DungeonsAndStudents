@@ -26,5 +26,9 @@
     <string name="mission666_briefing">Evil is lurking around!\nKeep your eyes wide open, this may be your only chance to win the contest. Do NOT fall asleep!\n\nGo find some energy SHOCK ASAP.</string>
     <string name="close">Close</string>
     <string name="title_activity_map">MapActivity</string>
+    <string name="mission667_title">H2O</string>
+    <string name="mission667_briefing">Saguaro water</string>
+    <string name="mission668_title">Tom and Jerry</string>
+    <string name="mission668_briefing">Lenovo mouse</string>
 
 </resources>
