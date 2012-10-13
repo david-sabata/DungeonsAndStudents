@@ -30,6 +30,7 @@ public class MapActivity extends Activity implements OnTouchListener {
 	private final List<Integer> floorsId = new ArrayList<Integer>();
 	private final List<ImageView> crossesInMap = new ArrayList<ImageView>();
 	private ImageView activeFloor;
+	private int imgActiveFloor;
 
 	private MapCoordinatesWorker map;
 
@@ -45,10 +46,12 @@ public class MapActivity extends Activity implements OnTouchListener {
 	private float lastY;
 	private float mPosX = 0;
 	private float mPosY = 0;
+	private float dx = 0;
+	private float dy = 0;
 	private int mActivePointerId;
 	private static final int INVALID_POINTER_ID = -1;
 
-	private int mActiveFloorI = 0;
+	private final int mActiveFloorI = 0;
 
 	private List<ImageView> selfIcons;
 
@@ -70,7 +73,7 @@ public class MapActivity extends Activity implements OnTouchListener {
 		//set seek bar to control floor
 		setSeekFloor();
 
-		map = new MapCoordinatesWorker(this, (RelativeLayout) findViewById(R.id.floorMap), R.drawable.ic_launcher_red, 720, 1000);
+		map = new MapCoordinatesWorker(this, (RelativeLayout) findViewById(R.id.floorMap), R.drawable.point, 720, 1000);
 		// set on touch listener on ScaleDetector
 		activeFloor.setOnTouchListener(this);
 		scaleDetector = new ScaleGestureDetector(this, new OnScaleGestureListener() {
@@ -89,7 +92,11 @@ public class MapActivity extends Activity implements OnTouchListener {
 				mtrx.postTranslate((-diffWidth / 2), (-diffHeight / 2));
 				mtrx.preScale(scaleFactor, scaleFactor);
 				activeFloor.setImageMatrix(mtrx);
-
+				//update scale factor in mapper
+				map.setScaleFactor(scaleFactor);
+				map.setPosX(mPosX);
+				map.setPosY(mPosY);
+				panObjectsWithMap();
 				return true;
 			}
 
@@ -158,8 +165,8 @@ public class MapActivity extends Activity implements OnTouchListener {
 
 			// Only move if the ScaleGestureDetector isn't processing a gesture.
 			if (!scaleDetector.isInProgress()) {
-				final float dx = x - lastX;
-				final float dy = y - lastY;
+				dx = x - lastX;
+				dy = y - lastY;
 
 				mPosX += dx;
 				mPosY += dy;
@@ -175,11 +182,15 @@ public class MapActivity extends Activity implements OnTouchListener {
 				mtrx.postTranslate((-diffWidth / 2), (-diffHeight / 2));
 				mtrx.preScale(scaleFactor, scaleFactor);
 				activeFloor.setImageMatrix(mtrx);
+
+				panObjectsWithMap();
+
+				//update scale factor in mapper
+				map.setScaleFactor(scaleFactor);
+				map.setPosX(mPosX);
+				map.setPosY(mPosY);
 				//activeFloor.invalidate();
 			}
-
-
-
 			lastX = x;
 			lastY = y;
 			break;
@@ -213,6 +224,35 @@ public class MapActivity extends Activity implements OnTouchListener {
 		return true;
 	}
 
+	/**
+	 * Actualize objects on map
+	 */
+	private void panObjectsWithMap() {
+		for (ImageView img : selfIcons) {
+			if (((Integer) img.getTag(R.id.imgFloorIndex)) == imgActiveFloor) {
+				Matrix tmpMatrix = new Matrix();
+				tmpMatrix.set(mtrx);
+				tmpMatrix.postTranslate((Float) (img.getTag(R.id.idWidth)), (Float) (img.getTag(R.id.idHeight)));
+				img.setImageMatrix(tmpMatrix);
+				img.setVisibility(View.VISIBLE);
+			} else {
+				img.setVisibility(View.INVISIBLE);
+			}
+		}
+
+		for (ImageView img : crossesInMap) {
+			if (((Integer) img.getTag(R.id.imgFloorIndex)) == imgActiveFloor) {
+				Matrix tmpMatrix = new Matrix();
+				tmpMatrix.set(mtrx);
+				tmpMatrix.postTranslate((Float) (img.getTag(R.id.idWidth)) * scaleFactor, (Float) (img.getTag(R.id.idHeight)) * scaleFactor);
+				img.setImageMatrix(tmpMatrix);
+				img.setVisibility(View.VISIBLE);
+			} else {
+				img.setVisibility(View.INVISIBLE);
+			}
+		}
+	}
+
 
 	/**
 	 * 
@@ -234,19 +274,16 @@ public class MapActivity extends Activity implements OnTouchListener {
 		// set listener on change
 		seekFloors.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-
 			}
 
 			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-
 			}
 
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-				// TODO Auto-generated method stub
-				mActiveFloorI = progress / 25;
-				activeFloor.setImageResource(floorsId.get(mActiveFloorI));
+
+				imgActiveFloor = progress / 25;
+				activeFloor.setImageResource(floorsId.get(imgActiveFloor));
+				panObjectsWithMap();
 			}
 		});
 	}
@@ -291,8 +328,22 @@ public class MapActivity extends Activity implements OnTouchListener {
 		}
 
 		for (DatabaseTableItemPos pos : positions) {
-			ImageView im = map.addCrossToMap(pos.posx, pos.posy, R.drawable.ic_launcher_red, mActiveFloorI);
+			ImageView im = map.addCrossToMap(pos.posx, pos.posy, R.drawable.point, imgActiveFloor);
 			selfIcons.add(im);
+		}
+		panObjectsWithMap();
+
+
+	}
+
+	/**
+	 * Delete all points on the map
+	 */
+	public void deleteObjectsOnMap() {
+		for (ImageView img : crossesInMap) {
+			RelativeLayout rel = (RelativeLayout) img.getParent();
+			rel.removeView(img);
+			crossesInMap.remove(img);
 		}
 	}
 }

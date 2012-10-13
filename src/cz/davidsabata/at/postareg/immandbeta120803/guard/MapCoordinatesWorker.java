@@ -51,7 +51,7 @@ public class MapCoordinatesWorker {
 		widthMap = bd.getBitmap().getWidth();
 
 		//Size of image that i paint on map
-		BitmapDrawable bd2 = (BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_launcher);
+		BitmapDrawable bd2 = (BitmapDrawable) context.getResources().getDrawable(idResource);
 		heightCross = bd2.getBitmap().getHeight();
 		widthCross = bd2.getBitmap().getWidth();
 		calculatePI();
@@ -82,12 +82,12 @@ public class MapCoordinatesWorker {
 		//vp.setMargins((int) (x * wpi - (widthCross / 2.0)), (int) (y * hpi - (heightCross / 2.0)), 0, 0);
 
 		Matrix mtrx = new Matrix();
-		mtrx.postTranslate((float) (x * wpi - (widthCross / 2.0)), (float) (y * hpi - (heightCross / 2.0)));
+		mtrx.postTranslate((float) (((x * wpi)) - (widthCross / 2.0)), (float) (((y * hpi)) - (heightCross / 2.0)));
 		imageView.setImageMatrix(mtrx);
 
 		//remember width
-		imageView.setTag(R.id.idWidth, (float) (x * wpi - (widthCross / 2.0)));
-		imageView.setTag(R.id.idHeight, (float) (y * hpi - (heightCross / 2.0)));
+		imageView.setTag(R.id.idWidth, (float) (((x * wpi)) - (widthCross / 2.0)) * scaleFactor);
+		imageView.setTag(R.id.idHeight, (float) (((y * hpi)) - (heightCross / 2.0)) * scaleFactor);
 		imageView.setTag(R.id.imgFloorIndex, imgFloor);
 
 		return imageView;
