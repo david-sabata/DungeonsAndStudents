@@ -99,7 +99,7 @@ public class MapScanActivity extends Activity implements OnTouchListener {
 		// vytvorit ikony pro existujici mista
 		List<DatabaseTableItemPos> positions = GameService.getInstance().getSavedPositions();
 		for (DatabaseTableItemPos pos : positions) {
-			crossesInMap.add(map.addCrossToMap(pos.posx, pos.posy, R.drawable.ic_launcher));
+			crossesInMap.add(map.addCrossToMap(pos.posx, pos.posy, R.drawable.ic_launcher, mActiveFloorI));
 		}
 
 
@@ -252,7 +252,7 @@ public class MapScanActivity extends Activity implements OnTouchListener {
 			Toast.makeText(getApplicationContext(), res, Toast.LENGTH_SHORT).show();
 
 			// example of adding image to RelativeFramework
-			crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY(), R.drawable.ic_launcher_red));
+			crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY(), R.drawable.ic_launcher_red, mActiveFloorI));
 		}
 
 

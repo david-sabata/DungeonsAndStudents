@@ -29,6 +29,7 @@
 	
 	<item type="id" name="idWidth"/>
 	<item type="id" name="idHeight"/>
+	<item type="id" name="imgFloorIndex"/>
     
 </resources>
 
