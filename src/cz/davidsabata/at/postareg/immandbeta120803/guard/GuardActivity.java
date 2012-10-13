@@ -246,10 +246,22 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		RealCoordinates coordReal = map.getRealFromRelativeCoord(Math.round(event.getX(0)), Math.round(event.getY(0)));
 
 		// example of adding image to RelativeFramework
-		crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY()));
+
+		//crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY()));
 		//panObjectsWithMap();
 
+		crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY(), R.drawable.ic_launcher));
+
 		return false;
+	}
+
+
+	public void deleteObjectsOnMap() {
+		for (ImageView img : crossesInMap) {
+			RelativeLayout rel = (RelativeLayout) img.getParent();
+			rel.removeView(img);
+			crossesInMap.remove(img);
+		}
 	}
 
 

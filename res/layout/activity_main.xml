@@ -44,13 +44,21 @@
         android:layout_below="@+id/host_game"
         android:layout_centerHorizontal="true"
         android:text="@string/connect_game" />
-
+
     <Button
-        android:id="@+id/agent"
+        android:id="@+id/scanPositions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/guard"
         android:layout_centerHorizontal="true"
-        android:text="@string/agent" />
+        android:text="Ukladani bodu" />
+
+    <Button
+        android:id="@+id/clearDb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scanPositions"
+        android:layout_centerHorizontal="true"
+        android:text="Clear db" />
 
 </RelativeLayout>

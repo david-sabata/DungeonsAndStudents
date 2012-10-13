@@ -12,14 +12,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
-import cz.davidsabata.at.postareg.immandbeta120803.agent.CameraActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidGameStateException;
 import cz.davidsabata.at.postareg.immandbeta120803.guard.GuardActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.LocatorActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.Wifi;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService.GameServiceBinder;
-import cz.davidsabata.at.postareg.immandbeta120803.services.NetworkService;
 
 public class MainActivity extends Activity implements OnClickListener {
 
@@ -27,7 +25,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	protected GameService mGameService;
 
-	protected NetworkService mNetworkService;
+
+	protected final MainActivity self = this;
 
 
 	@Override
@@ -39,8 +38,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		findViewById(R.id.wifi).setOnClickListener(this);
 		findViewById(R.id.host_game).setOnClickListener(this);
 		findViewById(R.id.connect_game).setOnClickListener(this);
-		findViewById(R.id.agent).setOnClickListener(this);
+		findViewById(R.id.scanPositions).setOnClickListener(this);
 		findViewById(R.id.guard).setOnClickListener(this);
+		findViewById(R.id.clearDb).setOnClickListener(this);
 
 		Log.d(LOG_TAG, "service is " + (GameService.getInstance() == null ? "null" : "not null"));
 
@@ -87,8 +87,8 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 
 
-		case R.id.agent:
-			Intent agentIntent = new Intent(this, CameraActivity.class);
+		case R.id.scanPositions:
+			Intent agentIntent = new Intent(this, MapScanActivity.class);
 			startActivity(agentIntent);
 			break;
 
@@ -100,6 +100,11 @@ public class MainActivity extends Activity implements OnClickListener {
 		case R.id.wifi:
 			Intent wifiIntent = new Intent(this, LocatorActivity.class);
 			startActivity(wifiIntent);
+			break;
+
+		case R.id.clearDb:
+			mGameService.clearDatabase();
+			Toast.makeText(getApplicationContext(), "We are clear now", Toast.LENGTH_SHORT).show();
 			break;
 		}
 	}
@@ -115,7 +120,8 @@ public class MainActivity extends Activity implements OnClickListener {
 				mGameService = binder.getService();
 				Log.d(LOG_TAG, "Game service connected");
 
-				mGameService.init(new Wifi(getSystemService(Context.WIFI_SERVICE)));
+				Wifi w = new Wifi(getSystemService(Context.WIFI_SERVICE));
+				mGameService.init(w, self);
 			}
 		}
 

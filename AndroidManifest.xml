@@ -40,14 +40,17 @@
         </activity>
         <activity android:name=".guard.GuardActivity" >
         </activity>
-        <activity android:name=".agent.CameraActivity" >
-        </activity>
+        <activity android:name=".agent.CameraActivity" ></activity>
 
         <service android:name=".services.GameService" >
         </service>
 
         <activity
             android:name=".PlayersSetupActivity"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name=".MapScanActivity"
             android:theme="@style/AppTheme" >
         </activity>
         <activity

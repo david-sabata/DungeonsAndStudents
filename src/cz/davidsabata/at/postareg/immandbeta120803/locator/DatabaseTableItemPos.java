@@ -1,10 +1,13 @@
 package cz.davidsabata.at.postareg.immandbeta120803.locator;
 
-public class DatabaseTableItemPos {
+public class DatabaseTableItemPos implements Comparable<DatabaseTableItemPos> {
 	public int id;
 	public int posx;
 	public int posy;
 	public int floor;
+
+	public int matchQuality = -1;
+
 
 	public DatabaseTableItemPos() {
 	}
@@ -19,6 +22,16 @@ public class DatabaseTableItemPos {
 	@Override
 	public String toString() {
 		return "id=" + id + ", posx=" + posx + ", posy=" + posy + ", floor=" + floor;
+	}
+
+
+	public int compareTo(DatabaseTableItemPos o1) {
+		if (this.matchQuality == o1.matchQuality)
+			return 0;
+		else if ((this.matchQuality) > o1.matchQuality)
+			return 1;
+		else
+			return -1;
 	}
 
 

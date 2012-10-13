@@ -23,15 +23,17 @@ public class LocatorActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_locator);
 
+		db = new DatabaseHandler(this);
+		db.onUpgrade(db.getWritableDatabase(), 0, 0);
+
 		btn = (Button) this.findViewById(R.id.button1);
 		btn2 = (Button) this.findViewById(R.id.button2);
 		btn3 = (Button) this.findViewById(R.id.button3);
 		tw = (TextView) this.findViewById(R.id.textView1);
 		wifi = new Wifi(getSystemService(Context.WIFI_SERVICE));
-		wifiLogger = new WifiLogger(wifi);
+		wifiLogger = new WifiLogger(wifi, db);
 
-		db = new DatabaseHandler(this);
-		db.onUpgrade(db.getWritableDatabase(), 0, 0);
+
 
 
 		btn.setOnClickListener(new OnClickListener() {

@@ -32,12 +32,15 @@ public class MapCoordinatesWorker {
 	private final float heightCross;
 	private final float widthCross;
 
+	//	private final int crossResId;
+
 
 	public MapCoordinatesWorker(Context c, RelativeLayout v, int idResource, int origWidth, int origHeight) {
 		context = c;
 		map = v;
 		originalWidth = origWidth;
 		originalHeight = origHeight;
+		//		crossResId = idResource;
 
 		//Detect realsize of image floor
 		BitmapDrawable bd = (BitmapDrawable) context.getResources().getDrawable(R.drawable.basement_1st);
@@ -60,8 +63,8 @@ public class MapCoordinatesWorker {
 	 * Add Icon on place in map 
 	 * This place is specified by coordinates with real coordinates in real map
 	 */
-	public ImageView addCrossToMap(int x, int y) {
-		int id = R.drawable.ic_launcher;
+	public ImageView addCrossToMap(int x, int y, int resId) {
+		int id = resId;
 		ImageView imageView = new ImageView(context);
 		RelativeLayout.LayoutParams vp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 		imageView.setLayoutParams(vp);
