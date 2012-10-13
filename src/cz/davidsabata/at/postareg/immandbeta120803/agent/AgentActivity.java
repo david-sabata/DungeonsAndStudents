@@ -73,6 +73,12 @@ public class AgentActivity extends Activity {
 				startActivity(new Intent(context, MapActivity.class));
 			}
 		});
+
+		findViewById(R.id.btnCamera).setOnClickListener(new View.OnClickListener() {
+			public void onClick(View arg0) {
+				startActivity(new Intent(context, CameraActivity.class));
+			}
+		});
 	}
 
 

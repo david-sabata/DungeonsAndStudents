@@ -1,5 +1,6 @@
 package cz.davidsabata.at.postareg.immandbeta120803.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Service;
@@ -8,12 +9,16 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import cz.davidsabata.at.postareg.immandbeta120803.R;
 import cz.davidsabata.at.postareg.immandbeta120803.exceptions.InvalidGameStateException;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseHandler;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseTableItemPos;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.Wifi;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.WifiLogger;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
+import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission667;
+import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission668;
+import cz.davidsabata.at.postareg.immandbeta120803.missions.ShockMission;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
 
@@ -167,6 +172,31 @@ public class GameService extends Service {
 	}
 
 
+	/**
+	 * Vrati objekty vsech dostupnych misi
+	 */
+	public static List<BaseMission> getAllMissions() {
+		List<BaseMission> l = new ArrayList<BaseMission>();
+
+		l.add(new ShockMission());
+		l.add(new Mission667());
+		l.add(new Mission668());
+
+		return l;
+	}
+
+	/**
+	 * Vraci list resource idcek achievmentu
+	 */
+	public static List<Integer> getAchievmentsResIds() {
+		List<Integer> l = new ArrayList<Integer>();
+
+		l.add(R.drawable.achiev_shock);
+
+		return l;
+	}
+
+
 	// ---------------------------------------------------------------------------------
 	// ---------------------------------------------------------------------------------
 
@@ -235,6 +265,7 @@ public class GameService extends Service {
 
 		return mBinder;
 	}
+
 
 
 	// --------------------------------------------------------------------------------
