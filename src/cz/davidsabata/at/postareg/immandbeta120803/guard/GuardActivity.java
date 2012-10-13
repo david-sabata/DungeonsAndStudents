@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,25 +22,28 @@ import cz.davidsabata.at.postareg.immandbeta120803.R;
 public class GuardActivity extends Activity implements OnTouchListener {
 	protected static final double MIN_ZOOM = 1f;
 	protected static final float MAX_ZOOM = 5f;
+
 	// map of floors
 	private final List<Integer> floorsId = new ArrayList<Integer>();
 	private ImageView activeFloor;
-	private Float lastFloorWidth;
-	private Float lastFloorHeight;
 
 	// where i am
 	private ImageView whereIAm;
 
-	private RelativeLayout mainLayout;
-
-	private static Context context;
-
 	// scaling image
+	private final Matrix mtrx = new Matrix();
 	private float scaleFactor = 1.0f;
 	private ScaleGestureDetector scaleDetector;
-	private float scalePointX;
-	private float scalePointY;
-	private final Matrix mtrx = new Matrix();
+
+	//pan image
+	private final Matrix mtrxTran = new Matrix();
+	private final Matrix mtrxTranBegin = new Matrix();
+	private float lastX;
+	private float lastY;
+	private float mPosX = 0;
+	private float mPosY = 0;
+	private int mActivePointerId;
+	private static final int INVALID_POINTER_ID = -1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,10 +56,13 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		getHandlersToImages();
 		activeFloor = (ImageView) findViewById(R.id.activeFloor);
 		activeFloor.setImageResource(floorsId.get(0));
+		mtrxTranBegin.set(activeFloor.getImageMatrix());
 
-		lastFloorWidth = (float) activeFloor.getWidth();
-		lastFloorHeight = (float) activeFloor.getHeight();
-
+		if (mtrxTranBegin == null) {
+			Log.d("null", "null");
+		} else {
+			Log.d("not", "null");
+		}
 		setSeekFloor();
 
 		// set where i am (red point on map)
@@ -74,51 +79,37 @@ public class GuardActivity extends Activity implements OnTouchListener {
 				scaleFactor *= (scaleDetector.getScaleFactor());
 				scaleFactor = (float) Math.max(MIN_ZOOM, Math.min(scaleFactor, MAX_ZOOM));
 
-				scalePointX = scaleDetector.getFocusX();
-				scalePointY = scaleDetector.getFocusY();
-
-				//				Log.d("XY", "[" + scalePointX + " : " + scalePointY + "]");
-
-				float[] matrix = new float[9];
-				mtrx.getValues(matrix);
-
-				Log.d("TRANS", "[" + matrix[Matrix.MTRANS_X] + " | " + matrix[Matrix.MTRANS_Y] + "]");
-
-				int w = activeFloor.getDrawable().getIntrinsicWidth();
-				int h = activeFloor.getDrawable().getIntrinsicHeight();
-				Log.d("BOUNDS", "[" + w + " | " + h + "]");
 
 				float diffWidth = (activeFloor.getWidth() * scaleFactor) - activeFloor.getWidth();
 				float diffHeight = (activeFloor.getHeight() * scaleFactor) - activeFloor.getHeight();
 
-				//				float trX = (activeFloor.getWidth() / 2) - scalePointX;
-				//				float trY = (activeFloor.getHeight() / 2) - scalePointY;
-				float trX = scalePointX - matrix[Matrix.MTRANS_X];
-				float trY = scalePointY - matrix[Matrix.MTRANS_Y];
-
 
 				mtrx.reset();
-				mtrx.postTranslate(trX, trY);
-				mtrx.postScale(scaleFactor, scaleFactor);
-				//				mtrx.postTranslate((-diffWidth / 2) - trX, (-diffHeight / 2) - trY);				
+				mtrxTran.set(mtrxTranBegin);
+				mtrxTran.postTranslate(mPosX * scaleFactor, mPosY * scaleFactor);
 
+				mtrx.set(mtrxTran);
+				mtrx.postTranslate((-diffWidth / 2), (-diffHeight / 2));
+				mtrx.preScale(scaleFactor, scaleFactor);
 				activeFloor.setImageMatrix(mtrx);
+
+
 				return true;
 			}
 
 			public boolean onScaleBegin(ScaleGestureDetector detector) {
+
 				return true;
 			}
 
 			public void onScaleEnd(ScaleGestureDetector detector) { // TODO
-				Log.i("prestavam", "scalovat");
+
 
 			}
 		});
 
 
 	}
-
 
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) { // Let the
@@ -129,15 +120,76 @@ public class GuardActivity extends Activity implements OnTouchListener {
 
 		switch (action & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_DOWN: {
-			final float x = ev.getX() / scaleFactor;
-			final float y = ev.getX() / scaleFactor;
+			final float x = ev.getX();
+			final float y = ev.getY();
+			mActivePointerId = ev.getPointerId(0);
+			lastX = x;
+			lastY = y;
+
+			break;
 		}
 
 		case MotionEvent.ACTION_MOVE: {
-			//			Log.i("Tahnu", Float.toString(scaleFactor));
+			final int pointerIndex = ev.findPointerIndex(mActivePointerId);
+			final float x = ev.getX();
+			final float y = ev.getY();
+
+
+
+			// Only move if the ScaleGestureDetector isn't processing a gesture.
+			if (!scaleDetector.isInProgress()) {
+				final float dx = x - lastX;
+				final float dy = y - lastY;
+
+				Log.i("dx", Float.toString(dx));
+				Log.i("dy", Float.toString(dy));
+
+				mPosX += dx;
+				mPosY += dy;
+
+				float diffWidth = (activeFloor.getWidth() * scaleFactor) - activeFloor.getWidth();
+				float diffHeight = (activeFloor.getHeight() * scaleFactor) - activeFloor.getHeight();
+
+				mtrx.reset();
+				mtrxTran.set(mtrxTranBegin);
+				mtrxTran.postTranslate(mPosX * scaleFactor, mPosY * scaleFactor);
+
+				mtrx.set(mtrxTran);
+				mtrx.postTranslate((-diffWidth / 2), (-diffHeight / 2));
+				mtrx.preScale(scaleFactor, scaleFactor);
+				activeFloor.setImageMatrix(mtrx);
+				//activeFloor.invalidate();
+			}
+
+
+
+			lastX = x;
+			lastY = y;
+			break;
+
 		}
 		case MotionEvent.ACTION_UP: {
+			mActivePointerId = INVALID_POINTER_ID;
+			break;
+		}
 
+		case MotionEvent.ACTION_CANCEL: {
+			mActivePointerId = INVALID_POINTER_ID;
+			break;
+		}
+
+		case MotionEvent.ACTION_POINTER_UP: {
+			final int pointerIndex = (ev.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+			final int pointerId = ev.getPointerId(pointerIndex);
+			if (pointerId == mActivePointerId) {
+				// This was our active pointer going up. Choose a new
+				// active pointer and adjust accordingly.
+				final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+				lastX = ev.getX(newPointerIndex);
+				lastY = ev.getY(newPointerIndex);
+				mActivePointerId = ev.getPointerId(newPointerIndex);
+			}
+			break;
 		}
 
 		}
