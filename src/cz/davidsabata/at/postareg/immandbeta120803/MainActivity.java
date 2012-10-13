@@ -60,6 +60,19 @@ public class MainActivity extends Activity implements OnClickListener {
 
 
 
+
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		// zobrazit/skryt tlacitka podle toho jestli je aktivni nejaka hra
+	}
+
+
+
+
+
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.host_game:
