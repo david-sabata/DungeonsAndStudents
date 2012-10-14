@@ -23,8 +23,11 @@ import cz.davidsabata.at.postareg.immandbeta120803.locator.DatabaseTableItemPos;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.Wifi;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.WifiLogger;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
-import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission667;
-import cz.davidsabata.at.postareg.immandbeta120803.missions.ShockMission;
+import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission001;
+import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission002;
+import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission003;
+import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission004;
+import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission005;
 import cz.davidsabata.at.postareg.immandbeta120803.network.Client;
 import cz.davidsabata.at.postareg.immandbeta120803.network.Message;
 import cz.davidsabata.at.postareg.immandbeta120803.network.Message.Type;
@@ -231,8 +234,13 @@ public class GameService extends Service {
 	public static List<BaseMission> getAllMissions() {
 		List<BaseMission> l = new ArrayList<BaseMission>();
 
-		l.add(new ShockMission());
-		l.add(new Mission667());
+		l.add(new Mission001());
+		l.add(new Mission002());
+		l.add(new Mission003());
+		l.add(new Mission004());
+		l.add(new Mission005());
+		//		l.add(new ShockMission());
+		//		l.add(new Mission667());
 		//		l.add(new Mission668());
 
 		return l;
