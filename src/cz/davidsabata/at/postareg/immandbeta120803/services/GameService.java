@@ -145,7 +145,9 @@ public class GameService extends Service {
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
 		mClientConnection = new Client("147.229.178.92");
-		mClientConnection.Connect();
+		if (!mClientConnection.Connect())
+			throw new InvalidGameStateException("Cannot connect to server");
+
 
 		Message m = new Message();
 		m.type = Type.PREPARING;
