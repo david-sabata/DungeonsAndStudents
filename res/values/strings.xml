@@ -62,6 +62,7 @@
 
     <string name="mission_acomplished">Mission acomplished</string>
     <string name="next_round">NEXT ROUND</string>
+    <string name="mission_failed">Mission failed</string>
 
 
 </resources>

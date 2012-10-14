@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 import cz.davidsabata.at.postareg.immandbeta120803.R;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
@@ -30,7 +31,7 @@ public class AgentActivity extends Activity implements GameStateListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_agent);
 
-		GameService gameService = GameService.getInstance();
+		final GameService gameService = GameService.getInstance();
 		final BaseMission mission = gameService.getCurrentMission();
 
 		ImageView targetImg = (ImageView) findViewById(R.id.targetImage);
@@ -81,6 +82,14 @@ public class AgentActivity extends Activity implements GameStateListener {
 		findViewById(R.id.btnCamera).setOnClickListener(new View.OnClickListener() {
 			public void onClick(View arg0) {
 				startActivity(new Intent(context, CameraActivity.class));
+			}
+		});
+
+		findViewById(R.id.btnSurrender).setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.mission_failed), Toast.LENGTH_LONG).show();
+				gameService.setMissionFailed();
+				finish();
 			}
 		});
 

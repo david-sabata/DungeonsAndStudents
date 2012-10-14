@@ -70,6 +70,9 @@ public class GameService extends Service {
 	public void onDestroy() {
 		mInstance = null;
 
+		if (mServerManager != null)
+			mServerManager.close();
+
 		Log.d(LOG_TAG, "service destroyed");
 	}
 
@@ -98,7 +101,7 @@ public class GameService extends Service {
 	// --------------------------------------------------------
 
 
-	private GameInfo mGameInfo;
+	public GameInfo mGameInfo;
 
 	private final ServerManager mServerManager = new ServerManager();
 	private Client mClientConnection;
