@@ -153,6 +153,7 @@ public class GameService extends Service {
 		m.playerMac = getLocalPlayer().macAddr;
 		m.playerRole = getLocalPlayer().role == Player.Role.AGENT ? Message.Role.AGENT : Message.Role.GUARD;
 
+
 		clientConnection.Send(m);
 	}
 
@@ -271,6 +272,22 @@ public class GameService extends Service {
 	public void reportSelfStatus(Message msg) {
 		mServerManager.sendMessage(msg, null);
 	}
+
+
+	/**
+	 * Agent uspesne vyfotil to co mel; win
+	 */
+	public void setMissionCompleted() {
+		mGameInfo.agentWon();
+
+		Message msg = new Message();
+		msg.type = Type.AGENT_WON;
+
+		mServerManager.sendMessage(msg, null);
+
+		mListener.onGameChange();
+	}
+
 
 
 	// ---------------------------------------------------------------------------------
