@@ -53,7 +53,8 @@ public class PlayersSetupActivity extends Activity implements OnClickListener, G
 		// nacteni IP do textview
 		Thread t = new Thread(new Runnable() {
 			public void run() {
-				final String ip = GameService.getInstance().getSelfIP();
+				GameService.getInstance();
+				final String ip = GameService.getSelfIP();
 				if (ip != null) {
 					Runnable rnbl = new Runnable() {
 						public void run() {

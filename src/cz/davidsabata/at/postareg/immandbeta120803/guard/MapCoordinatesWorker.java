@@ -100,11 +100,10 @@ public class MapCoordinatesWorker {
 	public RealCoordinates getRealFromRelativeCoord(float relX, float relY) {
 		RealCoordinates realCoord = new RealCoordinates();
 		calculatePI();
-		realCoord.setX((relX - posX) / wpi);
-		realCoord.setY((relY - posY) / hpi);
+		realCoord.setX(relX / wpi - posX);
+		realCoord.setY(relY / hpi - posY);
 		return realCoord;
 	}
-
 
 	public void setScaleFactor(float scaleFactor2) {
 		scaleFactor = scaleFactor2;
