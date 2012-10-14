@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import cz.davidsabata.at.postareg.immandbeta120803.network.Message;
+import cz.davidsabata.at.postareg.immandbeta120803.network.Message.Type;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
@@ -59,22 +61,31 @@ public class PlayerListAdapter extends BaseAdapter {
 		icon.setImageResource(p.getRoleIcon());
 		icon.setTag(p.getRoleIcon());
 
-
-		icon.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				ImageView img = (ImageView) v;
-				int resId = Integer.valueOf(v.getTag().toString());
-				if (resId == R.drawable.role_agent) {
-					img.setImageResource(R.drawable.role_guard);
-					img.setTag(R.drawable.role_guard);
-					p.role = Role.GUARD;
-				} else {
-					img.setImageResource(R.drawable.role_agent);
-					img.setTag(R.drawable.role_agent);
-					p.role = Role.AGENT;
+		if (GameService.getInstance().getLocalPlayer().equals(p)) {
+			icon.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					ImageView img = (ImageView) v;
+					int resId = Integer.valueOf(v.getTag().toString());
+					if (resId == R.drawable.role_agent) {
+						img.setImageResource(R.drawable.role_guard);
+						img.setTag(R.drawable.role_guard);
+						p.role = Role.GUARD;
+					} else {
+						img.setImageResource(R.drawable.role_agent);
+						img.setTag(R.drawable.role_agent);
+						p.role = Role.AGENT;
+					}
+					// distribute update
+					Message msg = new Message();
+					msg.type = Type.PREPARING;
+					msg.playerMac = p.macAddr;
+					msg.nickname = p.nickname;
+					msg.playerRole = p.role == Role.AGENT ? cz.davidsabata.at.postareg.immandbeta120803.network.Message.Role.AGENT
+							: cz.davidsabata.at.postareg.immandbeta120803.network.Message.Role.GUARD;
+					GameService.getInstance().reportSelfStatus(msg);
 				}
-			}
-		});
+			});
+		}
 
 		return vi;
 	}
