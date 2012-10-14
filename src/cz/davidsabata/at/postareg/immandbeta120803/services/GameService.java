@@ -311,6 +311,14 @@ public class GameService extends Service {
 
 
 	/**
+	 * Prisla zprava o zahajeni hry .. nastavime struktury
+	 */
+	public void setGameStarted() {
+		mGameInfo.startGame();
+		mListener.onGameChange();
+	}
+
+	/**
 	 * Zacatek hry
 	 */
 	public void reportGameStart() {

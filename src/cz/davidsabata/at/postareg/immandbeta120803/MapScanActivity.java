@@ -29,6 +29,7 @@ public class MapScanActivity extends Activity implements OnTouchListener {
 	private final List<Integer> floorsId = new ArrayList<Integer>();
 	private final List<ImageView> crossesInMap = new ArrayList<ImageView>();
 	private ImageView activeFloor;
+	private int imgActiveFloor;
 
 	private MapCoordinatesWorker map;
 
@@ -42,12 +43,14 @@ public class MapScanActivity extends Activity implements OnTouchListener {
 	private final Matrix mtrxTranBegin = new Matrix();
 	private float lastX;
 	private float lastY;
+	private float dx = 0;
+	private float dy = 0;
 	private float mPosX = 0;
 	private float mPosY = 0;
 	private int mActivePointerId;
 	private static final int INVALID_POINTER_ID = -1;
 
-	private int mActiveFloorI = 0;
+	private final int mActiveFloorI = 0;
 
 
 	@Override
@@ -83,7 +86,11 @@ public class MapScanActivity extends Activity implements OnTouchListener {
 				mtrx.postTranslate((-diffWidth / 2), (-diffHeight / 2));
 				mtrx.preScale(scaleFactor, scaleFactor);
 				activeFloor.setImageMatrix(mtrx);
-
+				//update scale factor in mapper
+				map.setScaleFactor(scaleFactor);
+				map.setPosX(mPosX);
+				map.setPosY(mPosY);
+				panObjectsWithMap();
 				return true;
 			}
 
@@ -99,7 +106,7 @@ public class MapScanActivity extends Activity implements OnTouchListener {
 		// vytvorit ikony pro existujici mista
 		List<DatabaseTableItemPos> positions = GameService.getInstance().getSavedPositions();
 		for (DatabaseTableItemPos pos : positions) {
-			crossesInMap.add(map.addCrossToMap(pos.posx, pos.posy, R.drawable.ic_launcher, mActiveFloorI));
+			crossesInMap.add(map.addCrossToMap(pos.posx, pos.posy, R.drawable.point_pick, mActiveFloorI));
 		}
 
 
@@ -131,8 +138,8 @@ public class MapScanActivity extends Activity implements OnTouchListener {
 
 			// Only move if the ScaleGestureDetector isn't processing a gesture.
 			if (!scaleDetector.isInProgress()) {
-				final float dx = x - lastX;
-				final float dy = y - lastY;
+				dx = x - lastX;
+				dy = y - lastY;
 
 				mPosX += dx;
 				mPosY += dy;
@@ -148,6 +155,13 @@ public class MapScanActivity extends Activity implements OnTouchListener {
 				mtrx.postTranslate((-diffWidth / 2), (-diffHeight / 2));
 				mtrx.preScale(scaleFactor, scaleFactor);
 				activeFloor.setImageMatrix(mtrx);
+
+				panObjectsWithMap();
+
+				//update scale factor in mapper
+				map.setScaleFactor(scaleFactor);
+				map.setPosX(mPosX);
+				map.setPosY(mPosY);
 				//activeFloor.invalidate();
 			}
 
@@ -186,6 +200,23 @@ public class MapScanActivity extends Activity implements OnTouchListener {
 		return true;
 	}
 
+	/**
+	 * Actualize objects on map
+	 */
+	private void panObjectsWithMap() {
+		for (ImageView img : crossesInMap) {
+			if (((Integer) img.getTag(R.id.imgFloorIndex)) == imgActiveFloor) {
+				Matrix tmpMatrix = new Matrix();
+				tmpMatrix.set(mtrx);
+				tmpMatrix.postTranslate((Float) (img.getTag(R.id.idWidth)) * scaleFactor, (Float) (img.getTag(R.id.idHeight)) * scaleFactor);
+				img.setImageMatrix(tmpMatrix);
+				img.setVisibility(View.VISIBLE);
+			} else {
+				img.setVisibility(View.INVISIBLE);
+			}
+		}
+	}
+
 
 	/**
 	 * 
@@ -217,9 +248,9 @@ public class MapScanActivity extends Activity implements OnTouchListener {
 			}
 
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-				// TODO Auto-generated method stub
-				mActiveFloorI = progress / 25;
-				activeFloor.setImageResource(floorsId.get(mActiveFloorI));
+				imgActiveFloor = progress / 25;
+				activeFloor.setImageResource(floorsId.get(imgActiveFloor));
+				panObjectsWithMap();
 			}
 		});
 	}
@@ -252,7 +283,8 @@ public class MapScanActivity extends Activity implements OnTouchListener {
 			Toast.makeText(getApplicationContext(), res, Toast.LENGTH_SHORT).show();
 
 			// example of adding image to RelativeFramework
-			crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY(), R.drawable.ic_launcher_red, mActiveFloorI));
+			crossesInMap.add(map.addCrossToMap(coordReal.getX(), coordReal.getY(), R.drawable.point_pick, mActiveFloorI));
+			panObjectsWithMap();
 		}
 
 
