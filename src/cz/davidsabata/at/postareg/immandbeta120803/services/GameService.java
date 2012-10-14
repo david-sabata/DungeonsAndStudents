@@ -25,13 +25,9 @@ import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission667;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission668;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.ShockMission;
-<<<<<<< HEAD
 import cz.davidsabata.at.postareg.immandbeta120803.network.Client;
 import cz.davidsabata.at.postareg.immandbeta120803.network.Message;
 import cz.davidsabata.at.postareg.immandbeta120803.network.Message.Type;
-=======
-import cz.davidsabata.at.postareg.immandbeta120803.network.Message;
->>>>>>> 730a2d878c55e2fd8862ca99069c2bf52deb84b5
 import cz.davidsabata.at.postareg.immandbeta120803.network.ServerManager;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
@@ -155,7 +151,7 @@ public class GameService extends Service {
 		m.type = Type.PREPARING;
 		m.nickname = getLocalPlayer().nickname;
 		m.playerMac = getLocalPlayer().macAddr;
-		m.playerRole = getLocalPlayer().role;
+		m.playerRole = getLocalPlayer().role == Player.Role.AGENT ? Message.Role.AGENT : Message.Role.GUARD;
 
 		clientConnection.Send(m);
 	}

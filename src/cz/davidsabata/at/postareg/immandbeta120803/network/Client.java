@@ -12,8 +12,15 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
+import cz.davidsabata.at.postareg.immandbeta120803.network.Message.Type;
+import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
+import cz.davidsabata.at.postareg.immandbeta120803.services.Player;
+import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
+
 public class Client {
 	public static final int SERVER_PORT = 25437;
+
+	private final GameService gameService = GameService.getInstance();
 
 	Socket socket;
 	String ip;
@@ -58,9 +65,9 @@ public class Client {
 		}).start();
 	}
 
-	private void OnMessageReceived(Message m) {
+	private void OnMessageReceived(Message msg) {
 
-		switch (m.type) {
+		switch (msg.type) {
 
 		case AGENT_WON:
 			break;
@@ -72,6 +79,18 @@ public class Client {
 			break;
 
 		case PREPARING:
+			Player p = new Player();
+			p.isHost = false;
+			p.role = msg.playerRole == cz.davidsabata.at.postareg.immandbeta120803.network.Message.Role.AGENT ? Role.AGENT : Role.GUARD;
+			p.nickname = msg.nickname;
+			p.macAddr = msg.playerMac;
+			p.lastKnownX = msg.lastX;
+			p.lastKnownY = msg.lastY;
+
+			// info o hraci pri skladani lidi na hru
+			if (gameService.getGameState() == cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State.WAITING_FOR_CONNECTION && msg.type == Type.PREPARING)
+				gameService.addPlayer(p);
+
 			break;
 
 		case QUIT:
