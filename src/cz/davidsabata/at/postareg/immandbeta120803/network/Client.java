@@ -60,7 +60,26 @@ public class Client {
 
 	private void OnMessageReceived(Message m) {
 
+		switch (m.type) {
 
+		case AGENT_WON:
+			break;
+
+		case GUARD_WON:
+			break;
+
+		case INGAME:
+			break;
+
+		case PREPARING:
+			break;
+
+		case QUIT:
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	public void Send(Message m) {
@@ -76,10 +95,12 @@ public class Client {
 		String json = gson.toJson(m, Message.class);
 
 		try {
-			socketOutputStream.write(json.getBytes());
+			socketOutputStream.write((json + "\n").getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		Log.d("Client sent to server", json);
 	}
 
 	public void Close() {
