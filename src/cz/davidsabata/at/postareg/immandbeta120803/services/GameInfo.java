@@ -37,17 +37,24 @@ public class GameInfo {
 	/**
 	 * Pridani hrace. Je povolen jen jeden hrac s unikatni MAC. Tim je mozne
 	 * vicekrat pridat hrace se stejnou MAC pro dosazeni aktualizace udaju.
+	 * 
+	 * @return true pokud byl hrac nove pridany, false pokud aktualizovany
 	 */
-	public void addPlayer(Player p) {
+	public boolean addPlayer(Player p) {
+		boolean ret = true;
+
 		// drop any previous player with same MAC
 		for (int i = 0; i < mPlayers.size(); i++) {
 			if (mPlayers.get(i).macAddr.equals(p.macAddr)) {
 				mPlayers.remove(i);
+				ret = false;
 				break;
 			}
 		}
 
 		mPlayers.add(p);
+
+		return ret;
 	}
 
 
@@ -121,7 +128,16 @@ public class GameInfo {
 	public void agentWon() {
 		mState = State.ROUND_ENDED;
 		mCurrentMission = null;
-		Log.d(LOG_TAG, "Game round ended");
+		Log.d(LOG_TAG, "Game round ended - agent wins");
+	}
+
+	/**
+	 * Konec kola, agent se vzdal
+	 */
+	public void agentSurrended() {
+		mState = State.ROUND_ENDED;
+		mCurrentMission = null;
+		Log.d(LOG_TAG, "Game round ended - agent loses");
 	}
 
 

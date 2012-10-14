@@ -92,6 +92,8 @@ public class PlayersSetupActivity extends Activity implements OnClickListener, G
 
 			gameService.startGame();
 
+			gameService.reportGameStart();
+
 			startActivity(new Intent(this, AgentActivity.class));
 		}
 	}

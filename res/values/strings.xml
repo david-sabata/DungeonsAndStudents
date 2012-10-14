@@ -50,5 +50,6 @@
     <string name="achievment001_title">Shocked!</string>
     <string name="achievment_not_done">Not completed</string>
     <string name="achievment002_title">Yo dawg, I heard you like me</string>
+    <string name="mission_acomplished">Mission acomplished</string>
 
 </resources>

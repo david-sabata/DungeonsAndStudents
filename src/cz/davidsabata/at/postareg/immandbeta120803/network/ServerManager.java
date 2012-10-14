@@ -65,4 +65,27 @@ public class ServerManager {
 		}
 	}
 
+
+
+	public void sendMessageSingle(Message msg, Socket onlyClient) {
+		synchronized (clThreads) {
+			try {
+				for (ClientThread cl : clThreads) {
+					if (!cl.client.equals(onlyClient)) {
+						continue;
+					}
+
+					OutputStream os = cl.client.getOutputStream();
+					Gson g = new Gson();
+					String str = g.toJson(msg) + "\n";
+					os.write(str.getBytes());
+					Log.d("ServerManager", "Msg sent");
+				}
+			} catch (IOException e) {
+				Log.e("ServerManager", "Error while sending message");
+				e.printStackTrace();
+			}
+		}
+	}
+
 }
