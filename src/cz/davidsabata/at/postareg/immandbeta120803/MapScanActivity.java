@@ -50,8 +50,6 @@ public class MapScanActivity extends Activity implements OnTouchListener {
 	private int mActivePointerId;
 	private static final int INVALID_POINTER_ID = -1;
 
-	private final int mActiveFloorI = 0;
-
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

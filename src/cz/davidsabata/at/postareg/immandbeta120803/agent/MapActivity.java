@@ -51,7 +51,7 @@ public class MapActivity extends Activity implements OnTouchListener {
 	private int mActivePointerId;
 	private static final int INVALID_POINTER_ID = -1;
 
-	private final int mActiveFloorI = 0;
+
 
 	private List<ImageView> selfIcons;
 
@@ -112,7 +112,7 @@ public class MapActivity extends Activity implements OnTouchListener {
 		// vytvorit ikony pro existujici mista
 		List<DatabaseTableItemPos> positions = GameService.getInstance().getSavedPositions();
 		for (DatabaseTableItemPos pos : positions) {
-			crossesInMap.add(map.addCrossToMap(pos.posx, pos.posy, R.drawable.point_pick, imgActiveFloor));
+			crossesInMap.add(map.addCrossToMap(pos.posx, pos.posy, R.drawable.point_pick, pos.floor));
 		}
 
 
