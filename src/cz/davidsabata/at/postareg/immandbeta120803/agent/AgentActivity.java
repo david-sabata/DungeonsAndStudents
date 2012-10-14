@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -35,8 +36,8 @@ public class AgentActivity extends Activity {
 		final Context context = this;
 
 
-		final Button btnOpenPopup = (Button) findViewById(R.id.btnBriefing);
-		btnOpenPopup.setOnClickListener(new Button.OnClickListener() {
+		final ImageButton btnOpenPopup = (ImageButton) findViewById(R.id.btnBriefing);
+		btnOpenPopup.setOnClickListener(new ImageButton.OnClickListener() {
 
 			public void onClick(View arg0) {
 				if (briefPopup != null && briefPopup.isShowing()) {

@@ -135,11 +135,16 @@ public class CameraActivity extends Activity implements ARmatcherImageCallBack {
 		if (poolId != -1) {
 			int resId = imageIds.get(poolId);
 
-			// Found images with certain id
-			String resourceName = getResources().getResourceName(resId);
-			Log.i("MATCH-" + poolId, "Image Recognized:" + resourceName);
+			BaseMission mission = GameService.getInstance().getCurrentMission();
+			if (mission.getImageResId() == resId) {
+				GameService.getInstance().setMissionCompleted();
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.mission_acomplished), Toast.LENGTH_LONG).show();
 
-			Toast.makeText(getApplicationContext(), "Hit on " + resourceName, Toast.LENGTH_LONG).show();
+				finish(); // suicide
+			} else {
+				// achievment?
+			}
+
 		} else {
 			// Nothing was found
 		}

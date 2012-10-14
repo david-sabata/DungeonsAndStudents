@@ -93,6 +93,8 @@ public class PlayersSetupActivity extends Activity implements OnClickListener, G
 
 			gameService.startGame();
 
+			gameService.reportGameStart();
+
 			startActivity(new Intent(this, AgentActivity.class));
 		}
 	}
@@ -102,7 +104,15 @@ public class PlayersSetupActivity extends Activity implements OnClickListener, G
 
 
 	public void onGameChange() {
-
+		// reload adapter
+		runOnUiThread(new Runnable() {
+			public void run() {
+				GameService gameService = GameService.getInstance();
+				ListAdapter adapter = new PlayerListAdapter(getLayoutInflater(), gameService.getPlayers());
+				ListView list = (ListView) findViewById(R.id.playerList);
+				list.setAdapter(adapter);
+			}
+		});
 	}
 
 

@@ -23,8 +23,10 @@ import cz.davidsabata.at.postareg.immandbeta120803.locator.Wifi;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.WifiLogger;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission667;
-import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission668;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.ShockMission;
+import cz.davidsabata.at.postareg.immandbeta120803.network.Client;
+import cz.davidsabata.at.postareg.immandbeta120803.network.Message;
+import cz.davidsabata.at.postareg.immandbeta120803.network.Message.Type;
 import cz.davidsabata.at.postareg.immandbeta120803.network.ServerManager;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
@@ -98,6 +100,7 @@ public class GameService extends Service {
 	private GameInfo mGameInfo;
 
 	private final ServerManager mServerManager = new ServerManager();
+	private Client mClientConnection;
 
 
 	/**
@@ -141,8 +144,16 @@ public class GameService extends Service {
 		mGameInfo = new GameInfo();
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
+		mClientConnection = new Client("147.229.178.92");
+		mClientConnection.Connect();
 
+		Message m = new Message();
+		m.type = Type.PREPARING;
+		m.nickname = getLocalPlayer().nickname;
+		m.playerMac = getLocalPlayer().macAddr;
+		m.playerRole = getLocalPlayer().role == Player.Role.AGENT ? Message.Role.AGENT : Message.Role.GUARD;
 
+		mClientConnection.Send(m);
 	}
 
 	/**
@@ -216,7 +227,7 @@ public class GameService extends Service {
 
 		l.add(new ShockMission());
 		l.add(new Mission667());
-		l.add(new Mission668());
+		//		l.add(new Mission668());
 
 		return l;
 	}
@@ -249,11 +260,62 @@ public class GameService extends Service {
 	/**
 	 * Pridani hrace do hry, pripadne prepsani jeho informaci
 	 * pokud uz ve hre je
+	 * @return byl hrac nove pridany? anebo se jen aktualizoval?
 	 */
-	public void addPlayer(Player p) {
-		mGameInfo.addPlayer(p);
+	public boolean addPlayer(Player p) {
+		boolean ret = mGameInfo.addPlayer(p);
 
 		mListener.onGameChange();
+
+		return ret;
+	}
+
+
+	public void reportSelfStatus(Message msg) {
+		if (getLocalPlayer().isHost)
+			mServerManager.sendMessage(msg, null);
+		else
+			mClientConnection.Send(msg);
+	}
+
+
+	/**
+	 * Agent uspesne vyfotil to co mel; win
+	 */
+	public void setMissionCompleted() {
+		mGameInfo.agentWon();
+
+		Message msg = new Message();
+		msg.type = Type.AGENT_WON;
+
+		mServerManager.sendMessage(msg, null);
+
+		mListener.onGameChange();
+	}
+
+	/**
+	 * Vyhrali hlidaci
+	 */
+	public void setMissionFailed() {
+		mGameInfo.agentSurrended();
+
+		Message msg = new Message();
+		msg.type = Type.GUARD_WON;
+
+		mServerManager.sendMessage(msg, null);
+
+		mListener.onGameChange();
+	}
+
+
+	/**
+	 * Zacatek hry
+	 */
+	public void reportGameStart() {
+		Message msg = new Message();
+		msg.type = Type.INGAME;
+
+		mServerManager.sendMessage(msg, null);
 	}
 
 
