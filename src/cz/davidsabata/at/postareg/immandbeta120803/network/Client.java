@@ -73,12 +73,15 @@ public class Client {
 		switch (msg.type) {
 
 		case AGENT_WON:
+			gameService.setAgentWon();
 			break;
 
 		case GUARD_WON:
+			gameService.setAgentSurrended();
 			break;
 
 		case INGAME:
+			gameService.setGameStarted();
 			break;
 
 		case PREPARING:
