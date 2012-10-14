@@ -6,11 +6,15 @@ public class Message {
 		PREPARING, INGAME, GUARD_WON, AGENT_WON, QUIT
 	};
 
+	public enum Role {
+		AGENT, GUARD
+	};
+
 	public Type type;
 
 	public String playerMac;
 
-	public String playerRole;
+	public Role playerRole;
 
 	public String nickname;
 

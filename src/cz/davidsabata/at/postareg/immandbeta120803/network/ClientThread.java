@@ -3,9 +3,7 @@ package cz.davidsabata.at.postareg.immandbeta120803.network;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.Socket;
-import java.util.List;
 
 import android.util.Log;
 
@@ -23,18 +21,17 @@ public class ClientThread extends Thread {
 
 	private final GameService gameService;
 
-	private final List<ClientThread> clThreads;
+	private final ServerManager serverManager;
 
 
-	public ClientThread(Socket socket, List<ClientThread> threads) {
+	public ClientThread(Socket socket, ServerManager manager) {
 		gameService = GameService.getInstance();
 
-		clThreads = threads;
+		serverManager = manager;
 
 		client = socket;
 		Log.d("ClientThread", client.toString());
 	}
-
 
 	@Override
 	public void run() {
@@ -67,7 +64,7 @@ public class ClientThread extends Thread {
 
 			Player p = new Player();
 			p.isHost = false;
-			p.role = msg.playerRole == "AGENT" ? Role.AGENT : Role.GUARD;
+			p.role = msg.playerRole == cz.davidsabata.at.postareg.immandbeta120803.network.Message.Role.AGENT ? Role.AGENT : Role.GUARD;
 			p.nickname = msg.nickname;
 			p.macAddr = msg.playerMac;
 			p.lastKnownX = msg.lastX;
@@ -78,13 +75,10 @@ public class ClientThread extends Thread {
 				gameService.addPlayer(p);
 
 				// rozeslat info
-				sendMessage(msg, client);
+				serverManager.sendMessage(msg, client);
 
 				return;
 			}
-
-
-
 
 		} catch (JsonSyntaxException e) {
 			Log.d("ClientThread-Error", e.toString());
@@ -92,25 +86,6 @@ public class ClientThread extends Thread {
 	}
 
 
-	private void sendMessage(Message msg, Socket except) {
-		synchronized (clThreads) {
-			try {
-				for (ClientThread cl : clThreads) {
-					if (cl.client.equals(except)) {
-						continue;
-					}
 
-					OutputStream os = cl.client.getOutputStream();
-					Gson g = new Gson();
-					String str = g.toJson(msg);
-					os.write(str.getBytes());
-					Log.d("ClientThread", "Msg sent");
-				}
-			} catch (IOException e) {
-				Log.e("ClientThread", "Error while sending message");
-				e.printStackTrace();
-			}
-		}
-	}
 
 }
