@@ -23,7 +23,6 @@ import cz.davidsabata.at.postareg.immandbeta120803.locator.Wifi;
 import cz.davidsabata.at.postareg.immandbeta120803.locator.WifiLogger;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission667;
-import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission668;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.ShockMission;
 import cz.davidsabata.at.postareg.immandbeta120803.network.Client;
 import cz.davidsabata.at.postareg.immandbeta120803.network.Message;
@@ -228,7 +227,7 @@ public class GameService extends Service {
 
 		l.add(new ShockMission());
 		l.add(new Mission667());
-		l.add(new Mission668());
+		//		l.add(new Mission668());
 
 		return l;
 	}
