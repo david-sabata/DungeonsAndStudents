@@ -151,8 +151,8 @@ public class GameService extends Service {
 		m.type = Type.PREPARING;
 		m.nickname = getLocalPlayer().nickname;
 		m.playerMac = getLocalPlayer().macAddr;
-		m.playerRole = getLocalPlayer().role == Role.AGENT ? cz.davidsabata.at.postareg.immandbeta120803.network.Message.Role.AGENT
-				: cz.davidsabata.at.postareg.immandbeta120803.network.Message.Role.GUARD;
+		m.playerRole = getLocalPlayer().role == Player.Role.AGENT ? Message.Role.AGENT : Message.Role.GUARD;
+
 
 		clientConnection.Send(m);
 	}
