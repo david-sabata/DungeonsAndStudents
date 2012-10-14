@@ -115,4 +115,16 @@ public class GameInfo {
 	}
 
 
+	/**
+	 * Konec kola, agent vyhral
+	 */
+	public void agentWon() {
+		mState = State.ROUND_ENDED;
+		mCurrentMission = null;
+		Log.d(LOG_TAG, "Game round ended");
+	}
+
+
+
+
 }

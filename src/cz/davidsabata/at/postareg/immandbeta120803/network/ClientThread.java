@@ -13,7 +13,6 @@ import com.google.gson.JsonSyntaxException;
 import cz.davidsabata.at.postareg.immandbeta120803.network.Message.Type;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player;
-import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
 
 public class ClientThread extends Thread {
 
@@ -62,13 +61,7 @@ public class ClientThread extends Thread {
 			Message msg = g.fromJson(line, Message.class);
 			Log.d("ClientThread", msg.toString());
 
-			Player p = new Player();
-			p.isHost = false;
-			p.role = msg.playerRole == cz.davidsabata.at.postareg.immandbeta120803.network.Message.Role.AGENT ? Role.AGENT : Role.GUARD;
-			p.nickname = msg.nickname;
-			p.macAddr = msg.playerMac;
-			p.lastKnownX = msg.lastX;
-			p.lastKnownY = msg.lastY;
+			Player p = new Player(msg);
 
 			// info o hraci pri skladani lidi na hru
 			if (gameService.getGameState() == cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State.WAITING_FOR_CONNECTION && msg.type == Type.PREPARING) {

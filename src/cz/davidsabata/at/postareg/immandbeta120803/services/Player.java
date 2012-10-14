@@ -3,6 +3,7 @@ package cz.davidsabata.at.postareg.immandbeta120803.services;
 import java.util.Random;
 
 import cz.davidsabata.at.postareg.immandbeta120803.R;
+import cz.davidsabata.at.postareg.immandbeta120803.network.Message;
 
 public class Player {
 
@@ -21,6 +22,21 @@ public class Player {
 	public int lastKnownY;
 
 	public Role role = Role.GUARD;
+
+
+
+	public Player() {
+	}
+
+
+	public Player(Message msg) {
+		isHost = false;
+		role = msg.playerRole == cz.davidsabata.at.postareg.immandbeta120803.network.Message.Role.AGENT ? Role.AGENT : Role.GUARD;
+		nickname = msg.nickname;
+		macAddr = msg.playerMac;
+		lastKnownX = msg.lastX;
+		lastKnownY = msg.lastY;
+	}
 
 
 

@@ -26,6 +26,7 @@ import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission667;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission668;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.ShockMission;
 import cz.davidsabata.at.postareg.immandbeta120803.network.Message;
+import cz.davidsabata.at.postareg.immandbeta120803.network.Message.Type;
 import cz.davidsabata.at.postareg.immandbeta120803.network.ServerManager;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
 import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
@@ -261,6 +262,22 @@ public class GameService extends Service {
 	public void reportSelfStatus(Message msg) {
 		mServerManager.sendMessage(msg, null);
 	}
+
+
+	/**
+	 * Agent uspesne vyfotil to co mel; win
+	 */
+	public void setMissionCompleted() {
+		mGameInfo.agentWon();
+
+		Message msg = new Message();
+		msg.type = Type.AGENT_WON;
+
+		mServerManager.sendMessage(msg, null);
+
+		mListener.onGameChange();
+	}
+
 
 
 	// ---------------------------------------------------------------------------------
