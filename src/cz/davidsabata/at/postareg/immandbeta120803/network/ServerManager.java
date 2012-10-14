@@ -43,6 +43,16 @@ public class ServerManager {
 	}
 
 
+	public void close() {
+		for (ClientThread cl : clThreads) {
+			try {
+				cl.client.close();
+			} catch (IOException e) {
+			}
+		}
+	}
+
+
 
 	public void sendMessage(Message msg, Socket except) {
 		synchronized (clThreads) {

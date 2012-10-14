@@ -93,6 +93,11 @@ public class GameInfo {
 	}
 
 
+	public void prepareGame() {
+		mState = State.WAITING_FOR_CONNECTION;
+		mCurrentMission = null;
+	}
+
 	/**
 	 * Zacatek hry - nastavit state a vygenerovat quest
 	 */
