@@ -29,7 +29,7 @@ public class Client {
 		this.ip = ip;
 	}
 
-	public void Connect() {
+	public boolean Connect() {
 		InetAddress address = null;
 		try {
 			address = InetAddress.getByName(ip);
@@ -41,7 +41,7 @@ public class Client {
 			socket = new Socket(address, SERVER_PORT);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return;
+			return false;
 		}
 
 		new Thread(new Runnable() {
@@ -64,6 +64,8 @@ public class Client {
 				}
 			}
 		}).start();
+
+		return true;
 	}
 
 	private void OnMessageReceived(Message msg) {
@@ -82,7 +84,7 @@ public class Client {
 		case PREPARING:
 			Player p = new Player();
 			p.isHost = false;
-			p.role = msg.playerRole == cz.davidsabata.at.postareg.immandbeta120803.network.Message.Role.AGENT ? Role.AGENT : Role.GUARD;
+			p.role = msg.playerRole == Message.Role.AGENT ? Role.AGENT : Role.GUARD;
 			p.nickname = msg.nickname;
 			p.macAddr = msg.playerMac;
 			p.lastKnownX = msg.lastX;
