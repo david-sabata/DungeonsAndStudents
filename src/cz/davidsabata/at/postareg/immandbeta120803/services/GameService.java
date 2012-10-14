@@ -101,6 +101,7 @@ public class GameService extends Service {
 	private GameInfo mGameInfo;
 
 	private final ServerManager mServerManager = new ServerManager();
+	private Client mClientConnection;
 
 
 	/**
@@ -144,8 +145,8 @@ public class GameService extends Service {
 		mGameInfo = new GameInfo();
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
-		Client clientConnection = new Client("147.229.178.92");
-		clientConnection.Connect();
+		mClientConnection = new Client("147.229.178.92");
+		mClientConnection.Connect();
 
 		Message m = new Message();
 		m.type = Type.PREPARING;
@@ -153,8 +154,7 @@ public class GameService extends Service {
 		m.playerMac = getLocalPlayer().macAddr;
 		m.playerRole = getLocalPlayer().role == Player.Role.AGENT ? Message.Role.AGENT : Message.Role.GUARD;
 
-
-		clientConnection.Send(m);
+		mClientConnection.Send(m);
 	}
 
 	/**
@@ -270,7 +270,10 @@ public class GameService extends Service {
 
 
 	public void reportSelfStatus(Message msg) {
-		mServerManager.sendMessage(msg, null);
+		if (getLocalPlayer().isHost)
+			mServerManager.sendMessage(msg, null);
+		else
+			mClientConnection.Send(msg);
 	}
 
 

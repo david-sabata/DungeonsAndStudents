@@ -22,7 +22,7 @@ public class Client {
 
 	private final GameService gameService = GameService.getInstance();
 
-	Socket socket;
+	Socket socket = null;
 	String ip;
 
 	public Client(String ip) {
@@ -41,6 +41,7 @@ public class Client {
 			socket = new Socket(address, SERVER_PORT);
 		} catch (IOException e) {
 			e.printStackTrace();
+			return;
 		}
 
 		new Thread(new Runnable() {
@@ -102,6 +103,9 @@ public class Client {
 	}
 
 	public void Send(Message m) {
+
+		if (socket == null)
+			return;
 
 		OutputStream socketOutputStream = null;
 		try {
