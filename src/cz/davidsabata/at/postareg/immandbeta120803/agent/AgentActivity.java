@@ -15,6 +15,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import cz.davidsabata.at.postareg.immandbeta120803.R;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
+import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
 
 public class AgentActivity extends Activity {
@@ -89,6 +90,16 @@ public class AgentActivity extends Activity {
 			briefPopup.dismiss();
 
 		super.onStop();
+	}
+
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		if (GameService.getInstance().getGameState() != GameInfo.State.CHASING) {
+			finish();
+		}
 	}
 
 
