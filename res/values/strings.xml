@@ -50,6 +50,17 @@
     <string name="achievment001_title">Shocked!</string>
     <string name="achievment_not_done">Not completed</string>
     <string name="achievment002_title">Yo dawg, I heard you like me</string>
+
+    <string name="mission003_title">Najdi tento záběr a vyfoť ho!</string>
+    <string name="mission003_briefing">Lorem ipsum</string>
+    <string name="mission002_title">Dveře do neznáma</string>
+    <string name="mission002_briefing">Podaří se Ti je nalézt? Dovnitř ale nechoď! Jedná se o náročnější úkol. Dostaneše tedy 10b  navíc.</string>
+    <string name="mission004_title">Kamenný erb</string>
+    <string name="mission004_briefing">Restaurovaný kamenný erb (výška : 160cm)</string>
+    <string name="mission005_title">Tanec Smrti</string>
+    <string name="mission005_briefing">Hrdinům našeho příběhu již nikdo neřekne jinak než jejich vojáckými přezdívkami: Tulák, Mrzák, Kazatel, Zemánek a Cizinec. Svá jména snad už zapomněli. Narodili se na úsvitu husitské revoluce. Vyrostli mezi profesionálními vojáky a tento úděl se jim stal osudem i prokletím.</string>
+
     <string name="mission_acomplished">Mission acomplished</string>
+
 
 </resources>

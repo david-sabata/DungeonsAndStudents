@@ -112,7 +112,7 @@ public class MapActivity extends Activity implements OnTouchListener {
 		// vytvorit ikony pro existujici mista
 		List<DatabaseTableItemPos> positions = GameService.getInstance().getSavedPositions();
 		for (DatabaseTableItemPos pos : positions) {
-			crossesInMap.add(map.addCrossToMap(pos.posx, pos.posy, R.drawable.ic_launcher, mActiveFloorI));
+			crossesInMap.add(map.addCrossToMap(pos.posx, pos.posy, R.drawable.point_pick, mActiveFloorI));
 		}
 
 
@@ -328,7 +328,7 @@ public class MapActivity extends Activity implements OnTouchListener {
 		}
 
 		for (DatabaseTableItemPos pos : positions) {
-			ImageView im = map.addCrossToMap(pos.posx, pos.posy, R.drawable.point, imgActiveFloor);
+			ImageView im = map.addCrossToMap(pos.posx, pos.posy, R.drawable.point, pos.floor);
 			selfIcons.add(im);
 		}
 		panObjectsWithMap();
