@@ -85,9 +85,9 @@ public class GameInfo {
 			}
 		}
 
-		if (!haveAgent) {
-			return R.string.no_agent_in_game;
-		}
+		//		if (!haveAgent) {
+		//			return R.string.no_agent_in_game;
+		//		}
 
 		return -1;
 	}
