@@ -25,6 +25,7 @@ import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission667;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.Mission668;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.ShockMission;
+import cz.davidsabata.at.postareg.immandbeta120803.network.Client;
 import cz.davidsabata.at.postareg.immandbeta120803.network.Message;
 import cz.davidsabata.at.postareg.immandbeta120803.network.Message.Type;
 import cz.davidsabata.at.postareg.immandbeta120803.network.ServerManager;
@@ -143,8 +144,17 @@ public class GameService extends Service {
 		mGameInfo = new GameInfo();
 		mGameInfo.addPlayer(createSelfPlayer(true));
 
+		Client clientConnection = new Client("147.229.178.92");
+		clientConnection.Connect();
 
+		Message m = new Message();
+		m.type = Type.PREPARING;
+		m.nickname = getLocalPlayer().nickname;
+		m.playerMac = getLocalPlayer().macAddr;
+		m.playerRole = getLocalPlayer().role == Role.AGENT ? cz.davidsabata.at.postareg.immandbeta120803.network.Message.Role.AGENT
+				: cz.davidsabata.at.postareg.immandbeta120803.network.Message.Role.GUARD;
 
+		clientConnection.Send(m);
 	}
 
 	/**
