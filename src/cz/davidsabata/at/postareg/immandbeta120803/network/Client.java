@@ -1,10 +1,14 @@
 package cz.davidsabata.at.postareg.immandbeta120803.network;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -18,45 +22,70 @@ public class Client {
 		this.ip = ip;
 	}
 
-	public void send() {
+	public void Connect() {
+		InetAddress address = null;
 		try {
-			InetAddress address = InetAddress.getByName(ip);
-			socket = new Socket(address, SERVER_PORT);
-		} catch (UnknownHostException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-		OutputStream socketOutputStream = null;
-		try {
-			socketOutputStream = socket.getOutputStream();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		Message msg = new Message();
-		msg.lastX = 4;
-		msg.playerMac = "ggg";
-		//msg.playerIp = ip;
-
-		Gson gson = new Gson();
-
-
-		try {
-			socketOutputStream.write((gson.toJson(msg) + "\n").getBytes());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			address = InetAddress.getByName(ip);
+		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
 
+		try {
+			socket = new Socket(address, SERVER_PORT);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
+		new Thread(new Runnable() {
+			public void run() {
+				while (true) {
+					try {
+						BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+						StringBuilder total = new StringBuilder();
+						String line;
+						while ((line = r.readLine()) != null) {
+							total.append(line);
+							Log.d("Client: line from server received:", line);
+
+							Gson gson = new Gson();
+							OnMessageReceived(gson.fromJson(line, Message.class));
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
+	}
+
+	private void OnMessageReceived(Message m) {
+
+
+	}
+
+	public void Send(Message m) {
+
+		OutputStream socketOutputStream = null;
+		try {
+			socketOutputStream = socket.getOutputStream();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		Gson gson = new Gson();
+		String json = gson.toJson(m, Message.class);
+
+		try {
+			socketOutputStream.write(json.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void Close() {
 		try {
 			socket.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
