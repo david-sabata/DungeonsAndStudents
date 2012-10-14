@@ -11,6 +11,7 @@ import java.util.List;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -353,9 +354,12 @@ public class GameService extends Service {
 	protected WifiLogger wifiLogger;
 	protected DatabaseHandler db;
 
+	public Resources resources;
+
 
 	public void init(Wifi wifi, Context context) {
 		db = new DatabaseHandler(context);
+		resources = context.getResources();
 
 		this.wifi = wifi;
 		wifiLogger = new WifiLogger(wifi, db);

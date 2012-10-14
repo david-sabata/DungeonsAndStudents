@@ -248,6 +248,8 @@ public class MainActivity extends Activity implements OnClickListener {
 					} else {
 						startActivity(new Intent(this, GuardActivity.class));
 					}
+				} else if (mGameService.getGameState() == State.ROUND_ENDED) {
+					startActivity(new Intent(this, PlayersSetupActivity.class));
 				}
 			}
 			break;
