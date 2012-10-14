@@ -10,9 +10,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import cz.davidsabata.at.postareg.immandbeta120803.agent.AgentActivity;
+import cz.davidsabata.at.postareg.immandbeta120803.guard.GuardActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo;
+import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService.GameStateListener;
+import cz.davidsabata.at.postareg.immandbeta120803.services.Player.Role;
 
 public class PlayersSetupActivity extends Activity implements OnClickListener, GameStateListener {
 
@@ -105,15 +108,23 @@ public class PlayersSetupActivity extends Activity implements OnClickListener, G
 
 
 	public void onGameChange() {
-		// reload adapter
-		runOnUiThread(new Runnable() {
-			public void run() {
-				GameService gameService = GameService.getInstance();
-				ListAdapter adapter = new PlayerListAdapter(getLayoutInflater(), gameService.getPlayers());
-				ListView list = (ListView) findViewById(R.id.playerList);
-				list.setAdapter(adapter);
+		if (GameService.getInstance().getGameState() == State.WAITING_FOR_CONNECTION) {
+			// reload adapter
+			runOnUiThread(new Runnable() {
+				public void run() {
+					GameService gameService = GameService.getInstance();
+					ListAdapter adapter = new PlayerListAdapter(getLayoutInflater(), gameService.getPlayers());
+					ListView list = (ListView) findViewById(R.id.playerList);
+					list.setAdapter(adapter);
+				}
+			});
+		} else if (GameService.getInstance().getGameState() == State.CHASING) {
+			if (GameService.getInstance().getLocalPlayer().role == Role.AGENT) {
+				startActivity(new Intent(this, AgentActivity.class));
+			} else {
+				startActivity(new Intent(this, GuardActivity.class));
 			}
-		});
+		}
 	}
 
 
