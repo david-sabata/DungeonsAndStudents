@@ -73,17 +73,19 @@ public class ClientThread extends Thread {
 				serverManager.sendMessage(msg, client);
 
 				// rozeslat info zdroji o ostatnich
-				for (Player pp : gameService.getPlayers()) {
-					if (!pp.equals(pp)) {
-						Message newMsg = new Message();
-						newMsg.type = Type.PREPARING;
-						newMsg.nickname = pp.nickname;
-						newMsg.playerMac = pp.macAddr;
-						newMsg.playerRole = pp.role == Role.AGENT ? Message.Role.AGENT : Message.Role.GUARD;
-						newMsg.lastX = pp.lastKnownX;
-						newMsg.lastY = pp.lastKnownY;
+				if (isNew) {
+					for (Player pp : gameService.getPlayers()) {
+						if (!pp.equals(client)) {
+							Message newMsg = new Message();
+							newMsg.type = Type.PREPARING;
+							newMsg.nickname = pp.nickname;
+							newMsg.playerMac = pp.macAddr;
+							newMsg.playerRole = pp.role == Role.AGENT ? Message.Role.AGENT : Message.Role.GUARD;
+							newMsg.lastX = pp.lastKnownX;
+							newMsg.lastY = pp.lastKnownY;
 
-						serverManager.sendMessageSingle(newMsg, client);
+							serverManager.sendMessageSingle(newMsg, client);
+						}
 					}
 				}
 

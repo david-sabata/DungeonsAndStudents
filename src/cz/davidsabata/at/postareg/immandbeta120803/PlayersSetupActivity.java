@@ -72,6 +72,7 @@ public class PlayersSetupActivity extends Activity implements OnClickListener, G
 		} else {
 			findViewById(R.id.ipTitle).setVisibility(View.GONE);
 			findViewById(R.id.ipValue).setVisibility(View.GONE);
+			findViewById(R.id.run).setVisibility(View.GONE);
 		}
 	}
 
