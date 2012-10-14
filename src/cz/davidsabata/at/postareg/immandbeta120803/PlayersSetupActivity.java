@@ -83,7 +83,9 @@ public class PlayersSetupActivity extends Activity implements OnClickListener, G
 
 
 
-
+	/**
+	 * Provadi pouze host
+	 */
 	public void onClick(View v) {
 		if (v.getId() == R.id.run) {
 			GameService gameService = GameService.getInstance();

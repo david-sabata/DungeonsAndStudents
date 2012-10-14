@@ -15,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import cz.davidsabata.at.postareg.immandbeta120803.achievments.AchievmentsActivity;
 import cz.davidsabata.at.postareg.immandbeta120803.agent.AgentActivity;
@@ -91,8 +92,16 @@ public class MainActivity extends Activity implements OnClickListener {
 				findViewById(R.id.btnContinue).setBackgroundResource(R.drawable.button_green);
 				findViewById(R.id.connect_game).setBackgroundResource(R.drawable.button_black);
 				findViewById(R.id.host_game).setBackgroundResource(R.drawable.button_black);
-			} else
+
+				TextView t = (TextView) findViewById(R.id.btnContinue);
+				if (mGameService.getGameState() == State.ROUND_ENDED) {
+					t.setText(R.string.next_round);
+				} else {
+					t.setText(R.string.continue_game);
+				}
+			} else {
 				findViewById(R.id.btnContinue).setBackgroundResource(R.drawable.button_black);
+			}
 		}
 	}
 

@@ -17,8 +17,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import cz.davidsabata.at.postareg.immandbeta120803.R;
+import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
+import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
+import cz.davidsabata.at.postareg.immandbeta120803.services.GameService.GameStateListener;
 
-public class GuardActivity extends Activity implements OnTouchListener {
+public class GuardActivity extends Activity implements OnTouchListener, GameStateListener {
 	protected static final double MIN_ZOOM = 1f;
 	protected static final float MAX_ZOOM = 10f;
 
@@ -98,6 +101,7 @@ public class GuardActivity extends Activity implements OnTouchListener {
 		});
 
 
+		GameService.getInstance().setGameStateListener(this);
 	}
 
 	@Override
@@ -278,6 +282,14 @@ public class GuardActivity extends Activity implements OnTouchListener {
 			RelativeLayout rel = (RelativeLayout) img.getParent();
 			rel.removeView(img);
 			crossesInMap.remove(img);
+		}
+	}
+
+	public void onGameChange() {
+		Log.d("Guard GameChange", GameService.getInstance().getGameState().toString());
+
+		if (GameService.getInstance().getGameState() == State.ROUND_ENDED) {
+			finish();
 		}
 	}
 

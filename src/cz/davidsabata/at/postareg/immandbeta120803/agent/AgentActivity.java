@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +16,11 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import cz.davidsabata.at.postareg.immandbeta120803.R;
 import cz.davidsabata.at.postareg.immandbeta120803.missions.BaseMission;
-import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo;
+import cz.davidsabata.at.postareg.immandbeta120803.services.GameInfo.State;
 import cz.davidsabata.at.postareg.immandbeta120803.services.GameService;
+import cz.davidsabata.at.postareg.immandbeta120803.services.GameService.GameStateListener;
 
-public class AgentActivity extends Activity {
+public class AgentActivity extends Activity implements GameStateListener {
 
 	PopupWindow briefPopup;
 
@@ -81,6 +83,8 @@ public class AgentActivity extends Activity {
 				startActivity(new Intent(context, CameraActivity.class));
 			}
 		});
+
+		gameService.setGameStateListener(this);
 	}
 
 
@@ -97,7 +101,17 @@ public class AgentActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 
-		if (GameService.getInstance().getGameState() != GameInfo.State.CHASING) {
+		onGameChange();
+		//		if (GameService.getInstance().getGameState() != GameInfo.State.CHASING) {
+		//			finish();
+		//		}
+	}
+
+
+	public void onGameChange() {
+		Log.d("Agent GameChange", GameService.getInstance().getGameState().toString());
+
+		if (GameService.getInstance().getGameState() == State.ROUND_ENDED) {
 			finish();
 		}
 	}
