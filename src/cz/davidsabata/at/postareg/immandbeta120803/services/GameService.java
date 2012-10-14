@@ -309,6 +309,22 @@ public class GameService extends Service {
 		mListener.onGameChange();
 	}
 
+	/**
+	 * Agent uspesne vyfotil to co mel; win
+	 */
+	public void setAgentWon() {
+		mGameInfo.agentWon();
+		mListener.onGameChange();
+	}
+
+	/**
+	 * Vyhrali hlidaci
+	 */
+	public void setAgentSurrended() {
+		mGameInfo.agentSurrended();
+		mListener.onGameChange();
+	}
+
 
 	/**
 	 * Prisla zprava o zahajeni hry .. nastavime struktury
