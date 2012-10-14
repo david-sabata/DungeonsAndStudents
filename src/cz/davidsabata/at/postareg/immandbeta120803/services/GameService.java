@@ -261,11 +261,14 @@ public class GameService extends Service {
 	/**
 	 * Pridani hrace do hry, pripadne prepsani jeho informaci
 	 * pokud uz ve hre je
+	 * @return byl hrac nove pridany? anebo se jen aktualizoval?
 	 */
-	public void addPlayer(Player p) {
-		mGameInfo.addPlayer(p);
+	public boolean addPlayer(Player p) {
+		boolean ret = mGameInfo.addPlayer(p);
 
 		mListener.onGameChange();
+
+		return ret;
 	}
 
 
@@ -288,9 +291,29 @@ public class GameService extends Service {
 		mListener.onGameChange();
 	}
 
+	/**
+	 * Vyhrali hlidaci
+	 */
+	public void setMissionFailed() {
+		mGameInfo.agentSurrended();
 
+		Message msg = new Message();
+		msg.type = Type.GUARD_WON;
+
+		mServerManager.sendMessage(msg, null);
+
+		mListener.onGameChange();
+	}
+
+
+	/**
+	 * Zacatek hry
+	 */
 	public void reportGameStart() {
+		Message msg = new Message();
+		msg.type = Type.INGAME;
 
+		mServerManager.sendMessage(msg, null);
 	}
 
 
