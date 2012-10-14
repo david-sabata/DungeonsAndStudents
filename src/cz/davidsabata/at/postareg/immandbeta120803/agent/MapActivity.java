@@ -112,7 +112,7 @@ public class MapActivity extends Activity implements OnTouchListener {
 		// vytvorit ikony pro existujici mista
 		List<DatabaseTableItemPos> positions = GameService.getInstance().getSavedPositions();
 		for (DatabaseTableItemPos pos : positions) {
-			crossesInMap.add(map.addCrossToMap(pos.posx, pos.posy, R.drawable.point_pick, mActiveFloorI));
+			crossesInMap.add(map.addCrossToMap(pos.posx, pos.posy, R.drawable.point_pick, imgActiveFloor));
 		}
 
 
@@ -228,6 +228,18 @@ public class MapActivity extends Activity implements OnTouchListener {
 	 * Actualize objects on map
 	 */
 	private void panObjectsWithMap() {
+		for (ImageView img : crossesInMap) {
+			if (((Integer) img.getTag(R.id.imgFloorIndex)) == imgActiveFloor) {
+				Matrix tmpMatrix = new Matrix();
+				tmpMatrix.set(mtrx);
+				tmpMatrix.postTranslate((Float) (img.getTag(R.id.idWidth)) * scaleFactor, (Float) (img.getTag(R.id.idHeight)) * scaleFactor);
+				img.setImageMatrix(tmpMatrix);
+				img.setVisibility(View.VISIBLE);
+			} else {
+				img.setVisibility(View.INVISIBLE);
+			}
+		}
+
 		for (ImageView img : selfIcons) {
 			if (((Integer) img.getTag(R.id.imgFloorIndex)) == imgActiveFloor) {
 				Matrix tmpMatrix = new Matrix();
@@ -240,17 +252,7 @@ public class MapActivity extends Activity implements OnTouchListener {
 			}
 		}
 
-		for (ImageView img : crossesInMap) {
-			if (((Integer) img.getTag(R.id.imgFloorIndex)) == imgActiveFloor) {
-				Matrix tmpMatrix = new Matrix();
-				tmpMatrix.set(mtrx);
-				tmpMatrix.postTranslate((Float) (img.getTag(R.id.idWidth)) * scaleFactor, (Float) (img.getTag(R.id.idHeight)) * scaleFactor);
-				img.setImageMatrix(tmpMatrix);
-				img.setVisibility(View.VISIBLE);
-			} else {
-				img.setVisibility(View.INVISIBLE);
-			}
-		}
+
 	}
 
 
